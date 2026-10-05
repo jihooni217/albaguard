@@ -110,8 +110,8 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
 
         <div className="notice link-note">
           <p>
-            여기서 만든 <b>증빙 묶음 PDF</b>는 진정을 낼 때 첨부 자료로 쓸 수 있고, 진정서 작성을 도와주는 서비스에 증거
-            파일로 올릴 수도 있어요. 통장 거래 내역과 함께 준비해 두세요.
+            여기서 만든 <b>증빙 묶음 PDF</b>는 진정을 낼 때 첨부 자료로 쓸 수 있고, 진정24처럼 진정서 작성을 도와주는 서비스에
+            증거 파일로 올릴 수도 있어요. 통장 거래 내역과 함께 준비해 두세요.
           </p>
           <button
             className="btn block with-icon"
