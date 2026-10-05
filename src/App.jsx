@@ -4,23 +4,31 @@ import { makeActions } from './lib/actions'
 import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import Pay from './components/Pay.jsx'
+import Request from './components/Request.jsx'
 import Workplaces from './components/Workplaces.jsx'
 
 const TABS = [
   { id: 'home', label: '근무 기록', icon: '⏱' },
   { id: 'calendar', label: '캘린더', icon: '📅' },
   { id: 'pay', label: '급여 비교', icon: '💰' },
+  { id: 'request', label: '정산 요청', icon: '✉️' },
   { id: 'workplaces', label: '근무지', icon: '🏪' },
 ]
 
 export default function App() {
   const [data, setData] = useState(loadData)
   const [tab, setTab] = useState('home')
+  const [requestTarget, setRequestTarget] = useState(null) // 급여 비교에서 넘어올 때 고른 달
   const actions = useMemo(() => makeActions(setData), [])
 
   useEffect(() => {
     saveData(data)
   }, [data])
+
+  function openRequest(target) {
+    setRequestTarget(target)
+    setTab('request')
+  }
 
   return (
     <div className="app">
@@ -32,7 +40,8 @@ export default function App() {
       <main className="app-main">
         {tab === 'home' && <Home data={data} actions={actions} goTo={setTab} />}
         {tab === 'calendar' && <CalendarView data={data} actions={actions} goTo={setTab} />}
-        {tab === 'pay' && <Pay data={data} actions={actions} goTo={setTab} />}
+        {tab === 'pay' && <Pay data={data} actions={actions} goTo={setTab} openRequest={openRequest} />}
+        {tab === 'request' && <Request data={data} actions={actions} target={requestTarget} goTo={setTab} />}
         {tab === 'workplaces' && <Workplaces data={data} actions={actions} />}
       </main>
 

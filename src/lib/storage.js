@@ -9,6 +9,7 @@ const EMPTY = {
   records: [], // { id, workplaceId, start, end, source, createdAt, addReason, deleted, history[] }
   schedules: [], // { id, workplaceId, date, start, end }
   payments: {}, // '근무지id|2026-10' → { amount, taxed } 실제 받은 금액
+  requests: {}, // '근무지id|2026-10' → { 1: { text, source }, 2: { text, source } } 만든 정산 요청 문구
 }
 
 export function loadData() {

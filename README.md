@@ -18,6 +18,10 @@
 - 컴퓨터: 브라우저에서 http://localhost:5173
 - 폰: 컴퓨터와 같은 와이파이에 연결한 뒤, 터미널에 나오는 `Network` 주소로 접속
 
+### 정산 요청 메시지 (Claude API)
+`.env.example` 을 복사해 `.env` 로 만들고 `ANTHROPIC_API_KEY` 에 키를 넣은 뒤 `npm run dev` 를 다시 실행한다.
+키가 없어도 앱은 돌아가며, 이때는 AI 대신 기본 문구가 만들어진다. `.env` 는 커밋되지 않는다.
+
 ## 문서
 - `docs/01_문제_정의서.hwpx`
 - `docs/02_아이템_기획_및_가치_제안서.md` / `.hwpx`

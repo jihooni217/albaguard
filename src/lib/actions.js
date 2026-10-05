@@ -116,6 +116,10 @@ export function makeActions(setData) {
       setData((d) => ({ ...d, payments: { ...d.payments, [key]: value } }))
     },
 
+    saveRequest(key, stage, value) {
+      setData((d) => ({ ...d, requests: { ...d.requests, [key]: { ...d.requests[key], [stage]: value } } }))
+    },
+
     deleteSchedule(id) {
       setData((d) => ({ ...d, schedules: d.schedules.filter((s) => s.id !== id) }))
     },

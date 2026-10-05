@@ -5,7 +5,7 @@ import { dateKey, fmtDuration } from '../lib/time'
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 const shortDate = (key) => `${Number(key.slice(5, 7))}/${Number(key.slice(8, 10))}`
 
-export default function Pay({ data, actions, goTo }) {
+export default function Pay({ data, actions, goTo, openRequest }) {
   const { workplaces, selectedWorkplaceId, records, schedules, payments } = data
   const todayKey = dateKey(new Date())
   const [workplaceId, setWorkplaceId] = useState(selectedWorkplaceId ?? workplaces[0]?.id)
@@ -113,6 +113,7 @@ export default function Pay({ data, actions, goTo }) {
         expected={result.total}
         saved={payments[key]}
         onSave={(value) => actions.savePayment(key, value)}
+        onRequest={() => openRequest({ workplaceId: workplace.id, ym })}
       />
 
       <section>
@@ -151,7 +152,7 @@ export default function Pay({ data, actions, goTo }) {
 }
 
 // 실제 받은 금액을 넣고 예상 급여와 비교한다
-function PaymentCompare({ monthLabel, expected, saved, onSave }) {
+function PaymentCompare({ monthLabel, expected, saved, onSave, onRequest }) {
   const [amount, setAmount] = useState(saved?.amount ?? '')
   const [taxed, setTaxed] = useState(saved?.taxed ?? false)
   const [error, setError] = useState('')
@@ -209,6 +210,11 @@ function PaymentCompare({ monthLabel, expected, saved, onSave }) {
           </p>
           {diff >= 10 && !saved.taxed && (
             <p className="diff-detail">세금이나 4대보험을 떼고 받았다면 그만큼은 차액에서 빼고 봐야 해요.</p>
+          )}
+          {diff >= 10 && (
+            <button className="btn primary block" onClick={onRequest}>
+              사장님께 보낼 메시지 만들기
+            </button>
           )}
         </div>
       )}
