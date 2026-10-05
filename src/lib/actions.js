@@ -15,6 +15,16 @@ export function makeActions(setData) {
       setData(emptyData)
     },
 
+    // 백업 파일의 내용으로 전부 바꾼다
+    restore(saved) {
+      setData({ ...emptyData, ...saved })
+    },
+
+    markBackup() {
+      const at = new Date().toISOString()
+      setData((d) => ({ ...d, lastBackupAt: at }))
+    },
+
     saveWorkplace(wp) {
       const id = wp.id ?? newId()
       setData((d) => {

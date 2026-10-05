@@ -954,6 +954,12 @@ textarea {
   margin-top: 10px;
 }
 
+.backup-last {
+  margin: 10px 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .link-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

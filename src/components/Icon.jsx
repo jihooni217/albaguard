@@ -38,6 +38,20 @@ const PATHS = {
       <path d="M14 3v5h5M9 13h6M9 17h6" />
     </>
   ),
+  settings: (
+    <>
+      <path d="M4 6h8M16 6h4M4 12h2M10 12h10M4 18h10M18 18h2" />
+      <circle cx="14" cy="6" r="2" />
+      <circle cx="8" cy="12" r="2" />
+      <circle cx="16" cy="18" r="2" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </>
+  ),
   phone: (
     <path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" />
   ),

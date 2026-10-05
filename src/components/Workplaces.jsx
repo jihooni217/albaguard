@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { MIN_WAGE_2026 } from '../lib/pay'
+import Backup from './Backup.jsx'
 import Modal from './Modal.jsx'
 
 export default function Workplaces({ data, actions }) {
@@ -41,6 +42,11 @@ export default function Workplaces({ data, actions }) {
           </button>
         </div>
       ))}
+
+      <div className="section-head">
+        <h2>기록 백업</h2>
+      </div>
+      <Backup data={data} actions={actions} />
 
       <div className="section-head">
         <h2>시연 도구</h2>

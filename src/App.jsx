@@ -14,7 +14,7 @@ const TABS = [
   { id: 'calendar', label: '캘린더', icon: 'calendar' },
   { id: 'pay', label: '급여 비교', icon: 'won' },
   { id: 'request', label: '정산 요청', icon: 'send' },
-  { id: 'workplaces', label: '근무지', icon: 'store' },
+  { id: 'workplaces', label: '설정', icon: 'settings' },
 ]
 
 export default function App() {

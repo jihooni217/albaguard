@@ -9,6 +9,7 @@ export const emptyData = {
   records: [], // { id, workplaceId, start, end, source, createdAt, addReason, deleted, history[] }
   schedules: [], // { id, workplaceId, date, start, end }
   payments: {}, // '근무지id|2026-10' → { amount, taxed } 실제 받은 금액
+  lastBackupAt: null, // 마지막으로 백업 파일을 만든 때
   requests: {}, // '근무지id|2026-10' → { 1: { text, source }, 2: { text, source } } 만든 정산 요청 문구
 }
 
