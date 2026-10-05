@@ -41,12 +41,12 @@ export default function App() {
           <Icon name="shield" size={22} />
         </span>
         <div>
-          <h1>알바가드</h1>
-          <p>못 받은 알바비, 기록으로 찾는 앱</p>
+          <h1>{tab === 'home' ? '알바가드' : TABS.find((t) => t.id === tab).label}</h1>
+          <p>{tab === 'home' ? '못 받은 알바비, 기록으로 찾는 앱' : '알바가드'}</p>
         </div>
       </header>
 
-      <main className="app-main">
+      <main className="app-main" key={tab}>
         {tab === 'home' && <Home data={data} actions={actions} goTo={setTab} />}
         {tab === 'calendar' && <CalendarView data={data} actions={actions} goTo={setTab} />}
         {tab === 'pay' && <Pay data={data} actions={actions} goTo={setTab} openRequest={openRequest} openEvidence={setEvidenceTarget} />}

@@ -97,6 +97,14 @@ textarea {
 
 .app-main {
   padding: 6px 16px 16px;
+  animation: rise 0.22s ease-out;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 
 .card {
@@ -158,6 +166,7 @@ textarea {
 .btn.primary {
   background: var(--primary);
   color: #fff;
+  box-shadow: 0 6px 14px rgba(47, 107, 255, 0.22);
 }
 
 .btn.small {
@@ -219,7 +228,7 @@ textarea {
 /* 출퇴근 */
 .hero {
   margin-bottom: 12px;
-  padding: 22px 20px 20px;
+  padding: 20px 20px 18px;
   border-radius: 28px;
   background: linear-gradient(150deg, #4a86ff 0%, var(--primary-dark) 100%);
   color: #fff;
@@ -292,12 +301,12 @@ textarea {
 
 .clock-btn {
   display: block;
-  width: 164px;
-  height: 164px;
-  margin: 22px auto 18px;
+  width: 150px;
+  height: 150px;
+  margin: 20px auto 16px;
   border: none;
   border-radius: 50%;
-  font-size: 38px;
+  font-size: 35px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-indent: 0.08em;
@@ -396,42 +405,91 @@ textarea {
 }
 
 /* 근무 기록 */
-.record-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
+.record {
+  padding: 14px 16px;
+  margin-bottom: 8px;
 }
 
-.record-date {
-  font-size: 13px;
-  font-weight: 600;
+.record-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.record-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 54px;
+  border-radius: 14px;
+  background: var(--field);
+}
+
+.record-day span {
+  font-size: 11px;
+  font-weight: 700;
   color: var(--faint);
 }
 
-.record-range {
+.record-day b {
   font-size: 19px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.record-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.record-range {
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 
+.record-meta {
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.record-info .badges {
+  margin-top: 6px;
+}
+
+.record-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
 .record-duration {
-  align-self: flex-start;
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: 10px;
   background: var(--primary-soft);
   color: var(--primary);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   white-space: nowrap;
 }
 
-.record-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 12px;
+.record-edit {
+  min-height: 34px;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .record-actions {
@@ -477,6 +535,13 @@ textarea {
 .badge.red {
   background: var(--red-soft);
   color: var(--red);
+}
+
+.badge.link {
+  border: none;
+  background: var(--primary-soft);
+  color: var(--primary);
+  cursor: pointer;
 }
 
 .history {
@@ -866,6 +931,8 @@ textarea {
 }
 
 .week {
+  padding: 14px 16px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1336,14 +1403,22 @@ textarea {
   cursor: pointer;
 }
 
+.tab .icon {
+  box-sizing: content-box;
+  padding: 3px 14px;
+  border-radius: 999px;
+  transition: background 0.15s;
+}
+
 .tab.active {
   color: var(--primary);
   font-weight: 800;
 }
 
-.tab:active {
-  background: var(--field);
+.tab.active .icon {
+  background: var(--primary-soft);
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   * {

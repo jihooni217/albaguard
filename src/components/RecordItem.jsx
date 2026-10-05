@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { fmtDate, fmtDateTime, fmtDuration, fmtRange, minutesBetween } from '../lib/time'
+import { fmtDateTime, fmtDuration, fmtRange, minutesBetween } from '../lib/time'
+
+const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
 // 근무 기록 한 줄. 수정 이력을 펼쳐 볼 수 있다
 export default function RecordItem({ record, workplaces, onEdit }) {
@@ -7,32 +9,35 @@ export default function RecordItem({ record, workplaces, onEdit }) {
   const workplace = workplaces.find((w) => w.id === record.workplaceId)
   const edits = record.history.filter((h) => h.type === 'edit').length
   const hasTrail = record.history.length > 0 || record.source === 'manual'
+  const date = new Date(record.start)
 
   return (
     <div className={record.deleted ? 'card record deleted' : 'card record'}>
-      <div className="record-top">
-        <div>
-          <p className="record-date">{fmtDate(record.start)}</p>
+      <div className="record-main">
+        <div className="record-day">
+          <span>{DAYS[date.getDay()]}</span>
+          <b>{date.getDate()}</b>
+        </div>
+        <div className="record-info">
           <p className="record-range">{fmtRange(record.start, record.end)}</p>
-          <p className="muted">{workplace?.name ?? '삭제된 근무지'}</p>
-        </div>
-        <p className="record-duration">{fmtDuration(minutesBetween(record.start, record.end))}</p>
-      </div>
-
-      <div className="record-bottom">
-        <div className="badges">
-          {record.deleted && <span className="badge red">삭제됨</span>}
-          {record.source === 'manual' && <span className="badge gray">나중에 입력</span>}
-          {edits > 0 && <span className="badge orange">수정 {edits}회</span>}
-        </div>
-        <div className="record-actions">
-          {hasTrail && (
-            <button className="btn small ghost" onClick={() => setOpen(!open)}>
-              {open ? '이력 닫기' : '이력 보기'}
-            </button>
+          <p className="record-meta">{workplace?.name ?? '삭제된 근무지'}</p>
+          {(record.deleted || hasTrail) && (
+            <div className="badges">
+              {record.deleted && <span className="badge red">삭제됨</span>}
+              {record.source === 'manual' && <span className="badge gray">나중에 입력</span>}
+              {edits > 0 && <span className="badge orange">수정 {edits}회</span>}
+              {hasTrail && (
+                <button className="badge link" onClick={() => setOpen(!open)}>
+                  {open ? '이력 닫기' : '이력 보기'}
+                </button>
+              )}
+            </div>
           )}
+        </div>
+        <div className="record-side">
+          <p className="record-duration">{fmtDuration(minutesBetween(record.start, record.end))}</p>
           {!record.deleted && (
-            <button className="btn small" onClick={onEdit}>
+            <button className="record-edit" onClick={onEdit}>
               수정
             </button>
           )}
