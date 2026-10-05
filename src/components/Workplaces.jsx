@@ -32,6 +32,7 @@ export default function Workplaces({ data, actions }) {
             <p className="workplace-name">{w.name}</p>
             <p className="muted">
               시급 {w.wage.toLocaleString()}원 · {w.fivePlus ? '5인 이상' : '5인 미만'}
+              {w.breakMin > 0 && ` · 휴게 4시간마다 ${w.breakMin}분`}
             </p>
             {w.wage < MIN_WAGE_2026 && (
               <p className="warn">2026년 최저시급({MIN_WAGE_2026.toLocaleString()}원)보다 낮아요</p>
@@ -93,12 +94,20 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
   const [name, setName] = useState(workplace.name ?? '')
   const [wage, setWage] = useState(workplace.wage ?? MIN_WAGE_2026)
   const [fivePlus, setFivePlus] = useState(workplace.fivePlus ?? false)
+  const [breakMin, setBreakMin] = useState(workplace.breakMin ?? 0)
   const [error, setError] = useState('')
 
   function save() {
     if (!name.trim()) return setError('매장 이름을 입력해 주세요.')
     if (!(Number(wage) > 0)) return setError('시급을 입력해 주세요.')
-    actions.saveWorkplace({ id: workplace.id, name: name.trim(), wage: Number(wage), fivePlus })
+    if (!(Number(breakMin) >= 0 && Number(breakMin) < 240)) return setError('휴게시간은 0분 이상으로 입력해 주세요.')
+    actions.saveWorkplace({
+      id: workplace.id,
+      name: name.trim(),
+      wage: Number(wage),
+      fivePlus,
+      breakMin: Number(breakMin),
+    })
     onClose()
   }
 
@@ -121,6 +130,21 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
       {Number(wage) > 0 && Number(wage) < MIN_WAGE_2026 && (
         <p className="warn">2026년 최저시급은 {MIN_WAGE_2026.toLocaleString()}원이에요. 이보다 낮은 시급이에요.</p>
       )}
+      <label className="field">
+        무급 휴게시간 (4시간 일할 때마다 몇 분)
+        <input
+          className="input"
+          type="number"
+          inputMode="numeric"
+          min="0"
+          value={breakMin}
+          onChange={(e) => setBreakMin(e.target.value)}
+        />
+      </label>
+      <p className="muted field-help">
+        쉬는 시간 없이 일하거나 쉬는 시간에도 시급을 받으면 0. 법으로는 4시간에 30분이지만, 실제로 쉬지 못했다면 그
+        시간도 근무 시간이에요.
+      </p>
       <label className="check">
         <input type="checkbox" checked={fivePlus} onChange={(e) => setFivePlus(e.target.checked)} />
         <span>

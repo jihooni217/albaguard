@@ -1,4 +1,4 @@
-import { calcMonth, paymentKey, tax33 } from '../lib/pay'
+import { baseText, calcMonth, paymentKey, tax33 } from '../lib/pay'
 import { KINDS, attachmentsFor } from '../lib/photos'
 import { dateKey, fmtDate, fmtDateTime, fmtDuration, fmtRange, minutesBetween, monthKey } from '../lib/time'
 import { Photo } from './Attachments.jsx'
@@ -86,7 +86,10 @@ export default function Evidence({ data, target, onClose }) {
             </tr>
             <tr>
               <th>총 근무 시간</th>
-              <td>{fmtDuration(totalMin)}</td>
+              <td>
+                {fmtDuration(totalMin)}
+                {workplace.breakMin > 0 && ' (무급 휴게시간 제외)'}
+              </td>
             </tr>
             <tr>
               <th>문서 작성</th>
@@ -172,9 +175,7 @@ export default function Evidence({ data, target, onClose }) {
             <tbody>
               <tr>
                 <th>기본급</th>
-                <td>
-                  {fmtDuration(result.baseMin)} × {won(workplace.wage)}
-                </td>
+                <td>{baseText(result, workplace)}</td>
                 <td className="num">{won(result.basePay)}</td>
               </tr>
               <tr>
@@ -211,8 +212,11 @@ export default function Evidence({ data, target, onClose }) {
           </table>
         ))}
         <p className="small">
-          주휴수당은 주 15시간 이상 일한 주에 대해 계산했고, 한 주는 월~일, 일요일이 든 달에 포함했습니다. 연장근로 가산과
-          휴게시간은 반영하지 않았습니다.
+          주휴수당은 주 15시간 이상 일한 주에 대해 계산했고, 한 주는 월~일, 일요일이 든 달에 포함했습니다. 연장근로 가산은
+          반영하지 않았습니다.{' '}
+          {workplace.breakMin > 0
+            ? `무급 휴게시간(4시간마다 ${workplace.breakMin}분)은 근무 시간에서 제외했습니다.`
+            : '휴게시간은 제외하지 않았습니다.'}
         </p>
 
         <h2>4. 입금 내역</h2>

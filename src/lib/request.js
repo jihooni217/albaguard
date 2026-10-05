@@ -1,5 +1,5 @@
 // 정산 요청에 쓸 근거 자료 정리
-import { calcMonth, paymentKey, tax33 } from './pay'
+import { baseText, calcMonth, paymentKey, tax33 } from './pay'
 import { fmtDate, fmtDuration, fmtRange, minutesBetween, monthKey } from './time'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
@@ -71,7 +71,7 @@ const recordLine = (r) =>
 // 기본급·주휴수당·야간수당·합계를 한 줄씩
 function calcLines(c) {
   const { workplace, result, payment } = c
-  const lines = [`기본급: ${fmtDuration(result.baseMin)} × ${won(workplace.wage)} = ${won(result.basePay)}`]
+  const lines = [`기본급: ${baseText(result, workplace)} = ${won(result.basePay)}`]
   if (result.holidayPay > 0) {
     lines.push(`주휴수당: ${won(result.holidayPay)} (주 15시간 이상 근무한 주)`)
     for (const w of result.weeks.filter((week) => week.eligible)) {

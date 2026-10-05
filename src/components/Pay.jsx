@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MIN_WAGE_2026, calcMonth, paymentKey, tax33, ymOf } from '../lib/pay'
+import { MIN_WAGE_2026, baseText, calcMonth, paymentKey, tax33, ymOf } from '../lib/pay'
 import { dateKey, fmtDuration } from '../lib/time'
 import Attachments from './Attachments.jsx'
 import Icon from './Icon.jsx'
@@ -84,7 +84,7 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
           <span>
             기본급
             <small>
-              {fmtDuration(result.baseMin)} × {won(workplace.wage)}
+              {baseText(result, workplace)}
             </small>
           </span>
           <b>{won(result.basePay)}</b>
@@ -146,7 +146,10 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
           </div>
         ))}
         <p className="muted note">
-          주휴수당은 일요일이 들어 있는 달에 넣어 계산했어요. 연장근로 가산과 휴게시간은 반영하지 않은 금액이에요.
+          주휴수당은 일요일이 들어 있는 달에 넣어 계산했어요. 연장근로 가산은 반영하지 않은 금액이에요.{' '}
+          {workplace.breakMin > 0
+            ? `무급 휴게시간(4시간마다 ${workplace.breakMin}분)은 뺐어요.`
+            : '휴게시간은 빼지 않았어요. 무급 휴게시간이 있다면 설정의 근무지 수정에서 넣어 주세요.'}
         </p>
       </section>
 

@@ -1,5 +1,5 @@
 // 예상 급여 계산 (기본급 + 주휴수당 + 야간수당)
-import { dateKey, minutesBetween, monthKey, pad, scheduleMinutes } from './time'
+import { dateKey, fmtDuration, minutesBetween, monthKey, pad, scheduleMinutes } from './time'
 
 export const MIN_WAGE_2026 = 10320
 const HOLIDAY_PAY_MIN = 15 * 60 // 주 15시간 이상이면 주휴수당 대상
@@ -33,6 +33,18 @@ export function nightMinutes(start, end) {
   return Math.round(total / 60000)
 }
 
+// 무급 휴게시간을 뺀, 급여를 받는 시간(분). 근무지에 '4시간마다 몇 분'으로 넣어 둔 만큼 뺀다
+export function paidMinutes(min, workplace) {
+  const breakPer4h = workplace.breakMin ?? 0
+  return Math.max(0, min - Math.floor(min / 240) * breakPer4h)
+}
+
+// 기본급 계산식을 글로: "54시간 (휴게 2시간 제외) × 10,320원"
+export function baseText(result, workplace) {
+  const breakNote = result.breakMin > 0 ? ` (휴게 ${fmtDuration(result.breakMin)} 제외)` : ''
+  return `${fmtDuration(result.baseMin)}${breakNote} × ${workplace.wage.toLocaleString()}원`
+}
+
 // 한 주의 근무 시간과 주휴수당 대상 여부
 export function weekSummary(workplace, records, schedules, monday, todayKey) {
   const sunday = new Date(monday)
@@ -43,8 +55,8 @@ export function weekSummary(workplace, records, schedules, monday, todayKey) {
 
   const recs = records.filter((r) => !r.deleted && r.workplaceId === workplace.id && inWeek(dateKey(r.start)))
   const sched = schedules.filter((s) => s.workplaceId === workplace.id && inWeek(s.date))
-  const actualMin = recs.reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
-  const plannedMin = sched.reduce((sum, s) => sum + scheduleMinutes(s), 0)
+  const actualMin = recs.reduce((sum, r) => sum + paidMinutes(minutesBetween(r.start, r.end), workplace), 0)
+  const plannedMin = sched.reduce((sum, s) => sum + paidMinutes(scheduleMinutes(s), workplace), 0)
 
   // 예정 스케줄이 있으면 그것을 약속된 근무 시간으로 보고, 없으면 실제 근무 시간으로 계산
   const usePlan = plannedMin > 0
@@ -69,7 +81,10 @@ export function calcMonth(workplace, records, schedules, ym, todayKey) {
   const monthRecs = records.filter(
     (r) => !r.deleted && r.workplaceId === workplace.id && monthKey(r.start) === ym,
   )
-  const baseMin = monthRecs.reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
+  // baseMin은 휴게시간을 뺀 시간, breakMin은 뺀 휴게시간
+  const grossMin = monthRecs.reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
+  const baseMin = monthRecs.reduce((sum, r) => sum + paidMinutes(minutesBetween(r.start, r.end), workplace), 0)
+  const breakMin = grossMin - baseMin
   const basePay = Math.round((baseMin / 60) * workplace.wage)
 
   // 야간수당은 5인 이상 사업장만
@@ -87,7 +102,7 @@ export function calcMonth(workplace, records, schedules, ym, todayKey) {
   }
   const holidayPay = weeks.reduce((sum, w) => sum + w.pay, 0)
 
-  return { baseMin, basePay, nightMin, nightPay, weeks, holidayPay, total: basePay + nightPay + holidayPay }
+  return { baseMin, breakMin, basePay, nightMin, nightPay, weeks, holidayPay, total: basePay + nightPay + holidayPay }
 }
 
 // 3.3% 공제 (10원 미만 버림)
