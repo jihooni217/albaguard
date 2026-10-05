@@ -3,6 +3,7 @@ import { MIN_WAGE_2026, nextWageHistory, wageText } from '../lib/pay'
 import { getTheme, setTheme } from '../lib/theme'
 import { dateKey } from '../lib/time'
 import Backup from './Backup.jsx'
+import Icon from './Icon.jsx'
 import Modal from './Modal.jsx'
 
 export default function Workplaces({ data, actions }) {
@@ -12,79 +13,65 @@ export default function Workplaces({ data, actions }) {
 
   return (
     <>
-      <div className="section-head">
-        <h2>내 근무지</h2>
-        <button className="btn small" onClick={() => setEditing({})}>
-          + 등록
+      <h2 className="rq-title set-first">내 근무지</h2>
+      <div className="pay-rows">
+        {workplaces.length === 0 && (
+          <p className="cv-none">아직 없어요. 사장님과 연결할 필요 없이 혼자 등록해서 쓰면 돼요</p>
+        )}
+        {workplaces.map((w) => (
+          <button className="rq-row link" key={w.id} onClick={() => setEditing(w)}>
+            <span>
+              <b className="set-name">{w.name}</b>
+              <small>
+                시급 {wageText(w)} · {w.fivePlus ? '5인 이상' : '5인 미만'}
+                {w.breakMin > 0 && ` · 휴게 4시간마다 ${w.breakMin}분`}
+              </small>
+              {w.wage < MIN_WAGE_2026 && (
+                <small className="down">2026년 최저시급({MIN_WAGE_2026.toLocaleString()}원)보다 낮아요</small>
+              )}
+            </span>
+            <span className="set-value">수정</span>
+          </button>
+        ))}
+        <button className="cv-add" onClick={() => setEditing({})}>
+          <span>+</span>근무지 등록
         </button>
       </div>
 
-      {workplaces.length === 0 && (
-        <div className="card empty">
-          <p className="empty-title">등록된 근무지가 없어요</p>
-          <p className="muted">사장님과 연결할 필요 없이 혼자 등록해서 쓰면 돼요.</p>
-          <button className="btn primary" onClick={() => setEditing({})}>
-            근무지 등록하기
-          </button>
-        </div>
-      )}
-
-      {workplaces.map((w) => (
-        <div className="card workplace" key={w.id}>
-          <div>
-            <p className="workplace-name">{w.name}</p>
-            <p className="muted">
-              시급 {wageText(w)} · {w.fivePlus ? '5인 이상' : '5인 미만'}
-              {w.breakMin > 0 && ` · 휴게 4시간마다 ${w.breakMin}분`}
-            </p>
-            {w.wage < MIN_WAGE_2026 && (
-              <p className="warn">2026년 최저시급({MIN_WAGE_2026.toLocaleString()}원)보다 낮아요</p>
-            )}
+      <h2 className="rq-title">화면</h2>
+      <div className="pay-rows">
+        <div className="rq-row">
+          <span>밝기</span>
+          <div className="set-seg" role="radiogroup" aria-label="화면 밝기">
+            {[
+              ['system', '폰 설정대로'],
+              ['light', '밝게'],
+              ['dark', '어둡게'],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                role="radio"
+                aria-checked={theme === value}
+                className={theme === value ? 'active' : ''}
+                onClick={() => {
+                  setTheme(value)
+                  setThemeState(value)
+                }}
+              >
+                {label}
+              </button>
+            ))}
           </div>
-          <button className="btn small" onClick={() => setEditing(w)}>
-            수정
-          </button>
-        </div>
-      ))}
-
-      <div className="section-head">
-        <h2>화면</h2>
-      </div>
-      <div className="card">
-        <div className="segment" role="radiogroup" aria-label="화면 밝기">
-          {[
-            ['system', '폰 설정대로'],
-            ['light', '밝게'],
-            ['dark', '어둡게'],
-          ].map(([value, label]) => (
-            <button
-              key={value}
-              role="radio"
-              aria-checked={theme === value}
-              className={theme === value ? 'active' : ''}
-              onClick={() => {
-                setTheme(value)
-                setThemeState(value)
-              }}
-            >
-              {label}
-            </button>
-          ))}
         </div>
       </div>
 
-      <div className="section-head">
-        <h2>기록 백업</h2>
-      </div>
+      <h2 className="rq-title">기록 백업</h2>
       <Backup data={data} actions={actions} />
 
-      <div className="section-head">
-        <h2>시연 도구</h2>
-      </div>
-      <div className="card">
-        <p className="muted">석 달 전부터 어제까지의 근무 기록, 예정 스케줄, 두 달치 덜 받은 급여가 들어 있는 예시를 넣어요.</p>
+      <h2 className="rq-title">시연 도구</h2>
+      <div className="pay-rows">
         <button
-          className="btn block"
+          className="rq-row link"
           onClick={() => {
             const hasData = workplaces.length > 0
             if (!hasData || window.confirm('지금 있는 기록이 모두 지워지고 예시 데이터로 바뀌어요. 계속할까요?')) {
@@ -92,15 +79,19 @@ export default function Workplaces({ data, actions }) {
             }
           }}
         >
-          시연용 예시 데이터 넣기
+          <span>
+            시연용 예시 데이터 넣기
+            <small>석 달치 근무 기록, 예정 스케줄, 두 달치 덜 받은 급여</small>
+          </span>
+          <Icon name="chevronRight" size={18} />
         </button>
         <button
-          className="btn danger-text block"
+          className="rq-row link set-danger"
           onClick={() => {
             if (window.confirm('모든 근무지와 기록이 지워져요. 되돌릴 수 없어요. 계속할까요?')) actions.resetAll()
           }}
         >
-          모든 데이터 지우기
+          <span>모든 데이터 지우기</span>
         </button>
       </div>
 

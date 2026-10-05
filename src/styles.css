@@ -1783,6 +1783,61 @@ a.btn {
   font-weight: 600;
 }
 
+/* 설정: 줄로만. 꽉 찬 버튼 없음 */
+.rq-title.set-first {
+  margin-top: 12px;
+}
+
+.set-name {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.set-value {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rq-row.set-main {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.rq-row.set-main .icon {
+  color: var(--accent);
+}
+
+.rq-row.set-danger {
+  color: var(--red);
+}
+
+.set-seg {
+  display: flex;
+  gap: 16px;
+}
+
+.set-seg button {
+  min-height: 40px;
+  padding: 0;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.set-seg button.active {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+
 /* 단계: 번호가 세로 선으로 이어진다 */
 .rq-step {
   position: relative;

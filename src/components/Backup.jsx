@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { exportBackup, readBackup } from '../lib/backup'
 import { fmtDateTime } from '../lib/time'
+import Icon from './Icon.jsx'
 
 // 기록 백업: 파일로 내보내기 / 파일에서 불러오기
 export default function Backup({ data, actions }) {
@@ -36,22 +37,28 @@ export default function Backup({ data, actions }) {
   }
 
   return (
-    <div className="card">
-      <p className="muted">
-        기록은 이 폰 안에만 저장돼요. 폰을 바꾸거나 브라우저 데이터를 지우면 사라지니, 가끔 파일로 백업해 두세요.
-      </p>
-      <p className="backup-last">
-        마지막 백업: {data.lastBackupAt ? fmtDateTime(data.lastBackupAt) : '아직 없어요'}
-      </p>
-      <button className="btn primary block" onClick={save}>
-        백업 파일 만들기
-      </button>
-      <button className="btn block" onClick={() => fileInput.current.click()}>
-        백업 파일에서 불러오기
-      </button>
+    <>
+      <div className="pay-rows">
+        <div className="rq-row">
+          <span>마지막 백업</span>
+          <span className="set-value">{data.lastBackupAt ? fmtDateTime(data.lastBackupAt) : '아직 없어요'}</span>
+        </div>
+        {/* 기록을 지키는 유일한 방법이라 이 줄만 남색으로 눈에 띄게 한다 */}
+        <button className="rq-row link set-main" onClick={save}>
+          <span>백업 파일 만들기</span>
+          <Icon name="chevronRight" size={18} />
+        </button>
+        <button className="rq-row link" onClick={() => fileInput.current.click()}>
+          <span>백업 파일에서 불러오기</span>
+          <Icon name="chevronRight" size={18} />
+        </button>
+      </div>
       <input ref={fileInput} type="file" accept="application/json,.json" hidden onChange={load} />
       {message && <p className="notice stage-notice">{message}</p>}
       {error && <p className="error stage-notice">{error}</p>}
-    </div>
+      <p className="muted pay-note">
+        기록은 이 폰 안에만 저장돼요. 폰을 바꾸거나 브라우저 데이터를 지우면 사라지니 가끔 백업해 두세요.
+      </p>
+    </>
   )
 }
