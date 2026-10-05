@@ -1,5 +1,7 @@
 // 스도쿠 판 만들기와 검사. 판은 길이 81의 숫자 배열(0 = 빈칸)로 다룬다
 
+export const MAX_HINTS = 3 // 한 판에 쓸 수 있는 힌트 수
+
 export const LEVELS = {
   easy: { label: '쉬움', blanks: 38 },
   normal: { label: '보통', blanks: 46 },
@@ -27,7 +29,7 @@ function peers(i) {
   return list.filter((p) => p !== i)
 }
 
-const PEERS = Array.from({ length: 81 }, (_, i) => [...new Set(peers(i))])
+export const PEERS = Array.from({ length: 81 }, (_, i) => [...new Set(peers(i))])
 
 function candidates(grid, i) {
   const used = new Set(PEERS[i].map((p) => grid[p]))
@@ -77,7 +79,8 @@ export function generate(level) {
     if (countSolutions(puzzle, 2) === 1) blanks += 1
     else puzzle[i] = kept
   }
-  return { level, puzzle, solution, cells: [...puzzle], elapsed: 0, done: false }
+  // notes: 칸 번호 → 메모해 둔 후보 숫자들, hinted: 힌트로 채운 칸 번호들
+  return { level, puzzle, solution, cells: [...puzzle], notes: {}, hinted: [], elapsed: 0, done: false }
 }
 
 // 같은 줄·칸·상자에 같은 숫자가 있어 서로 부딪히는 칸들
