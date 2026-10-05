@@ -19,7 +19,16 @@ const TABS = [
 
 export default function App() {
   const [data, setData] = useState(loadData)
-  const [tab, setTab] = useState('home')
+  // 주소 끝의 #탭이름으로 처음 열 탭을 정하고, 탭을 바꾸면 주소에도 남긴다 (새로고침해도 같은 탭)
+  const [tab, setTabState] = useState(() => {
+    const fromHash = location.hash.slice(1)
+    return TABS.some((t) => t.id === fromHash) ? fromHash : 'home'
+  })
+  function setTab(id) {
+    setTabState(id)
+    history.replaceState(null, '', `#${id}`)
+    window.scrollTo(0, 0)
+  }
   const [requestTarget, setRequestTarget] = useState(null) // 급여 비교에서 넘어올 때 고른 달
   const [evidenceTarget, setEvidenceTarget] = useState(null) // 증빙 묶음을 볼 근무지·달
   const actions = useMemo(() => makeActions(setData), [])

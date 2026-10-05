@@ -16,6 +16,15 @@
 
 폰 세로 화면에 맞춘 디자인이다. 밝은 회색 바탕에 흰 카드, 파란색 포인트를 쓰고, 화면 아래 탭 5개로 이동한다.
 
+<p>
+  <img src="docs/screenshots/1-home.jpg" width="200" alt="근무 기록 화면" />
+  <img src="docs/screenshots/2-calendar.jpg" width="200" alt="캘린더 화면" />
+  <img src="docs/screenshots/3-pay.jpg" width="200" alt="급여 비교 화면" />
+  <img src="docs/screenshots/4-request.jpg" width="200" alt="정산 요청 화면" />
+</p>
+
+근무 기록 · 캘린더 · 급여 비교 · 정산 요청 (예시 데이터를 넣은 화면, 2026.10.5 기준)
+
 | 탭 | 화면 |
 |---|---|
 | 근무 기록 | 현재 시각과 큰 원형 출근·퇴근 버튼, 이번 달 근무 시간, 덜 받은 급여 알림, 날짜별 기록 목록 |
