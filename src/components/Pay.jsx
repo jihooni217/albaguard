@@ -84,7 +84,7 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
           <span>
             기본급
             <small>
-              {baseText(result, workplace)}
+              {baseText(result)}
             </small>
           </span>
           <b>{won(result.basePay)}</b>

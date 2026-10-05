@@ -1,5 +1,5 @@
 // 정산 요청에 쓸 근거 자료 정리
-import { baseText, calcMonth, paymentKey, tax33 } from './pay'
+import { baseText, calcMonth, paymentKey, tax33, wageText } from './pay'
 import { fmtDate, fmtDuration, fmtRange, minutesBetween, monthKey } from './time'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
@@ -71,7 +71,7 @@ const recordLine = (r) =>
 // 기본급·주휴수당·야간수당·합계를 한 줄씩
 function calcLines(c) {
   const { workplace, result, payment } = c
-  const lines = [`기본급: ${baseText(result, workplace)} = ${won(result.basePay)}`]
+  const lines = [`기본급: ${baseText(result)} = ${won(result.basePay)}`]
   if (result.holidayPay > 0) {
     lines.push(`주휴수당: ${won(result.holidayPay)} (주 15시간 이상 근무한 주)`)
     for (const w of result.weeks.filter((week) => week.eligible)) {
@@ -80,7 +80,7 @@ function calcLines(c) {
   }
   if (result.nightPay > 0) {
     lines.push(
-      `야간수당: 22시~06시 ${fmtDuration(result.nightMin)} × ${won(workplace.wage)} × 50% = ${won(result.nightPay)}`,
+      `야간수당: 22시~06시 ${fmtDuration(result.nightMin)} × 시급 × 50% = ${won(result.nightPay)}`,
     )
   }
   lines.push(`예상 급여 합계: ${won(result.total)}`)
@@ -93,7 +93,7 @@ export function buildFacts(c) {
   const { workplace, result, payment } = c
   if (c.combined) {
     return [
-      `[근무지] ${workplace.name} / 시급 ${won(workplace.wage)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
+      `[근무지] ${workplace.name} / 시급 ${wageText(workplace)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
       `[대상] ${c.label} 급여`,
       '',
       '[달별 내역]',
@@ -105,7 +105,7 @@ export function buildFacts(c) {
     ].join('\n')
   }
   return [
-    `[근무지] ${workplace.name} / 시급 ${won(workplace.wage)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
+    `[근무지] ${workplace.name} / 시급 ${wageText(workplace)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
     `[대상] ${c.label} 급여`,
     '',
     '[날짜별 근무 기록]',
@@ -132,7 +132,7 @@ export function buildCertifiedTemplate(c) {
       '발신인: [발신인 성명]',
       '주소: [발신인 주소]',
       '',
-      `1. 발신인은 ${workplace.name}에서 시급 ${won(workplace.wage)}으로 근무한 근로자입니다.`,
+      `1. 발신인은 ${workplace.name}에서 시급 ${wageText(workplace)}을 받기로 하고 근무한 근로자입니다.`,
       '',
       `2. 발신인은 ${c.months[0].label}부터 ${c.months.at(-1).label}까지 총 ${fmtDuration(c.totalMin)} 근무하였으며, 달별 임금 계산과 지급 내역은 다음과 같습니다.`,
       ...c.months.flatMap((m) => [`  - ${monthLine(m)}`, `  ${monthDetail(m)}`]),
@@ -158,7 +158,7 @@ export function buildCertifiedTemplate(c) {
     '발신인: [발신인 성명]',
     '주소: [발신인 주소]',
     '',
-    `1. 발신인은 ${workplace.name}에서 시급 ${won(workplace.wage)}으로 근무한 근로자입니다.`,
+    `1. 발신인은 ${workplace.name}에서 시급 ${wageText(workplace)}을 받기로 하고 근무한 근로자입니다.`,
     '',
     `2. 발신인은 ${c.label}에 아래와 같이 총 ${fmtDuration(result.baseMin)} 근무하였습니다.`,
     ...c.records.map((r) => `  - ${recordLine(r)}`),

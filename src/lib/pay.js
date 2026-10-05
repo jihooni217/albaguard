@@ -39,10 +39,36 @@ export function paidMinutes(min, workplace) {
   return Math.max(0, min - Math.floor(min / 240) * breakPer4h)
 }
 
+// 그 날짜에 적용되는 시급. 시급이 바뀐 적이 있으면 wageHistory([{ from, wage }], 날짜순)에서 찾는다
+export function wageOn(workplace, key) {
+  const history = workplace.wageHistory
+  if (!history?.length) return workplace.wage
+  const current = history.filter((h) => h.from <= key).at(-1)
+  return (current ?? history[0]).wage
+}
+
+// 시급을 글로: "10,320원" 또는 "10,030원 → 2026-07-01부터 10,320원"
+export function wageText(workplace) {
+  const history = workplace.wageHistory
+  if (!history || history.length < 2) return `${workplace.wage.toLocaleString()}원`
+  return history
+    .map((h, i) => (i === 0 ? `${h.wage.toLocaleString()}원` : `${h.from}부터 ${h.wage.toLocaleString()}원`))
+    .join(' → ')
+}
+
+// 시급을 바꿀 때 새 이력을 만든다. from이 없으면 잘못 넣은 시급을 고치는 것(가장 최근 시급만 교체)
+export function nextWageHistory(workplace, wage, from) {
+  const history = workplace.wageHistory ?? [{ from: '2000-01-01', wage: workplace.wage }]
+  if (!from) return history.length > 1 ? [...history.slice(0, -1), { ...history.at(-1), wage }] : undefined
+  return [...history.filter((h) => h.from < from), { from, wage }]
+}
+
 // 기본급 계산식을 글로: "54시간 (휴게 2시간 제외) × 10,320원"
-export function baseText(result, workplace) {
+export function baseText(result) {
   const breakNote = result.breakMin > 0 ? ` (휴게 ${fmtDuration(result.breakMin)} 제외)` : ''
-  return `${fmtDuration(result.baseMin)}${breakNote} × ${workplace.wage.toLocaleString()}원`
+  const wages = result.wages.map((w) => `${w.toLocaleString()}원`)
+  const wageNote = wages.length > 1 ? `시급 (기간 중 변경: ${wages.join(' → ')})` : wages[0]
+  return `${fmtDuration(result.baseMin)}${breakNote} × ${wageNote}`
 }
 
 // 한 주의 근무 시간과 주휴수당 대상 여부
@@ -71,7 +97,8 @@ export function weekSummary(workplace, records, schedules, monday, todayKey) {
   else if (missed) reason = '예정된 날에 빠진 근무가 있어요'
   else if (inProgress && actualMin < HOLIDAY_PAY_MIN) reason = '아직 15시간을 채우지 않았어요'
   const eligible = reason === ''
-  const pay = eligible ? Math.round((Math.min(basisMin, WEEK_CAP_MIN) / WEEK_CAP_MIN) * 8 * workplace.wage) : 0
+  const wage = wageOn(workplace, endKey)
+  const pay = eligible ? Math.round((Math.min(basisMin, WEEK_CAP_MIN) / WEEK_CAP_MIN) * 8 * wage) : 0
 
   return { startKey, endKey, actualMin, plannedMin, basisMin, usePlan, inProgress, eligible, reason, pay }
 }
@@ -85,11 +112,19 @@ export function calcMonth(workplace, records, schedules, ym, todayKey) {
   const grossMin = monthRecs.reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
   const baseMin = monthRecs.reduce((sum, r) => sum + paidMinutes(minutesBetween(r.start, r.end), workplace), 0)
   const breakMin = grossMin - baseMin
-  const basePay = Math.round((baseMin / 60) * workplace.wage)
+  // 시급은 근무한 날짜에 적용되던 금액으로 계산한다
+  const wageOf = (r) => wageOn(workplace, dateKey(r.start))
+  const basePay = Math.round(
+    monthRecs.reduce((sum, r) => sum + (paidMinutes(minutesBetween(r.start, r.end), workplace) / 60) * wageOf(r), 0),
+  )
+  const wages = [...new Set(monthRecs.map(wageOf))]
+  if (wages.length === 0) wages.push(wageOn(workplace, `${ym}-01`))
 
   // 야간수당은 5인 이상 사업장만
   const nightMin = monthRecs.reduce((sum, r) => sum + nightMinutes(r.start, r.end), 0)
-  const nightPay = workplace.fivePlus ? Math.round((nightMin / 60) * workplace.wage * 0.5) : 0
+  const nightPay = workplace.fivePlus
+    ? Math.round(monthRecs.reduce((sum, r) => sum + (nightMinutes(r.start, r.end) / 60) * wageOf(r) * 0.5, 0))
+    : 0
 
   // 주휴수당은 일요일이 이 달에 들어 있는 주를 이 달 몫으로 본다
   const [y, m] = ym.split('-').map(Number)
@@ -102,7 +137,7 @@ export function calcMonth(workplace, records, schedules, ym, todayKey) {
   }
   const holidayPay = weeks.reduce((sum, w) => sum + w.pay, 0)
 
-  return { baseMin, breakMin, basePay, nightMin, nightPay, weeks, holidayPay, total: basePay + nightPay + holidayPay }
+  return { baseMin, breakMin, basePay, wages, nightMin, nightPay, weeks, holidayPay, total: basePay + nightPay + holidayPay }
 }
 
 // 3.3% 공제 (10원 미만 버림)

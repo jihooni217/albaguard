@@ -1,4 +1,4 @@
-import { baseText, calcMonth, paymentKey, tax33 } from '../lib/pay'
+import { baseText, calcMonth, paymentKey, tax33, wageText } from '../lib/pay'
 import { KINDS, attachmentsFor } from '../lib/photos'
 import { dateKey, fmtDate, fmtDateTime, fmtDuration, fmtRange, minutesBetween, monthKey } from '../lib/time'
 import { Photo } from './Attachments.jsx'
@@ -81,7 +81,7 @@ export default function Evidence({ data, target, onClose }) {
             <tr>
               <th>시급</th>
               <td>
-                {won(workplace.wage)} ({workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장)
+                {wageText(workplace)} ({workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장)
               </td>
             </tr>
             <tr>
@@ -175,7 +175,7 @@ export default function Evidence({ data, target, onClose }) {
             <tbody>
               <tr>
                 <th>기본급</th>
-                <td>{baseText(result, workplace)}</td>
+                <td>{baseText(result)}</td>
                 <td className="num">{won(result.basePay)}</td>
               </tr>
               <tr>

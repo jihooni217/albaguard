@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { MIN_WAGE_2026 } from '../lib/pay'
+import { MIN_WAGE_2026, nextWageHistory, wageText } from '../lib/pay'
+import { dateKey } from '../lib/time'
 import Backup from './Backup.jsx'
 import Modal from './Modal.jsx'
 
@@ -31,7 +32,7 @@ export default function Workplaces({ data, actions }) {
           <div>
             <p className="workplace-name">{w.name}</p>
             <p className="muted">
-              시급 {w.wage.toLocaleString()}원 · {w.fivePlus ? '5인 이상' : '5인 미만'}
+              시급 {wageText(w)} · {w.fivePlus ? '5인 이상' : '5인 미만'}
               {w.breakMin > 0 && ` · 휴게 4시간마다 ${w.breakMin}분`}
             </p>
             {w.wage < MIN_WAGE_2026 && (
@@ -95,16 +96,24 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
   const [wage, setWage] = useState(workplace.wage ?? MIN_WAGE_2026)
   const [fivePlus, setFivePlus] = useState(workplace.fivePlus ?? false)
   const [breakMin, setBreakMin] = useState(workplace.breakMin ?? 0)
+  const [raised, setRaised] = useState(true) // 시급이 실제로 바뀐 것인지(true), 잘못 넣은 걸 고치는지(false)
+  const [wageFrom, setWageFrom] = useState(dateKey(new Date()))
+  const wageChanged = isEdit && Number(wage) > 0 && Number(wage) !== workplace.wage
   const [error, setError] = useState('')
 
   function save() {
     if (!name.trim()) return setError('매장 이름을 입력해 주세요.')
     if (!(Number(wage) > 0)) return setError('시급을 입력해 주세요.')
     if (!(Number(breakMin) >= 0 && Number(breakMin) < 240)) return setError('휴게시간은 0분 이상으로 입력해 주세요.')
+    if (wageChanged && raised && !wageFrom) return setError('새 시급이 적용된 날짜를 입력해 주세요.')
     actions.saveWorkplace({
       id: workplace.id,
       name: name.trim(),
       wage: Number(wage),
+      // 시급이 오른 것이면 그 날짜부터만 새 시급으로, 잘못 넣은 걸 고친 것이면 전체에 적용
+      wageHistory: wageChanged
+        ? nextWageHistory(workplace, Number(wage), raised ? wageFrom : null)
+        : workplace.wageHistory,
       fivePlus,
       breakMin: Number(breakMin),
     })
@@ -129,6 +138,24 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
       </label>
       {Number(wage) > 0 && Number(wage) < MIN_WAGE_2026 && (
         <p className="warn">2026년 최저시급은 {MIN_WAGE_2026.toLocaleString()}원이에요. 이보다 낮은 시급이에요.</p>
+      )}
+      {wageChanged && (
+        <div className="notice">
+          <label className="check">
+            <input type="radio" name="wage-change" checked={raised} onChange={() => setRaised(true)} />
+            <span>시급이 바뀌었어요 (이전 기록은 예전 시급으로 계산)</span>
+          </label>
+          {raised && (
+            <label className="field">
+              새 시급이 적용된 날짜
+              <input className="input" type="date" value={wageFrom} onChange={(e) => setWageFrom(e.target.value)} />
+            </label>
+          )}
+          <label className="check">
+            <input type="radio" name="wage-change" checked={!raised} onChange={() => setRaised(false)} />
+            <span>잘못 넣은 시급을 고쳐요 (기록 전체에 적용)</span>
+          </label>
+        </div>
       )}
       <label className="field">
         무급 휴게시간 (4시간 일할 때마다 몇 분)
