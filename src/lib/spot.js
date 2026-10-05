@@ -11,7 +11,8 @@ export const SPOT_LEVELS = {
 }
 
 export const WRONG_PENALTY = 5 // 틀린 곳을 누르면 더해지는 시간(초)
-export const SCENE = { w: 360, h: 210, ground: 150 }
+// 하늘을 넉넉히 둬서 구름이 건물에 가리지 않게 한다. road는 자동차·자전거를 내려 그리는 만큼
+export const SCENE = { w: 360, h: 240, ground: 180, road: 30 }
 
 const WHEELS = ['spoke3', 'spoke4', 'spoke5', 'spoke6', 'spoke8', 'disc', 'ring']
 const RIMS = ['#d7dbe0', '#f2c14e', '#b9c4cf', '#e8e2d0']
@@ -98,7 +99,7 @@ function wheels() {
         id: `w${row}${col}`,
         type: 'wheel',
         cx: 45 + col * 90,
-        cy: 56 + row * 100,
+        cy: 66 + row * 108,
         r: 38,
         style: pick(WHEELS),
         rim: pick(RIMS),
@@ -120,7 +121,7 @@ function street(buildingCount, tilted) {
       type: 'building',
       x: Math.round(i * slot + (slot - w) / 2),
       w,
-      h: rand(70, 118),
+      h: rand(70, 112),
       color: pick(WALLS),
       roof: pick(ROOFS),
       cols: rand(2, 3),
@@ -130,7 +131,7 @@ function street(buildingCount, tilted) {
     })
   }
   ;[rand(30, 80), rand(170, 240)].forEach((x, i) =>
-    list.push({ id: `s${i}`, type: 'cloud', x, y: rand(16, 34), s: pick([0.9, 1, 1.1]) }),
+    list.push({ id: `s${i}`, type: 'cloud', x, y: rand(14, 24), s: pick([0.9, 1, 1.1]) }),
   )
   // 자전거(뒤쪽 차로)와 자동차(앞쪽 차로)는 서로 가리지 않게 번갈아 놓는다
   ;[122, 300].forEach((x, i) =>
@@ -174,9 +175,9 @@ export function generateSpot(level) {
 // 물체가 차지하는 네모 영역. 누르는 범위와 찾았다는 표시에 쓴다
 export function boxOf(o) {
   if (o.type === 'wheel') return { x: o.cx - o.r - 4, y: o.cy - o.r - 4, w: o.r * 2 + 8, h: o.r * 2 + 8 }
-  if (o.type === 'car') return { x: o.x - 3, y: 150, w: 98, h: 56 }
-  if (o.type === 'bike') return { x: o.x - 3, y: 116, w: 62, h: 66 }
-  if (o.type === 'cloud') return { x: o.x - 30, y: o.y - 18, w: 60, h: 34 }
+  if (o.type === 'car') return { x: o.x - 3, y: 150 + SCENE.road, w: 98, h: 56 }
+  if (o.type === 'bike') return { x: o.x - 3, y: 116 + SCENE.road, w: 62, h: 66 }
+  if (o.type === 'cloud') return { x: o.x - 32, y: o.y - 22, w: 64, h: 46 }
   // 건물은 구름 아래까지만. 높이가 달라져도 위아래 그림에서 누르는 범위가 같게 넉넉히 잡는다
-  return { x: o.x - 4, y: SCENE.ground - o.h - 26, w: o.w + 8, h: o.h + 28 }
+  return { x: o.x - 4, y: SCENE.ground - o.h - 22, w: o.w + 8, h: o.h + 24 }
 }

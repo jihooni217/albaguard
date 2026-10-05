@@ -118,7 +118,7 @@ function Levels({ best, onPick }) {
 
 // 그림 한 장. plain이면 배경 없이(휠만), 아니면 하늘·인도·도로를 깐다
 function Scene({ objects, found, wrong, onTap, name, plain }) {
-  const { w, h, ground } = SCENE
+  const { w, h, ground, road } = SCENE
   const order = { cloud: 0, building: 1, bike: 2, car: 3, wheel: 4 }
   const sorted = [...objects].sort((a, b) => order[a.type] - order[b.type])
   return (
@@ -146,8 +146,16 @@ function Scene({ objects, found, wrong, onTap, name, plain }) {
           {o.type === 'wheel' && <Wheel cx={o.cx} cy={o.cy} r={o.r} style={o.style} rim={o.rim} hub={o.hub} />}
           {o.type === 'cloud' && <Cloud s={o} />}
           {o.type === 'building' && <Building b={o} />}
-          {o.type === 'bike' && <Bike k={o} />}
-          {o.type === 'car' && <Car c={o} />}
+          {o.type === 'bike' && (
+            <g transform={`translate(0 ${road})`}>
+              <Bike k={o} />
+            </g>
+          )}
+          {o.type === 'car' && (
+            <g transform={`translate(0 ${road})`}>
+              <Car c={o} />
+            </g>
+          )}
         </g>
       ))}
 
