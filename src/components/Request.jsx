@@ -27,40 +27,64 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
   // 합계를 골랐으면 증빙 묶음도 그 달들을 모두 담는다
   const evidenceTarget = { workplaceId: current.workplace.id, yms: current.yms ?? [current.ym] }
 
+  // 고르는 칸에 들어갈 짧은 이름. 합계는 "7월~8월 합계"처럼 줄여 쓴다
+  const shortLabel = (c) => (c.combined ? `${c.months[0].month}월~${c.months.at(-1).month}월 합계` : c.label)
+  const paid = current.combined ? current.paid : current.payment.amount
+
   return (
     <>
-      <section className="card">
-        {candidates.length > 1 && (
-          <select
-            className="input select-top"
-            value={current.key}
-            onChange={(e) => setSelectedKey(e.target.value)}
-            aria-label="요청할 달 선택"
-          >
-            {candidates.map((c) => (
-              <option key={c.key} value={c.key}>
-                {c.label} · {c.workplace.name} · {won(c.diff)}
-              </option>
-            ))}
-          </select>
+      <section className="rq-top">
+        {candidates.length > 1 ? (
+          <label className="rq-pick">
+            <select value={current.key} onChange={(e) => setSelectedKey(e.target.value)} aria-label="요청할 달 선택">
+              {candidates.map((c) => (
+                <option key={c.key} value={c.key}>
+                  {c.workplace.name} · {shortLabel(c)}
+                </option>
+              ))}
+            </select>
+            <Icon name="chevronDown" size={16} />
+          </label>
+        ) : (
+          <p className="rq-pick">
+            {current.workplace.name} · {shortLabel(current)}
+          </p>
         )}
-        <p className="muted">
-          {current.workplace.name} · {current.label}
+        <p className="rq-label">덜 받은 돈</p>
+        <p className="rq-owed">
+          {Math.round(current.diff).toLocaleString()}
+          <small>원</small>
         </p>
-        <p className="request-diff">{won(current.diff)} 덜 받았어요</p>
-        <details className="facts">
-          <summary>근거 보기 (근무 기록·계산 내역)</summary>
-          <pre>{facts}</pre>
-        </details>
-        <button className="btn block with-icon" onClick={() => openEvidence(evidenceTarget)}>
-          <Icon name="file" size={20} /> 증빙 묶음 PDF 만들기
-        </button>
+
+        <div className="rq-rows">
+          <div className="rq-row">
+            <span>받았어야 할 돈</span>
+            <b>{won(current.target)}</b>
+          </div>
+          <div className="rq-row">
+            <span>실제로 받은 돈</span>
+            <b>{won(paid)}</b>
+          </div>
+          <details className="rq-facts">
+            <summary className="rq-row link">
+              <span>근거 보기 · 근무 기록과 계산 내역</span>
+              <Icon name="chevronRight" size={18} />
+            </summary>
+            <pre>{facts}</pre>
+          </details>
+          <button className="rq-row link" onClick={() => openEvidence(evidenceTarget)}>
+            <span>증빙 묶음 PDF 만들기</span>
+            <Icon name="chevronRight" size={18} />
+          </button>
+        </div>
       </section>
 
+      <h2 className="rq-title">이렇게 요청해요</h2>
+      <div className="rq-steps">
       <Stage
         key={`${current.key}-1`}
-        step="1단계"
-        title="사장님께 보낼 메시지"
+        step={1}
+        title="사장님께 메시지 보내기"
         desc="먼저 대화로 확인을 부탁하는 정중한 메시지예요. 보내기 전에 숫자를 한 번 확인하고, 내 말투에 맞게 고쳐도 돼요."
         button="메시지 만들기"
         defaultOpen
@@ -71,8 +95,9 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
 
       <Stage
         key={`${current.key}-2`}
-        step="2단계"
+        step={2}
         title="내용증명 초안"
+        when="대화로 풀리지 않을 때"
         desc="메시지를 보냈는데도 해결되지 않을 때 쓰는 문서 초안이에요. [대괄호] 부분은 직접 채워야 하고, 우체국에서 내용증명으로 보낼 수 있어요. 법률 자문은 아니에요."
         button="초안 만들기"
         saved={saved[2]}
@@ -80,7 +105,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         generate={() => makeMessage(2, current)}
       />
 
-      <Fold step="3단계" title="진정 절차 안내">
+      <Fold step={3} title="진정 절차 안내" when="그래도 받지 못했을 때 · 1350 상담, 노동포털">
         <p className="muted">그래도 받지 못했다면 고용노동부에 임금체불 진정을 낼 수 있어요.</p>
         <ol className="guide">
           <li>
@@ -117,6 +142,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         </div>
         <p className="muted">임금은 받을 수 있게 된 날부터 3년이 지나면 청구하기 어려워져요.</p>
       </Fold>
+      </div>
 
       <p className="muted note">
         알바가드는 내 기록을 정리하고 문구 초안을 만들어 주는 도구예요. 법률 자문이나 신고 대행이 아니고, 만든 문서의 법적
@@ -126,23 +152,26 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
   )
 }
 
-// 제목을 누르면 펼쳐지는 단계 카드
-function Fold({ step, title, defaultOpen = false, children }) {
+// 제목을 누르면 펼쳐지는 단계 한 줄. 번호는 세로 선으로 이어진다. when: 접혀 있을 때 보이는, 언제 쓰는 단계인지
+function Fold({ step, title, when, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <details className="card fold" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
+    <details className="rq-step" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
       <summary>
-        <span className="stage-step">{step}</span>
-        <span className="stage-title">{title}</span>
+        <span className="rq-num">{step}</span>
+        <span className="rq-step-title">
+          {title}
+          {when && !open && <small>{when}</small>}
+        </span>
         <Icon name="chevronRight" size={18} />
       </summary>
-      {children}
+      <div className="rq-body">{children}</div>
     </details>
   )
 }
 
 // 문구를 만들고, 고치고, 복사하는 한 단계
-function Stage({ step, title, desc, button, saved, onSave, generate, defaultOpen }) {
+function Stage({ step, title, when, desc, button, saved, onSave, generate, defaultOpen }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -165,7 +194,7 @@ function Stage({ step, title, desc, button, saved, onSave, generate, defaultOpen
   }
 
   return (
-    <Fold step={step} title={title} defaultOpen={defaultOpen || Boolean(saved)}>
+    <Fold step={step} title={title} when={when} defaultOpen={defaultOpen || Boolean(saved)}>
       <p className="muted">{desc}</p>
 
       {saved && (

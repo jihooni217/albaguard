@@ -1145,7 +1145,235 @@ a.btn {
   border-top: 1px solid var(--line);
 }
 
-/* 정산 요청 */
+/* 정산 요청: 카드 없이 줄로. 덜 받은 돈이 맨 위에 크게 */
+.rq-top {
+  padding: 0 4px;
+}
+
+.rq-pick {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  margin: 4px 0 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.rq-pick select {
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.rq-label {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.rq-owed {
+  margin: 2px 0 0;
+  color: var(--red);
+  font-family: var(--font-num);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rq-owed small {
+  margin-left: 2px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.rq-rows {
+  margin: 18px -4px 0;
+  border-top: 1px solid var(--line);
+}
+
+.rq-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 4px;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+}
+
+.rq-row b {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.rq-row.link {
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+
+.rq-row.link::-webkit-details-marker {
+  display: none;
+}
+
+.rq-row .icon {
+  color: var(--faint);
+  transition: transform 0.15s;
+}
+
+.rq-facts[open] > summary .icon {
+  transform: rotate(90deg);
+}
+
+.rq-facts pre {
+  margin: 0;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+
+.rq-title {
+  margin: 30px 4px 6px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 단계: 번호가 세로 선으로 이어진다 */
+.rq-step {
+  position: relative;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.rq-step:last-child {
+  border-bottom: none;
+}
+
+.rq-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 46px;
+  bottom: -15px;
+  left: 16.5px;
+  width: 1.5px;
+  background: var(--line);
+}
+
+.rq-step > summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.rq-step > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rq-step > summary .icon {
+  margin-top: 4px;
+  color: var(--faint);
+  transition: transform 0.15s;
+}
+
+.rq-step[open] > summary .icon {
+  transform: rotate(90deg);
+}
+
+.rq-num {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rq-step[open] .rq-num {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+.rq-step-title {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.rq-step[open] .rq-step-title {
+  font-weight: 700;
+}
+
+.rq-step-title small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.rq-body {
+  padding: 6px 0 4px 40px;
+}
+
+.rq-body > .muted {
+  font-size: 14px;
+}
+
+.rq-body .btn.block {
+  margin-top: 14px;
+}
+
+/* 문구는 읽기 편하게 화면 너비를 다 쓴다 */
+.rq-body .message {
+  position: relative;
+  width: calc(100% + 40px);
+  margin-left: -40px;
+  background: var(--surface);
+}
+
+.rq-body .link-row .btn,
+.rq-body .link-note .btn {
+  background: var(--surface);
+}
+
 .request-diff {
   font-family: var(--font-num);
   font-size: 27px;

@@ -58,6 +58,7 @@ const PATHS = {
   external: <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5" />,
   chevronLeft: <path d="M15 5l-7 7 7 7" />,
   chevronRight: <path d="M9 5l7 7-7 7" />,
+  chevronDown: <path d="M5 9l7 7 7-7" />,
   close: <path d="M6 6l12 12M18 6L6 18" />,
   gift: (
     <>
