@@ -37,6 +37,8 @@
   --radius: 18px;
   --font: 'IBM Plex Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', system-ui, sans-serif;
   --font-num: var(--font);
+  /* 화면 옆 여백: 폰 너비에 맞춰 16~24px 사이에서 늘고 줄어든다 (375px 폰에서 20px) */
+  --gutter: clamp(16px, 5.3vw, 24px);
 }
 
 /* 어두운 화면: 폰이 다크 모드이거나 설정에서 '어둡게'를 골랐을 때. 아래 두 묶음은 값이 같아야 한다 */
@@ -163,7 +165,7 @@ a.btn {
 }
 
 .app-header {
-  padding: calc(18px + env(safe-area-inset-top)) 24px 10px;
+  padding: calc(18px + env(safe-area-inset-top)) calc(var(--gutter) + 4px) 10px;
 }
 
 .brand {
@@ -191,7 +193,7 @@ a.btn {
 }
 
 .app-main {
-  padding: 8px 20px 16px;
+  padding: 8px var(--gutter) 16px;
   animation: rise 0.2s ease-out;
 }
 
@@ -317,8 +319,8 @@ a.btn {
 
 /* 첫 화면 위쪽 면: 이번 달 받을 돈과 출근 버튼 */
 .top {
-  margin: -8px -20px 12px;
-  padding: calc(18px + env(safe-area-inset-top)) 24px 24px;
+  margin: -8px calc(-1 * var(--gutter)) 12px;
+  padding: calc(18px + env(safe-area-inset-top)) calc(var(--gutter) + 4px) 24px;
   border-radius: 0 0 24px 24px;
   background: var(--brand);
   color: var(--on-brand);
@@ -2570,7 +2572,7 @@ a.btn {
   max-height: 92dvh;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 10px 20px calc(24px + env(safe-area-inset-bottom));
+  padding: 10px var(--gutter) calc(24px + env(safe-area-inset-bottom));
   border-radius: 24px 24px 0 0;
   background: var(--surface);
   animation: slide-up 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -2618,7 +2620,7 @@ a.btn {
   display: flex;
   width: 100%;
   max-width: 480px;
-  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  padding: 8px clamp(4px, 2.6vw, 12px) calc(8px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   border-top: 1px solid var(--line);
   background: var(--bg);
@@ -2627,6 +2629,8 @@ a.btn {
 .tab {
   flex: 1;
   min-height: 44px;
+  padding: 0;
+  white-space: nowrap;
   border: none;
   background: transparent;
   font-size: 13px;
