@@ -56,7 +56,7 @@ export default function SpotGame({ best, actions, onClose }) {
           <>
             <p className="game-lead">위아래 그림에서 다른 곳을 찾아보세요</p>
             <p className="muted">
-              쉬움은 자동차 휠, 보통은 도심 거리의 자동차·자전거·건물. 어려움은 건물 기울기나 창문 한 칸처럼 작은 차이예요. 틀린 곳을 누르면{' '}
+              쉬움은 자동차 휠, 보통은 도심 거리의 자동차·자전거·건물. 어려움은 건물이 돌아선 각도나 창문 한 칸처럼 작은 차이예요. 틀린 곳을 누르면{' '}
               {WRONG_PENALTY}초가 더해져요.
             </p>
             <Levels best={best} onPick={start} />
@@ -221,24 +221,49 @@ function Cloud({ s }) {
   )
 }
 
+// angle이 0이면 정면만, 아니면 앞면과 옆면을 함께 그린다(돌아선 만큼 앞면이 좁아지고 옆면이 넓어진다)
 function Building({ b }) {
-  const top = SCENE.ground - b.h
+  const { ground } = SCENE
+  const top = ground - b.h
+  const rad = (Math.abs(b.angle) * Math.PI) / 180
+  const frontW = b.w * Math.cos(rad)
+  const sideW = b.w * 0.7 * Math.sin(rad)
+  const right = b.angle >= 0 // 옆면이 오른쪽에 보이는지
+  const left = b.x + b.w / 2 - (frontW + sideW) / 2
+  const fx = right ? left : left + sideW // 앞면이 시작하는 곳
   const gap = 5
-  const cellW = (b.w - gap * (b.cols + 1)) / b.cols
+  const cellW = (frontW - gap * (b.cols + 1)) / b.cols
   const cellH = Math.min(14, (b.h - 16 - gap * (b.rows + 1)) / b.rows)
+
+  // 옆면 위의 점: t는 앞면 모서리에서 떨어진 정도(0~1). 멀어질수록 위쪽 선이 조금 내려간다
+  const sx = (t) => (right ? fx + frontW + sideW * t : fx - sideW * t)
+  const sy = (t, y) => y + ((sideW * t * 0.4 * (ground - y)) / b.h)
+  const quad = (t1, t2, y1, y2) =>
+    `M${sx(t1)} ${sy(t1, y1)}L${sx(t2)} ${sy(t2, y1)}L${sx(t2)} ${sy(t2, y2)}L${sx(t1)} ${sy(t1, y2)}Z`
+
   return (
-    <g transform={`rotate(${b.tilt} ${b.x + b.w / 2} ${SCENE.ground})`}>
-      {b.roof === 'peak' && <path d={`M${b.x - 3} ${top}L${b.x + b.w / 2} ${top - 15}L${b.x + b.w + 3} ${top}Z`} fill="#6d5a4f" />}
-      {b.roof === 'step' && <rect x={b.x + b.w * 0.25} y={top - 11} width={b.w * 0.5} height="11" fill="#6f7782" />}
-      <rect x={b.x} y={top} width={b.w} height={b.h} fill={b.color} />
-      <rect x={b.x} y={top} width={b.w} height="5" fill="rgba(0,0,0,0.22)" />
+    <g>
+      {b.angle !== 0 && (
+        <>
+          <path d={quad(0, 1, top, ground)} fill={b.color} />
+          <path d={quad(0, 1, top, ground)} fill="rgba(0,0,0,0.25)" />
+          {Array.from({ length: b.rows }, (_, row) => {
+            const y = top + 12 + row * (cellH + gap)
+            return <path key={row} d={quad(0.25, 0.75, y, y + cellH)} fill="#cfc9b4" />
+          })}
+        </>
+      )}
+      {b.roof === 'peak' && <path d={`M${fx - 3} ${top}L${fx + frontW / 2} ${top - 15}L${fx + frontW + 3} ${top}Z`} fill="#6d5a4f" />}
+      {b.roof === 'step' && <rect x={fx + frontW * 0.25} y={top - 11} width={frontW * 0.5} height="11" fill="#6f7782" />}
+      <rect x={fx} y={top} width={frontW} height={b.h} fill={b.color} />
+      <rect x={fx} y={top} width={frontW} height="5" fill="rgba(0,0,0,0.22)" />
       {Array.from({ length: b.rows * b.cols }, (_, i) => {
         const row = Math.floor(i / b.cols)
         const col = i % b.cols
         return (
           <rect
             key={i}
-            x={b.x + gap + col * (cellW + gap)}
+            x={fx + gap + col * (cellW + gap)}
             y={top + 12 + row * (cellH + gap)}
             width={cellW}
             height={cellH}

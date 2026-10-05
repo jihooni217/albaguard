@@ -2,7 +2,7 @@
 // 그림 파일 없이 SpotGame.jsx가 이 값들로 그린다
 //  - 쉬움: 자동차 휠 8개 중 다른 것 찾기
 //  - 보통: 도심 거리(건물, 자동차, 자전거)에서 색·모양 차이 찾기
-//  - 어려움: 건물이 더 많고 기울어 있다. 차이가 작다(기울기 3도, 창문 한 칸, 건물 높이, 헬멧 색처럼)
+//  - 어려움: 건물을 비스듬히 본 입체 모양으로 그린다. 차이가 작다(건물이 돌아선 각도, 창문 한 칸, 건물 높이, 헬멧 색처럼)
 
 export const SPOT_LEVELS = {
   easy: { label: '쉬움', hint: '자동차 휠', diffs: 3 },
@@ -24,8 +24,9 @@ const SHIRTS = ['#e4572e', '#2a9d8f', '#f2b632', '#9b5de5', '#ef7b9d', '#2f6fde'
 const FRAMES = ['#3b3f46', '#d64545', '#2f6fde', '#2a9d8f']
 const WALLS = ['#c9b79c', '#a8b5c4', '#d9a58b', '#b7c9a8', '#9aa0b5', '#e0c98f', '#c7a9c9']
 const ROOFS = ['flat', 'peak', 'step']
-const TILTS = [-6, -3, 0, 3, 6]
-const TILT_STEP = 3 // 어려움에서 건물 기울기가 달라지는 정도(도)
+// 어려움에서 건물이 돌아선 각도(도). 0이면 정면, 클수록 옆면이 많이 보인다. +는 오른쪽 옆면, -는 왼쪽 옆면
+const ANGLES = [-40, -30, -20, 20, 30, 40]
+const ANGLE_STEP = 8 // 위아래 그림에서 각도가 달라지는 정도
 
 const rand = (min, max) => min + Math.floor(Math.random() * (max - min + 1))
 const pick = (list) => list[Math.floor(Math.random() * list.length)]
@@ -40,8 +41,8 @@ function neighbor(list, current) {
   return list[i + pick([-1, 1])]
 }
 
-// 어려움용: 물체 한 개를 조금만 바꾼다. tilt면 건물 기울기를 바꾼다
-function changeSubtle(o, tilt) {
+// 어려움용: 물체 한 개를 조금만 바꾼다. turn이면 건물이 돌아선 각도를 바꾼다
+function changeSubtle(o, turn) {
   if (o.type === 'car') {
     const kind = pick(['glass', 'glassShape', 'wheel', 'lamp'])
     if (kind === 'glass') return { ...o, glass: neighbor(GLASS, o.glass) }
@@ -55,7 +56,11 @@ function changeSubtle(o, tilt) {
     return { ...o, frame: pickOther(FRAMES, o.frame) }
   }
   if (o.type === 'cloud') return { ...o, x: o.x + pick([-9, 9]) }
-  if (tilt) return { ...o, tilt: o.tilt + (o.tilt > 0 ? -TILT_STEP : o.tilt < 0 ? TILT_STEP : pick([-TILT_STEP, TILT_STEP])) }
+  if (turn) {
+    const size = Math.abs(o.angle)
+    const step = size <= 20 ? ANGLE_STEP : size >= 40 ? -ANGLE_STEP : pick([-ANGLE_STEP, ANGLE_STEP])
+    return { ...o, angle: Math.sign(o.angle) * (size + step) }
+  }
   const kind = pick(['dark', 'dark', 'height'])
   if (kind === 'dark') return { ...o, dark: rand(0, o.rows * o.cols - 1) }
   return { ...o, h: o.h + pick([-7, 7]) }
@@ -110,7 +115,7 @@ function wheels() {
   return list
 }
 
-function street(buildingCount, tilted) {
+function street(buildingCount, solid) {
   const list = []
   // 건물: 화면 너비를 나눠 세운다
   const slot = SCENE.w / buildingCount
@@ -123,10 +128,10 @@ function street(buildingCount, tilted) {
       w,
       h: rand(70, 112),
       color: pick(WALLS),
-      roof: pick(ROOFS),
+      roof: solid ? pick(['flat', 'step']) : pick(ROOFS),
       cols: rand(2, 3),
       rows: rand(3, 5),
-      tilt: tilted ? pick(TILTS) : 0,
+      angle: solid ? pick(ANGLES) : 0,
       dark: -1, // 불 꺼진 창문 번호. -1이면 없음
     })
   }
@@ -156,18 +161,18 @@ export function generateSpot(level) {
   const top = level === 'easy' ? wheels() : street(level === 'hard' ? 6 : 5, level === 'hard')
   let answers = shuffle(top.map((o) => o.id)).slice(0, SPOT_LEVELS[level].diffs)
 
-  // 어려움: 건물 기울기 차이가 세 곳은 들어가게 한다
-  let tiltIds = []
+  // 어려움: 건물 각도 차이가 세 곳은 들어가게 한다
+  let turnIds = []
   if (level === 'hard') {
     const buildings = shuffle(top.filter((o) => o.type === 'building').map((o) => o.id))
-    tiltIds = buildings.slice(0, 3)
-    const rest = shuffle(top.map((o) => o.id).filter((id) => !tiltIds.includes(id)))
-    answers = [...tiltIds, ...rest.slice(0, SPOT_LEVELS.hard.diffs - tiltIds.length)]
+    turnIds = buildings.slice(0, 3)
+    const rest = shuffle(top.map((o) => o.id).filter((id) => !turnIds.includes(id)))
+    answers = [...turnIds, ...rest.slice(0, SPOT_LEVELS.hard.diffs - turnIds.length)]
   }
 
   const bottom = top.map((o) => {
     if (!answers.includes(o.id)) return o
-    return level === 'hard' ? changeSubtle(o, tiltIds.includes(o.id)) : change(o)
+    return level === 'hard' ? changeSubtle(o, turnIds.includes(o.id)) : change(o)
   })
   return { level, top, bottom, answers }
 }
@@ -179,5 +184,5 @@ export function boxOf(o) {
   if (o.type === 'bike') return { x: o.x - 3, y: 116 + SCENE.road, w: 62, h: 66 }
   if (o.type === 'cloud') return { x: o.x - 32, y: o.y - 22, w: 64, h: 46 }
   // 건물은 구름 아래까지만. 높이가 달라져도 위아래 그림에서 누르는 범위가 같게 넉넉히 잡는다
-  return { x: o.x - 4, y: SCENE.ground - o.h - 22, w: o.w + 8, h: o.h + 24 }
+  return { x: o.x - 6, y: SCENE.ground - o.h - 22, w: o.w + 12, h: o.h + 24 }
 }
