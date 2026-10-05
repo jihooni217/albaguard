@@ -1,12 +1,26 @@
 import { useState } from 'react'
 import { dayStatus } from '../lib/compare'
-import { dateKey, fmtDate, fmtDuration, pad } from '../lib/time'
+import { recordPay } from '../lib/pay'
+import { dateKey, fmtDate, fmtDuration, fmtRange, minutesBetween, pad, scheduleMinutes } from '../lib/time'
 import Icon from './Icon.jsx'
 import Modal from './Modal.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
 
 const DOW = ['일', '월', '화', '수', '목', '금', '토']
+
+// 예정과 달랐던 날. 달력에서 이 날들만 글자로 표시한다
+const CHANGED = ['over', 'extra', 'under', 'missed']
+// 초록 = 더 일했다, 빨강 = 덜 일했다
+const TONE = { over: 'up', extra: 'up', under: 'down', missed: 'down' }
+
+// 날짜 아래 표시: 완료는 초록 점, 예정은 빈 고리, 휴무는 짧은 줄, 달랐던 날은 글자
+function Mark({ status }) {
+  if (status.type === 'match') return <i className="cv-dot" />
+  if (status.type === 'planned') return <i className="cv-ring" />
+  if (status.type === 'off') return <i className="cv-dash" />
+  return <span className={TONE[status.type]}>{status.label}</span>
+}
 
 export default function CalendarView({ data, actions, goTo }) {
   const { workplaces, selectedWorkplaceId, schedules, records } = data
@@ -45,104 +59,162 @@ export default function CalendarView({ data, actions, goTo }) {
     )
   }
 
+  // 이 달에 지금까지 일한 시간과, 예정과 달랐던 날 수
+  const monthPrefix = `${month.y}-${pad(month.m + 1)}`
+  const workedMin = records
+    .filter((r) => !r.deleted && dateKey(r.start).startsWith(monthPrefix))
+    .reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
+  const statusOf = (day) => dayStatus(keyOf(day), schedules, records, todayKey)
+  const changedDays = cells.filter((day) => day && CHANGED.includes(statusOf(day)?.type)).length
+
+  const plannedList = daySchedules.filter((x) => !x.off)
+  const actualList = dayRecords.filter((r) => !r.deleted)
+  const wageFor = (r) => workplaces.find((w) => w.id === r.workplaceId) ?? workplaces[0]
+
   return (
     <>
-      <section className="card">
-        <div className="cal-head">
-          <button className="icon-btn" onClick={() => moveMonth(-1)} aria-label="이전 달">
+      <div className="cv-month">
+        <h2>
+          {month.y}년 {month.m + 1}월
+        </h2>
+        <div className="cv-nav">
+          <button onClick={() => moveMonth(-1)} aria-label="이전 달">
             <Icon name="chevronLeft" size={20} />
           </button>
-          <h2>
-            {month.y}년 {month.m + 1}월
-          </h2>
-          <button className="icon-btn" onClick={() => moveMonth(1)} aria-label="다음 달">
+          <button onClick={() => moveMonth(1)} aria-label="다음 달">
             <Icon name="chevronRight" size={20} />
           </button>
         </div>
+      </div>
 
-        <div className="cal-grid">
-          {DOW.map((d) => (
-            <div key={d} className="cal-dow">
-              {d}
-            </div>
-          ))}
-          {cells.map((day, i) => {
-            if (!day) return <div key={`blank-${i}`} />
-            const key = keyOf(day)
-            const st = dayStatus(key, schedules, records, todayKey)
-            const cls = ['cal-cell', key === selected && 'selected', key === todayKey && 'today'].filter(Boolean)
-            return (
-              <button key={key} className={cls.join(' ')} onClick={() => setSelected(key)}>
-                <span className="cal-day">{day}</span>
-                {st && <span className={`cal-tag ${st.type}`}>{st.label}</span>}
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="legend">
-          <span className="cal-tag planned">예정</span>
-          <span className="cal-tag match">완료</span>
-          <span className="cal-tag over">연장</span>
-          <span className="cal-tag extra">대타</span>
-          <span className="cal-tag under">단축</span>
-          <span className="cal-tag missed">미근무</span>
-          <span className="cal-tag off">휴무</span>
-        </div>
-      </section>
-
-      <section>
-        <div className="section-head">
-          <h2>{fmtDate(selected)}</h2>
-        </div>
-
-        {status && (
-          <div className={`card compare ${status.type}`}>
-            <p className="compare-title">{status.detail}</p>
-            <div className="compare-row">
-              <span>예정 {status.planned ? fmtDuration(status.planned) : '없음'}</span>
-              <span>실제 {status.actual ? fmtDuration(status.actual) : '없음'}</span>
-            </div>
-          </div>
+      <div className="cv-summary">
+        <span>
+          {month.m + 1}월에 일한 시간 <b>{workedMin > 0 ? fmtDuration(workedMin) : '없음'}</b>
+        </span>
+        {changedDays > 0 && (
+          <span>
+            예정과 달랐던 날 <b>{changedDays}일</b>
+          </span>
         )}
+      </div>
 
-        <h3 className="sub-head">예정 스케줄</h3>
-        {daySchedules.length === 0 && <p className="muted">예정된 근무가 없어요.</p>}
-        {daySchedules.map((s) => (
-          <div className={s.off ? 'card schedule off' : 'card schedule'} key={s.id}>
-            <div>
-              <p className="record-range">
-                {s.start} ~ {s.end <= s.start ? '다음날 ' : ''}
-                {s.end}
-              </p>
-              <p className="muted">{nameOf(s.workplaceId)}</p>
-              {s.off && <span className="badge gray">합의해서 쉼 · 결근 아님</span>}
-            </div>
-            <div className="record-actions">
-              <button className="btn small" onClick={() => actions.toggleScheduleOff(s.id)}>
-                {s.off ? '쉼 취소' : '합의해서 쉼'}
-              </button>
-              <button className="btn small ghost" onClick={() => actions.deleteSchedule(s.id)}>
-                삭제
-              </button>
-            </div>
-          </div>
+      <div className="cv-dow">
+        {DOW.map((d) => (
+          <span key={d}>{d}</span>
         ))}
-        <button className="btn block" onClick={() => setScheduleOpen(true)}>
-          + 예정 스케줄 추가
+      </div>
+      <div className="cv-grid">
+        {cells.map((day, i) => {
+          if (!day) return <span key={`blank-${i}`} />
+          const key = keyOf(day)
+          const st = statusOf(day)
+          const cls = [
+            'cv-day',
+            !st && 'empty',
+            CHANGED.includes(st?.type) && 'changed',
+            key === selected && 'selected',
+            key === todayKey && 'today',
+          ].filter(Boolean)
+          return (
+            <button
+              key={key}
+              className={cls.join(' ')}
+              onClick={() => setSelected(key)}
+              aria-label={`${month.m + 1}월 ${day}일${st ? ` ${st.label}` : ''}`}
+            >
+              <span className="cv-num">{day}</span>
+              <span className="cv-mark">{st && <Mark status={st} />}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="cv-legend">
+        <span>
+          <i className="cv-dot" />
+          완료
+        </span>
+        <span>
+          <i className="cv-ring" />
+          예정
+        </span>
+        <span>
+          <i className="cv-dash" />
+          휴무
+        </span>
+      </div>
+
+      <div className="cv-day-head">
+        <h2>{fmtDate(selected)}</h2>
+        {status && <span className={`cv-status ${TONE[status.type] ?? ''}`}>{status.label}</span>}
+      </div>
+
+      {status && (
+        <div className="cv-rows">
+          <div className="cv-row">
+            <span className="cv-key">예정</span>
+            <span className="cv-val">
+              {plannedList.length > 0 ? plannedList.map((x) => `${x.start} ~ ${x.end}`).join(', ') : '없음'}
+            </span>
+            {status.planned > 0 && <b>{fmtDuration(status.planned)}</b>}
+          </div>
+          <div className="cv-row">
+            <span className="cv-key">실제</span>
+            <span className="cv-val">
+              {actualList.length > 0 ? actualList.map((r) => fmtRange(r.start, r.end)).join(', ') : '없음'}
+            </span>
+            {status.actual > 0 && <b>{fmtDuration(status.actual)}</b>}
+          </div>
+          <div className="cv-row">
+            <span className="cv-key">차이</span>
+            <span className={`cv-val cv-diff ${TONE[status.type] ?? ''}`}>{status.detail}</span>
+          </div>
+        </div>
+      )}
+
+      <h3 className="cv-sec">예정 스케줄</h3>
+      {daySchedules.length === 0 && <p className="cv-none">예정된 근무가 없어요</p>}
+      {daySchedules.map((x) => (
+        <div className={x.off ? 'cv-item off' : 'cv-item'} key={x.id}>
+          <div className="cv-info">
+            <p className="cv-range">
+              {x.start} ~ {x.end <= x.start ? '다음날 ' : ''}
+              {x.end}
+            </p>
+            <p className="cv-meta">
+              {x.off ? '합의해서 쉼 · 결근 아님' : fmtDuration(scheduleMinutes(x))} · {nameOf(x.workplaceId)}
+            </p>
+          </div>
+          <div className="cv-acts">
+            <button className="cv-quiet" onClick={() => actions.toggleScheduleOff(x.id)}>
+              {x.off ? '쉼 취소' : '합의해서 쉼'}
+            </button>
+            <button className="cv-text" onClick={() => actions.deleteSchedule(x.id)}>
+              삭제
+            </button>
+          </div>
+        </div>
+      ))}
+      <button className="cv-add" onClick={() => setScheduleOpen(true)}>
+        <span>+</span>예정 스케줄 추가
+      </button>
+
+      <h3 className="cv-sec">실제 근무</h3>
+      {dayRecords.length === 0 && <p className="cv-none">근무 기록이 없어요</p>}
+      {dayRecords.map((r) => (
+        <RecordItem
+          key={r.id}
+          record={r}
+          workplaces={workplaces}
+          amount={recordPay(r, wageFor(r))}
+          onEdit={() => setRecordForm({ record: r })}
+        />
+      ))}
+      {selected <= todayKey && (
+        <button className="cv-add" onClick={() => setRecordForm({ add: true })}>
+          <span>+</span>근무 기록 직접 추가
         </button>
-
-        <h3 className="sub-head">실제 근무</h3>
-        {dayRecords.length === 0 && <p className="muted">근무 기록이 없어요.</p>}
-        {dayRecords.map((r) => (
-          <RecordItem key={r.id} record={r} workplaces={workplaces} onEdit={() => setRecordForm({ record: r })} />
-        ))}
-        {selected <= todayKey && (
-          <button className="btn block" onClick={() => setRecordForm({ add: true })}>
-            + 근무 기록 직접 추가
-          </button>
-        )}
-      </section>
+      )}
 
       {scheduleOpen && (
         <ScheduleForm
