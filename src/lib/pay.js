@@ -71,6 +71,14 @@ export function baseText(result) {
   return `${fmtDuration(result.baseMin)}${breakNote} × ${wageNote}`
 }
 
+// 근무 기록 한 건으로 번 돈 (기본급 + 야간수당). 주휴수당은 주 단위라 따로 계산한다
+export function recordPay(record, workplace) {
+  const wage = wageOn(workplace, dateKey(record.start))
+  const base = (paidMinutes(minutesBetween(record.start, record.end), workplace) / 60) * wage
+  const night = workplace.fivePlus ? (nightMinutes(record.start, record.end) / 60) * wage * 0.5 : 0
+  return Math.round(base + night)
+}
+
 // 한 주의 근무 시간과 주휴수당 대상 여부
 export function weekSummary(workplace, records, schedules, monday, todayKey) {
   const sunday = new Date(monday)

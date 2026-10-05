@@ -17,3 +17,9 @@ export function setTheme(theme) {
   localStorage.setItem(KEY, theme)
   applyTheme(theme)
 }
+
+// 폰 상태 표시줄 색을 지금 화면 맨 위 색에 맞춘다 (첫 화면은 남색 면, 나머지는 바탕색)
+export function syncBarColor(onBrand) {
+  const color = getComputedStyle(document.documentElement).getPropertyValue(onBrand ? '--brand' : '--bg').trim()
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color)
+}

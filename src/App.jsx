@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { loadData, saveData } from './lib/storage'
 import { makeActions } from './lib/actions'
 import Evidence from './components/Evidence.jsx'
+import { syncBarColor } from './lib/theme'
 import { fmtDate } from './lib/time'
 import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
@@ -39,6 +40,10 @@ export default function App() {
     saveData(data)
   }, [data])
 
+  useEffect(() => {
+    syncBarColor(tab === 'home' && data.workplaces.length > 0)
+  }, [tab, data.workplaces.length, data.active])
+
   function openPay(target) {
     setTab('pay')
     setPayTarget({ workplaceId: target.workplaceId, ym: target.ym })
@@ -52,13 +57,15 @@ export default function App() {
   return (
     <>
     <div className="app">
-      <header className="app-header">
-        <p className="brand">
-          <span>알바가드</span>
-          <span className="brand-date">{fmtDate(new Date())}</span>
-        </p>
-        {tab !== 'home' && <h1>{TABS.find((t) => t.id === tab).label}</h1>}
-      </header>
+      {tab !== 'home' && (
+        <header className="app-header">
+          <p className="brand">
+            <span>알바가드</span>
+            <span className="brand-date">{fmtDate(new Date())}</span>
+          </p>
+          <h1>{TABS.find((t) => t.id === tab).label}</h1>
+        </header>
+      )}
 
       <main className="app-main" key={tab}>
         {tab === 'home' && <Home data={data} actions={actions} goTo={setTab} openPay={openPay} />}

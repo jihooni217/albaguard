@@ -4,7 +4,7 @@ import { fmtDateTime, fmtDuration, fmtRange, minutesBetween } from '../lib/time'
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
 // 근무 기록 한 줄. 수정 이력을 펼쳐 볼 수 있다
-export default function RecordItem({ record, workplaces, onEdit }) {
+export default function RecordItem({ record, workplaces, onEdit, amount }) {
   const [open, setOpen] = useState(false)
   const workplace = workplaces.find((w) => w.id === record.workplaceId)
   const edits = record.history.filter((h) => h.type === 'edit').length
@@ -20,7 +20,10 @@ export default function RecordItem({ record, workplaces, onEdit }) {
         </div>
         <div className="record-info">
           <p className="record-range">{fmtRange(record.start, record.end)}</p>
-          <p className="record-meta">{workplace?.name ?? '삭제된 근무지'}</p>
+          <p className="record-meta">
+            {amount != null && `${fmtDuration(minutesBetween(record.start, record.end))} · `}
+            {workplace?.name ?? '삭제된 근무지'}
+          </p>
           {(record.deleted || hasTrail) && (
             <div className="badges">
               {record.deleted && <span className="badge red">삭제됨</span>}
@@ -35,7 +38,11 @@ export default function RecordItem({ record, workplaces, onEdit }) {
           )}
         </div>
         <div className="record-side">
-          <p className="record-duration">{fmtDuration(minutesBetween(record.start, record.end))}</p>
+          {amount != null && !record.deleted ? (
+            <p className="record-amount">+{amount.toLocaleString()}</p>
+          ) : (
+            <p className="record-duration">{fmtDuration(minutesBetween(record.start, record.end))}</p>
+          )}
           {!record.deleted && (
             <button className="record-edit" onClick={onEdit}>
               수정

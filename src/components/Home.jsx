@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { calcMonth, mondayOf, weekSummary } from '../lib/pay'
+import { calcMonth, mondayOf, recordPay, weekSummary } from '../lib/pay'
 import { shortfallTotal, unpaidMonths } from '../lib/request'
 import { dateKey, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
-import Icon from './Icon.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
 
@@ -13,7 +12,7 @@ function LiveClock() {
     const timer = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
-  return <p className="hero-clock">{fmtTime(now)}</p>
+  return <span className="clock-now">{fmtTime(now)}</span>
 }
 
 export default function Home({ data, actions, goTo, openPay }) {
@@ -65,110 +64,132 @@ export default function Home({ data, actions, goTo, openPay }) {
   const pending = unpaidMonths(data, dateKey(now))
   const activeWorkplace = active && workplaces.find((w) => w.id === active.workplaceId)
 
+  // 이번 달 내역: 근무 기록과 주휴수당을 입금 내역처럼 한 줄씩, 최근 것부터
+  const entries = [
+    ...monthRecords.map((r) => ({ kind: 'record', key: r.id, at: dateKey(r.start), record: r })),
+    ...workplaces.flatMap((w) =>
+      calcMonth(w, records, data.schedules, thisMonth, dateKey(now))
+        .weeks.filter((week) => week.eligible)
+        .map((week) => ({
+          kind: 'holiday',
+          key: `${w.id}-${week.startKey}`,
+          at: week.endKey > dateKey(now) ? dateKey(now) : week.endKey,
+          week,
+          workplace: w,
+        })),
+    ),
+  ].sort((x, y) => y.at.localeCompare(x.at) || (x.kind === 'holiday' ? -1 : 1))
+  const shortDay = (key) => `${Number(key.slice(5, 7))}.${key.slice(8, 10)}`
+
   return (
     <>
-      <section className="earn">
-        <p className="earn-label">{now.getMonth() + 1}월에 받을 돈, 지금까지</p>
-        <p className="earn-amount">
+      <section className={active ? 'top working' : 'top'}>
+        <div className="top-bar">
+          <span className="top-brand">알바가드</span>
+          {active ? (
+            <span className="top-place">{activeWorkplace?.name ?? '근무지'}</span>
+          ) : (
+            <select
+              className="top-place"
+              value={selectedWorkplaceId ?? ''}
+              onChange={(e) => actions.selectWorkplace(e.target.value)}
+              aria-label="근무지 선택"
+            >
+              {workplaces.map((w) => (
+                <option key={w.id} value={w.id}>
+                  {w.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        <p className="top-label">{now.getMonth() + 1}월에 받을 돈 · 지금까지 {fmtDuration(totalMin)}</p>
+        <p className="top-amount">
           {earned.total.toLocaleString()}
           <span> 원</span>
         </p>
-        <p className="earn-sub">
-          {fmtDuration(totalMin)} 일했어요
-          {earned.holidayPay > 0 && ` · 주휴수당 ${earned.holidayPay.toLocaleString()}원 포함`}
-        </p>
-      </section>
 
-      <section className={active ? 'hero working' : 'hero'}>
-        <div className="dial">
-          <svg width="112" height="112" viewBox="0 0 112 112" aria-hidden="true">
-            <circle className="dial-ticks" cx="56" cy="56" r="52" strokeDasharray="1.5 3.945" />
-            <circle className="dial-marks" cx="56" cy="56" r="52" strokeDasharray="1.5 25.727" transform="rotate(-90.4 56 56)" />
-          </svg>
-          {active ? (
+        {active ? (
+          <>
+            <p className="top-status">
+              <span className="dot" /> {fmtTime(active.start)} 출근 · {fmtDuration(minutesBetween(active.start, now))} 지났어요
+            </p>
             <button className="clock-btn out" onClick={actions.clockOut}>
-              퇴근
+              <LiveClock /> 퇴근
             </button>
-          ) : (
+          </>
+        ) : (
+          <div className="top-actions">
             <button className="clock-btn in" onClick={actions.clockIn}>
-              출근
+              <LiveClock /> 출근
             </button>
-          )}
-        </div>
-        <div className="hero-info">
-          <LiveClock />
-          {active ? (
-            <>
-              <p className="hero-status">
-                <span className="dot" /> {activeWorkplace?.name ?? '근무지'}에서 근무 중
-              </p>
-              <p className="hero-sub">
-                출근 {fmtTime(active.start)} · {fmtDuration(minutesBetween(active.start, now))} 지났어요
-              </p>
-            </>
-          ) : (
-            <>
-              <select
-                className="hero-select"
-                value={selectedWorkplaceId ?? ''}
-                onChange={(e) => actions.selectWorkplace(e.target.value)}
-                aria-label="근무지 선택"
-              >
-                {workplaces.map((w) => (
-                  <option key={w.id} value={w.id}>
-                    {w.name}
-                  </option>
-                ))}
-              </select>
-              <p className="hero-sub">아직 출근 전</p>
-            </>
-          )}
-        </div>
+            <button className="top-add" onClick={() => setForm({ add: true })}>
+              직접 추가
+            </button>
+          </div>
+        )}
       </section>
 
-      {thisWeek?.eligible && (
-        <button className="card holiday-banner" onClick={() => goTo('pay')}>
-          <span>
-            이번 주 주휴수당 대상
-            <b>+{thisWeek.pay.toLocaleString()}원</b>
-          </span>
-          <Icon name="chevronRight" size={18} />
-        </button>
-      )}
-
-      {pending.length > 0 && (
-        <button className="card holiday-banner ask" onClick={() => openPay(pending[0])}>
-          <span>
-            {pending[0].month}월 급여 받으셨나요?
-            <b>받은 금액 넣기</b>
-          </span>
-          <Icon name="chevronRight" size={18} />
-        </button>
-      )}
-
-      {owed.count > 0 && (
-        <button className="card holiday-banner owed" onClick={() => goTo('request')}>
-          <span>
-            덜 받은 급여 · {owed.count}개월
-            <b>{owed.amount.toLocaleString()}원</b>
-          </span>
-          <Icon name="chevronRight" size={18} />
-        </button>
+      {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible) && (
+        <section className="card alerts">
+          {pending.length > 0 && (
+            <button className="alert-row ask" onClick={() => openPay(pending[0])}>
+              <span>{pending[0].month}월 급여 받으셨나요?</span>
+              <b>받은 금액 넣기</b>
+            </button>
+          )}
+          {owed.count > 0 && (
+            <button className="alert-row owed" onClick={() => goTo('request')}>
+              <span>덜 받은 급여 · {owed.count}개월</span>
+              <b>{owed.amount.toLocaleString()}원</b>
+            </button>
+          )}
+          {thisWeek?.eligible && (
+            <button className="alert-row" onClick={() => goTo('pay')}>
+              <span>이번 주 주휴수당 대상</span>
+              <b>+{thisWeek.pay.toLocaleString()}원</b>
+            </button>
+          )}
+        </section>
       )}
 
       <section>
         <div className="section-head">
-          <h2>{now.getMonth() + 1}월 근무 기록</h2>
-          <button className="btn small" onClick={() => setForm({ add: true })}>
-            + 직접 추가
-          </button>
+          <h2>{now.getMonth() + 1}월 내역</h2>
         </div>
-        {monthRecords.length === 0 ? (
+        {entries.length === 0 ? (
           <p className="muted center">아직 기록이 없어요. 출근 버튼을 눌러 시작해 보세요.</p>
         ) : (
-          monthRecords.map((r) => (
-            <RecordItem key={r.id} record={r} workplaces={workplaces} onEdit={() => setForm({ record: r })} />
-          ))
+          entries.map((e) =>
+            e.kind === 'record' ? (
+              <RecordItem
+                key={e.key}
+                record={e.record}
+                workplaces={workplaces}
+                amount={recordPay(e.record, workplaces.find((w) => w.id === e.record.workplaceId) ?? workplaces[0])}
+                onEdit={() => setForm({ record: e.record })}
+              />
+            ) : (
+              <div className="card record" key={e.key}>
+                <div className="record-main">
+                  <div className="record-day">
+                    <span>주휴</span>
+                    <b>{Number(e.at.slice(8, 10))}</b>
+                  </div>
+                  <div className="record-info">
+                    <p className="record-range">주휴수당</p>
+                    <p className="record-meta">
+                      {shortDay(e.week.startKey)} – {shortDay(e.week.endKey)} 주 · {fmtDuration(e.week.basisMin)} 기준
+                    </p>
+                  </div>
+                  <div className="record-side">
+                    <p className="record-amount">+{e.week.pay.toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            ),
+          )
         )}
       </section>
 

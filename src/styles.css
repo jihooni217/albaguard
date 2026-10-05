@@ -1,8 +1,8 @@
 /*
-  알바가드 디자인 (Claude Design 시안 J: 차분 + 돈 먼저)
-  - 밝은 화면은 종이색 바탕 + 먹색, 어두운 화면은 짙은 남회색 바탕
-  - 글꼴: IBM Plex Sans KR, 큰 금액 숫자만 Hahmlet(명조)
-  - 큰 숫자는 가늘게, 구분은 가는 선으로. 포인트는 초록 계열 한 가지
+  알바가드 디자인 (Claude Design 시안 L의 구성: 일하면 돈이 쌓이는 내역)
+  - 알바가드의 색은 잉크 남색(--brand). 기록을 잉크로 남긴다는 뜻
+  - 쌓이는 돈은 초록(--green), 덜 받은 돈은 빨강(--red). 이 세 가지 말고는 색을 늘리지 않는다
+  - 글꼴: IBM Plex Sans KR. 구분은 가는 선으로
   - 밝은 화면 / 어두운 화면 모두 아래 변수만 바꿔서 만든다. 색을 직접 쓰지 말 것
 */
 :root {
@@ -14,13 +14,14 @@
   --muted: #5d636d;
   --faint: #8b9099;
   --line: #dcd9d0;
-  --primary: #15171a; /* 주요 버튼 바탕 */
+  --brand: #2a3193; /* 알바가드의 색: 잉크 남색. 첫 화면 위쪽 면 */
+  --brand-deep: #171c5c; /* 근무 중일 때의 위쪽 면 */
+  --on-brand: #ffffff;
+  --primary: #2a3193; /* 주요 버튼 바탕 */
   --on-primary: #ffffff;
-  --accent: #0f7a55; /* 포인트: 초록 */
+  --accent: #2a3193; /* 고른 탭, 누를 수 있는 글자 */
   --on-accent: #ffffff;
-  --accent-soft: rgba(15, 122, 85, 0.12);
-  --out: #15171a; /* 퇴근 버튼 */
-  --on-out: #ffffff;
+  --accent-soft: rgba(42, 49, 147, 0.1);
   --chip: #e9e7e0;
   --red: #c2331c;
   --red-soft: rgba(194, 51, 28, 0.1);
@@ -35,7 +36,7 @@
   --overlay: rgba(21, 23, 26, 0.5);
   --radius: 18px;
   --font: 'IBM Plex Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', system-ui, sans-serif;
-  --font-num: 'Hahmlet', 'IBM Plex Sans KR', 'Apple SD Gothic Neo', serif;
+  --font-num: var(--font);
 }
 
 /* 어두운 화면: 폰이 다크 모드이거나 설정에서 '어둡게'를 골랐을 때. 아래 두 묶음은 값이 같아야 한다 */
@@ -49,13 +50,14 @@
     --muted: #9aa4b2;
     --faint: #6f7987;
     --line: #232a34;
-    --primary: #7ce0b5;
-    --on-primary: #0c1f17;
-    --accent: #7ce0b5;
-    --on-accent: #0c1f17;
-    --accent-soft: rgba(124, 224, 181, 0.14);
-    --out: #e9edf2;
-    --on-out: #0e1116;
+    --brand: #262c80;
+    --brand-deep: #151a52;
+    --on-brand: #ffffff;
+    --primary: #aab2ff;
+    --on-primary: #10143a;
+    --accent: #aab2ff;
+    --on-accent: #10143a;
+    --accent-soft: rgba(170, 178, 255, 0.14);
     --chip: #222832;
     --red: #ff9a85;
     --red-soft: rgba(255, 154, 133, 0.14);
@@ -80,13 +82,14 @@
   --muted: #9aa4b2;
   --faint: #6f7987;
   --line: #232a34;
-  --primary: #7ce0b5;
-  --on-primary: #0c1f17;
-  --accent: #7ce0b5;
-  --on-accent: #0c1f17;
-  --accent-soft: rgba(124, 224, 181, 0.14);
-  --out: #e9edf2;
-  --on-out: #0e1116;
+  --brand: #262c80;
+  --brand-deep: #151a52;
+  --on-brand: #ffffff;
+  --primary: #aab2ff;
+  --on-primary: #10143a;
+  --accent: #aab2ff;
+  --on-accent: #10143a;
+  --accent-soft: rgba(170, 178, 255, 0.14);
   --chip: #222832;
   --red: #ff9a85;
   --red-soft: rgba(255, 154, 133, 0.14);
@@ -312,142 +315,125 @@ a.btn {
   opacity: 0.7;
 }
 
-/* 이번 달 받을 돈: 첫 화면의 주인공 */
-.earn {
-  padding: 6px 4px 20px;
+/* 첫 화면 위쪽 면: 이번 달 받을 돈과 출근 버튼 */
+.top {
+  margin: -8px -20px 12px;
+  padding: calc(18px + env(safe-area-inset-top)) 24px 24px;
+  border-radius: 0 0 24px 24px;
+  background: var(--brand);
+  color: var(--on-brand);
+  transition: background 0.3s;
 }
 
-.earn-label,
-.earn-sub {
+.top.working {
+  background: var(--brand-deep);
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.top-brand {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.top-place {
+  max-width: 60%;
+  min-height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
   font-size: 13px;
-  color: var(--muted);
+  text-align: right;
+  opacity: 0.85;
 }
 
-.earn-amount {
-  font-family: var(--font-num);
-  font-size: 52px;
+.top-place option {
+  color: #15171a;
+}
+
+.top-label {
+  margin-top: 22px;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.top-amount {
+  font-size: 46px;
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   font-variant-numeric: tabular-nums;
 }
 
-.earn-amount span {
-  font-size: 22px;
+.top-amount span {
+  font-size: 20px;
   font-weight: 500;
   letter-spacing: 0;
-  color: var(--muted);
 }
 
-/* 출퇴근: 시계 눈금 다이얼 안의 둥근 버튼 + 지금 시각 */
-.hero {
+.top-actions {
   display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 8px;
-  padding: 16px 18px;
-  border-radius: 22px;
-  background: var(--surface);
-}
-
-.dial {
-  position: relative;
-  flex-shrink: 0;
-  width: 112px;
-  height: 112px;
-}
-
-.dial svg {
-  position: absolute;
-  inset: 0;
-}
-
-.dial circle {
-  fill: none;
-  stroke-width: 6;
-}
-
-.dial-ticks {
-  stroke: var(--line);
-}
-
-.dial-marks {
-  stroke: var(--accent);
-}
-
-.hero.working .dial-ticks {
-  stroke: var(--accent);
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .clock-btn {
-  position: absolute;
-  left: 14px;
-  top: 14px;
-  width: 84px;
-  height: 84px;
+  flex: 1;
+  width: 100%;
+  min-height: 58px;
   border: none;
-  border-radius: 50%;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #171c5c;
   font-family: inherit;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.1s;
 }
 
-.clock-btn.in {
-  background: var(--accent);
-  color: var(--on-accent);
-}
-
-.clock-btn.out {
-  background: var(--out);
-  color: var(--on-out);
-}
-
 .clock-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.97);
 }
 
-.hero-info {
-  min-width: 0;
-  flex: 1;
-}
-
-.hero-clock {
-  font-size: 40px;
-  font-weight: 300;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+.clock-now {
   font-variant-numeric: tabular-nums;
 }
 
-.hero-select {
-  max-width: 100%;
-  min-height: 36px;
-  margin: 2px 0 0 -4px;
-  padding: 0 4px;
-  border: none;
+.top-add {
+  min-height: 58px;
+  padding: 0 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  border-radius: 14px;
   background: transparent;
-  color: var(--text);
+  color: inherit;
+  font-family: inherit;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.hero-status {
+.top-status {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 4px;
-  color: var(--accent);
+  margin: 14px 0 12px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: currentColor;
+  background: #7ce0b5;
   animation: pulse 1.4s ease-in-out infinite;
 }
 
@@ -457,67 +443,51 @@ a.btn {
   }
 }
 
-.hero-sub {
-  font-size: 13px;
-  color: var(--muted);
+/* 알림 묶음: 받은 금액 확인, 덜 받은 급여, 주휴수당 대상 */
+.alerts {
+  padding: 2px 18px;
 }
 
-/* 알림 줄 (주휴수당 대상, 덜 받은 급여): 흰 줄에 금액만 색으로 */
-.holiday-banner {
+.alert-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
   width: 100%;
-  margin: 0;
-  padding: 16px 4px;
+  min-height: 54px;
+  padding: 0;
   border: none;
-  border-top: 1px solid var(--line);
-  border-radius: 0;
   background: transparent;
   color: var(--text);
-  font-size: 16px;
-  font-weight: 400;
+  font-family: inherit;
+  font-size: 15px;
   text-align: left;
   cursor: pointer;
 }
 
-.holiday-banner > span {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  flex: 1;
-}
-
-.holiday-banner + section {
+.alert-row + .alert-row {
   border-top: 1px solid var(--line);
 }
 
-.holiday-banner b {
+.alert-row b {
   color: var(--green);
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-.holiday-banner.owed b {
-  color: var(--red);
-  font-family: var(--font-num);
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.holiday-banner.ask b {
+.alert-row.owed b {
+  color: var(--red);
+  font-size: 19px;
+}
+
+.alert-row.ask b {
   color: var(--accent);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.holiday-banner .icon {
-  color: var(--faint);
+  text-underline-offset: 4px;
 }
 
 /* 근무 기록: 종이 위의 줄. 카드 없이 구분선만 */
@@ -593,6 +563,14 @@ a.btn {
   color: var(--muted);
   font-size: 15px;
   font-weight: 400;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.record-amount {
+  color: var(--green);
+  font-size: 16px;
+  font-weight: 700;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -1014,8 +992,8 @@ a.btn {
 
 /* 급여 비교 */
 .pay-total {
-  font-size: 48px;
-  font-weight: 300;
+  font-size: 40px;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.045em;
   margin-bottom: 12px;
@@ -1068,9 +1046,50 @@ a.btn {
 }
 
 .diff-title {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 700;
   letter-spacing: -0.03em;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.bar-row b {
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: flex;
+  gap: 2px;
+  height: 12px;
+  margin-bottom: 8px;
+}
+
+.bar i {
+  display: block;
+  border-radius: 3px;
+  background: var(--text);
+}
+
+.bar em {
+  flex: 1;
+  border: 2px solid var(--red);
+  border-radius: 3px;
 }
 
 .diff-detail {

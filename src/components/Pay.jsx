@@ -221,10 +221,23 @@ function PaymentCompare({ monthLabel, expected, saved, onSave, onRequest }) {
             </p>
           )}
           {Math.abs(diff) < 10 && <p className="diff-title">예상 급여와 같아요</p>}
-          <p className="diff-detail">
-            {saved.taxed ? `3.3% 뗀 예상 급여 ${won(target)}` : `예상 급여 ${won(target)}`} − 받은 금액{' '}
-            {won(saved.amount)}
-          </p>
+          <div className="bars">
+            <div className="bar-row">
+              <span>{saved.taxed ? '받았어야 할 돈 (3.3% 제외)' : '받았어야 할 돈'}</span>
+              <b>{won(target)}</b>
+            </div>
+            <div className="bar">
+              <i style={{ width: `${Math.min(100, (target / Math.max(target, saved.amount, 1)) * 100)}%` }} />
+            </div>
+            <div className="bar-row">
+              <span>실제로 받은 돈</span>
+              <b>{won(saved.amount)}</b>
+            </div>
+            <div className="bar">
+              <i style={{ width: `${Math.min(100, (saved.amount / Math.max(target, saved.amount, 1)) * 100)}%` }} />
+              {diff >= 10 && <em />}
+            </div>
+          </div>
           {diff >= 10 && !saved.taxed && (
             <p className="diff-detail">세금이나 4대보험을 떼고 받았다면 그만큼은 차액에서 빼고 봐야 해요.</p>
           )}
