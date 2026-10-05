@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MIN_WAGE_2026, calcMonth, paymentKey, tax33, ymOf } from '../lib/pay'
 import { dateKey, fmtDuration } from '../lib/time'
+import Icon from './Icon.jsx'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 const shortDate = (key) => `${Number(key.slice(5, 7))}/${Number(key.slice(8, 10))}`
@@ -40,13 +41,13 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
       <section className="card">
         <div className="cal-head">
           <button className="icon-btn" onClick={() => moveMonth(-1)} aria-label="이전 달">
-            ‹
+            <Icon name="chevronLeft" size={20} />
           </button>
           <h2>
             {month.y}년 {month.m + 1}월
           </h2>
           <button className="icon-btn" onClick={() => moveMonth(1)} aria-label="다음 달">
-            ›
+            <Icon name="chevronRight" size={20} />
           </button>
         </div>
         {workplaces.length > 1 && (
@@ -146,8 +147,8 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
         <p className="muted note">
           주휴수당은 일요일이 들어 있는 달에 넣어 계산했어요. 연장근로 가산과 휴게시간은 반영하지 않은 금액이에요.
         </p>
-        <button className="btn block" onClick={() => openEvidence({ workplaceId: workplace.id, ym })}>
-          📄 증빙 묶음 PDF 만들기
+        <button className="btn block with-icon" onClick={() => openEvidence({ workplaceId: workplace.id, ym })}>
+          <Icon name="file" size={20} /> 증빙 묶음 PDF 만들기
         </button>
       </section>
     </>

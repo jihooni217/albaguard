@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { dayStatus } from '../lib/compare'
 import { dateKey, fmtDate, fmtDuration, pad } from '../lib/time'
+import Icon from './Icon.jsx'
 import Modal from './Modal.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
@@ -49,13 +50,13 @@ export default function CalendarView({ data, actions, goTo }) {
       <section className="card">
         <div className="cal-head">
           <button className="icon-btn" onClick={() => moveMonth(-1)} aria-label="이전 달">
-            ‹
+            <Icon name="chevronLeft" size={20} />
           </button>
           <h2>
             {month.y}년 {month.m + 1}월
           </h2>
           <button className="icon-btn" onClick={() => moveMonth(1)} aria-label="다음 달">
-            ›
+            <Icon name="chevronRight" size={20} />
           </button>
         </div>
 

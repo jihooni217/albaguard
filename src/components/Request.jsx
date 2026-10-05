@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { buildFacts, copyText, makeMessage, shortfalls, targetKey } from '../lib/request'
 import { dateKey } from '../lib/time'
+import Icon from './Icon.jsx'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 
@@ -50,10 +51,10 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
           <pre>{facts}</pre>
         </details>
         <button
-          className="btn block"
+          className="btn block with-icon"
           onClick={() => openEvidence({ workplaceId: current.workplace.id, ym: current.ym })}
         >
-          📄 증빙 묶음 PDF 만들기
+          <Icon name="file" size={20} /> 증빙 묶음 PDF 만들기
         </button>
       </section>
 

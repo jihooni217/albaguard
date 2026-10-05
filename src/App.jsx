@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { loadData, saveData } from './lib/storage'
 import { makeActions } from './lib/actions'
 import Evidence from './components/Evidence.jsx'
+import Icon from './components/Icon.jsx'
 import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import Pay from './components/Pay.jsx'
@@ -9,11 +10,11 @@ import Request from './components/Request.jsx'
 import Workplaces from './components/Workplaces.jsx'
 
 const TABS = [
-  { id: 'home', label: '근무 기록', icon: '⏱' },
-  { id: 'calendar', label: '캘린더', icon: '📅' },
-  { id: 'pay', label: '급여 비교', icon: '💰' },
-  { id: 'request', label: '정산 요청', icon: '✉️' },
-  { id: 'workplaces', label: '근무지', icon: '🏪' },
+  { id: 'home', label: '근무 기록', icon: 'clock' },
+  { id: 'calendar', label: '캘린더', icon: 'calendar' },
+  { id: 'pay', label: '급여 비교', icon: 'won' },
+  { id: 'request', label: '정산 요청', icon: 'send' },
+  { id: 'workplaces', label: '근무지', icon: 'store' },
 ]
 
 export default function App() {
@@ -36,8 +37,13 @@ export default function App() {
     <>
     <div className="app">
       <header className="app-header">
-        <h1>알바가드</h1>
-        <p>못 받은 알바비, 기록으로 찾는 앱</p>
+        <span className="logo">
+          <Icon name="shield" size={22} />
+        </span>
+        <div>
+          <h1>알바가드</h1>
+          <p>못 받은 알바비, 기록으로 찾는 앱</p>
+        </div>
       </header>
 
       <main className="app-main">
@@ -59,7 +65,7 @@ export default function App() {
       <nav className="tabbar">
         {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? 'tab active' : 'tab'} onClick={() => setTab(t.id)}>
-            <span className="tab-icon">{t.icon}</span>
+            <Icon name={t.icon} />
             {t.label}
           </button>
         ))}

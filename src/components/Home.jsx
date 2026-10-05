@@ -1,8 +1,24 @@
 import { useEffect, useState } from 'react'
 import { mondayOf, weekSummary } from '../lib/pay'
-import { dateKey, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
+import { dateKey, fmtDate, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
+import Icon from './Icon.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
+
+// 지금 시각. 이 부분만 1초마다 다시 그린다
+function LiveClock() {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+  return (
+    <>
+      <p className="hero-date">{fmtDate(now)}</p>
+      <p className="hero-clock">{fmtTime(now)}</p>
+    </>
+  )
+}
 
 export default function Home({ data, actions, goTo }) {
   const { workplaces, selectedWorkplaceId, active, records } = data
@@ -47,22 +63,23 @@ export default function Home({ data, actions, goTo }) {
 
   return (
     <>
-      <section className="card clock-card">
+      <section className={active ? 'hero working' : 'hero'}>
+        <LiveClock />
         {active ? (
           <>
-            <p className="clock-status">
+            <p className="hero-status">
               <span className="dot" /> {activeWorkplace?.name ?? '근무지'}에서 근무 중
             </p>
-            <p className="clock-time">출근 {fmtTime(active.start)}</p>
-            <p className="muted">{fmtDuration(minutesBetween(active.start, now))} 지났어요</p>
             <button className="clock-btn out" onClick={actions.clockOut}>
               퇴근
             </button>
+            <p className="hero-start">출근 {fmtTime(active.start)}</p>
+            <p className="hero-sub">{fmtDuration(minutesBetween(active.start, now))} 지났어요</p>
           </>
         ) : (
           <>
             <select
-              className="input"
+              className="hero-select"
               value={selectedWorkplaceId ?? ''}
               onChange={(e) => actions.selectWorkplace(e.target.value)}
               aria-label="근무지 선택"
@@ -76,17 +93,17 @@ export default function Home({ data, actions, goTo }) {
             <button className="clock-btn in" onClick={actions.clockIn}>
               출근
             </button>
-            <p className="muted">버튼을 누르면 지금 시각으로 출근이 기록돼요</p>
+            <p className="hero-sub">버튼을 누르면 지금 시각으로 출근이 기록돼요</p>
           </>
         )}
       </section>
 
-      <section className="card summary">
-        <div>
+      <section className="summary">
+        <div className="card stat">
           <p className="muted">{now.getMonth() + 1}월 총 근무 시간</p>
           <p className="summary-value">{fmtDuration(totalMin)}</p>
         </div>
-        <div>
+        <div className="card stat">
           <p className="muted">근무 횟수</p>
           <p className="summary-value">{workDays}회</p>
         </div>
@@ -94,7 +111,14 @@ export default function Home({ data, actions, goTo }) {
 
       {thisWeek?.eligible && (
         <button className="card holiday-banner" onClick={() => goTo('pay')}>
-          🎉 이번 주 주휴수당 대상이에요 <b>+{thisWeek.pay.toLocaleString()}원</b>
+          <span className="banner-icon">
+            <Icon name="gift" size={22} />
+          </span>
+          <span>
+            이번 주 주휴수당 대상이에요
+            <b>+{thisWeek.pay.toLocaleString()}원</b>
+          </span>
+          <Icon name="chevronRight" size={18} />
         </button>
       )}
 
