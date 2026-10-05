@@ -1,6 +1,6 @@
 /*
   알바가드 디자인: 종이 위의 근무 기록표.
-  - 따뜻한 종이색 바탕 + 먹색 글자, 포인트는 형광 라임 한 가지
+  - 따뜻한 종이색 바탕 + 먹색 글자, 포인트는 짙은 초록 한 가지 (받을 돈·지켜 준다는 뜻)
   - 그라데이션·그림자 없이 평평하게. 목록은 카드 대신 줄과 구분선
   - 밝은 화면 / 어두운 화면 모두 아래 변수만 바꿔서 만든다
 */
@@ -13,19 +13,22 @@
   --muted: #6d6c67;
   --faint: #9b9a94;
   --line: #e2dfd6;
-  --primary: #16161a; /* 주요 버튼 바탕 */
+  --primary: #17694a; /* 주요 버튼 바탕 */
   --on-primary: #ffffff;
-  --accent: #c6f432; /* 형광 라임 */
-  --on-accent: #16161a;
-  --hero: #16161a;
+  --accent: #17694a; /* 짙은 초록 */
+  --on-accent: #ffffff;
+  --accent-soft: rgba(23, 105, 74, 0.12);
+  --hero: #16161a; /* 출근 판: 먹색 */
   --on-hero: #ffffff;
+  --hero-btn: #45c08a;
+  --on-hero-btn: #0c1f17;
   --chip: #eae7df;
   --red: #dc3f26;
   --red-soft: rgba(220, 63, 38, 0.1);
   --orange: #c2610a;
   --orange-soft: rgba(224, 122, 20, 0.14);
-  --green: #12804a;
-  --green-soft: rgba(18, 128, 74, 0.12);
+  --green: #17694a;
+  --green-soft: rgba(23, 105, 74, 0.12);
   --purple: #6b45c9;
   --purple-soft: rgba(107, 69, 201, 0.12);
   --blue: #2c5fd6;
@@ -45,17 +48,22 @@
     --muted: #a09f98;
     --faint: #73726c;
     --line: #2d2d32;
-    --primary: #c6f432;
-    --on-primary: #16161a;
+    --primary: #45c08a;
+    --on-primary: #0c1f17;
+    --accent: #45c08a;
+    --on-accent: #0c1f17;
+    --accent-soft: rgba(69, 192, 138, 0.16);
     --hero: #1c1c20;
     --on-hero: #f1f0ea;
+    --hero-btn: #45c08a;
+    --on-hero-btn: #0c1f17;
     --chip: #2b2b30;
     --red: #ff7a63;
     --red-soft: rgba(255, 122, 99, 0.14);
     --orange: #f0a04b;
     --orange-soft: rgba(240, 160, 75, 0.14);
-    --green: #4fd08a;
-    --green-soft: rgba(79, 208, 138, 0.13);
+    --green: #45c08a;
+    --green-soft: rgba(69, 192, 138, 0.14);
     --purple: #a98bf5;
     --purple-soft: rgba(169, 139, 245, 0.15);
     --blue: #7ea6ff;
@@ -73,17 +81,22 @@
   --muted: #a09f98;
   --faint: #73726c;
   --line: #2d2d32;
-  --primary: #c6f432;
-  --on-primary: #16161a;
+  --primary: #45c08a;
+  --on-primary: #0c1f17;
+  --accent: #45c08a;
+  --on-accent: #0c1f17;
+  --accent-soft: rgba(69, 192, 138, 0.16);
   --hero: #1c1c20;
   --on-hero: #f1f0ea;
+  --hero-btn: #45c08a;
+  --on-hero-btn: #0c1f17;
   --chip: #2b2b30;
   --red: #ff7a63;
   --red-soft: rgba(255, 122, 99, 0.14);
   --orange: #f0a04b;
   --orange-soft: rgba(240, 160, 75, 0.14);
-  --green: #4fd08a;
-  --green-soft: rgba(79, 208, 138, 0.13);
+  --green: #45c08a;
+  --green-soft: rgba(69, 192, 138, 0.14);
   --purple: #a98bf5;
   --purple-soft: rgba(169, 139, 245, 0.15);
   --blue: #7ea6ff;
@@ -168,7 +181,6 @@ a.btn {
   height: 8px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 1px rgba(22, 22, 26, 0.25);
 }
 
 .app-header h1 {
@@ -304,7 +316,7 @@ a.btn {
   opacity: 0.7;
 }
 
-/* 출퇴근: 먹색 판 위에 라임 버튼. 근무 중에는 판 전체가 라임으로 바뀐다 */
+/* 출퇴근: 먹색 판 위에 초록 버튼. 근무 중에는 흰 판 + 초록 테두리로 바뀐다 */
 .hero {
   margin-bottom: 4px;
   padding: 22px 20px 20px;
@@ -315,8 +327,13 @@ a.btn {
 }
 
 .hero.working {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.hero.working .hero-status {
+  color: var(--accent);
 }
 
 .hero-date {
@@ -390,13 +407,13 @@ a.btn {
 }
 
 .clock-btn.in {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--hero-btn);
+  color: var(--on-hero-btn);
 }
 
 .clock-btn.out {
-  background: #16161a;
-  color: #ffffff;
+  background: var(--text);
+  color: var(--bg);
 }
 
 .clock-btn:active {
@@ -555,8 +572,8 @@ a.btn {
 .record-duration {
   padding: 2px 9px;
   border-radius: 8px;
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 14px;
   font-weight: 800;
   white-space: nowrap;
@@ -675,7 +692,7 @@ a.btn {
 }
 
 .input:focus {
-  border-color: var(--text);
+  border-color: var(--accent);
 }
 
 .field-help {
@@ -701,7 +718,7 @@ a.btn {
   height: 22px;
   margin-top: 1px;
   flex-shrink: 0;
-  accent-color: var(--text);
+  accent-color: var(--accent);
 }
 
 .notice {
@@ -1483,7 +1500,7 @@ a.btn {
   }
 }
 
-/* 하단 탭: 고른 탭은 글자색과 위쪽 라임 막대로 표시 */
+/* 하단 탭: 고른 탭은 글자색과 위쪽 초록 막대로 표시 */
 .tabbar {
   position: fixed;
   left: 50%;
@@ -1526,10 +1543,9 @@ a.btn {
   top: -1px;
   left: 50%;
   width: 28px;
-  height: 4px;
-  border-radius: 0 0 4px 4px;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
   background: var(--accent);
-  box-shadow: 0 0 0 1px rgba(22, 22, 26, 0.18);
   transform: translateX(-50%);
 }
 
