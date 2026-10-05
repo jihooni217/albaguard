@@ -30,20 +30,10 @@ export const targetKey = (target) => (target ? paymentKey(target.workplaceId, ta
 const recordLine = (r) =>
   `${fmtDate(r.start)} ${fmtRange(r.start, r.end)} (${fmtDuration(minutesBetween(r.start, r.end))})`
 
-// Claude에게 넘기고, 화면에서 '근거'로도 보여주는 글
-export function buildFacts(c) {
+// 기본급·주휴수당·야간수당·합계를 한 줄씩
+function calcLines(c) {
   const { workplace, result, payment } = c
-  const lines = [
-    `[근무지] ${workplace.name} / 시급 ${won(workplace.wage)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
-    `[대상] ${c.label} 급여`,
-    '',
-    '[날짜별 근무 기록]',
-    ...c.records.map(recordLine),
-    `총 근무 시간: ${fmtDuration(result.baseMin)}`,
-    '',
-    '[계산 내역]',
-    `기본급: ${fmtDuration(result.baseMin)} × ${won(workplace.wage)} = ${won(result.basePay)}`,
-  ]
+  const lines = [`기본급: ${fmtDuration(result.baseMin)} × ${won(workplace.wage)} = ${won(result.basePay)}`]
   if (result.holidayPay > 0) {
     lines.push(`주휴수당: ${won(result.holidayPay)} (주 15시간 이상 근무한 주)`)
     for (const w of result.weeks.filter((week) => week.eligible)) {
@@ -57,8 +47,57 @@ export function buildFacts(c) {
   }
   lines.push(`예상 급여 합계: ${won(result.total)}`)
   if (payment.taxed) lines.push(`3.3% 세금을 뗀 예상 금액: ${won(c.target)}`)
-  lines.push('', `[실제 받은 금액] ${won(payment.amount)}`, `[차액] ${won(c.diff)} 덜 받음`)
-  return lines.join('\n')
+  return lines
+}
+
+// Claude에게 넘기고, 화면에서 '근거'로도 보여주는 글
+export function buildFacts(c) {
+  const { workplace, result, payment } = c
+  return [
+    `[근무지] ${workplace.name} / 시급 ${won(workplace.wage)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
+    `[대상] ${c.label} 급여`,
+    '',
+    '[날짜별 근무 기록]',
+    ...c.records.map(recordLine),
+    `총 근무 시간: ${fmtDuration(result.baseMin)}`,
+    '',
+    '[계산 내역]',
+    ...calcLines(c),
+    '',
+    `[실제 받은 금액] ${won(payment.amount)}`,
+    `[차액] ${won(c.diff)} 덜 받음`,
+  ].join('\n')
+}
+
+// 내용증명 기본 초안 (2단계). [대괄호]는 사용자가 직접 채운다
+export function buildCertifiedTemplate(c) {
+  const { workplace, result, payment } = c
+  return [
+    '임금 지급 요청',
+    '',
+    `수신인: [수신인 성명] (${workplace.name} 대표)`,
+    '주소: [사업장 주소]',
+    '발신인: [발신인 성명]',
+    '주소: [발신인 주소]',
+    '',
+    `1. 발신인은 ${workplace.name}에서 시급 ${won(workplace.wage)}으로 근무한 근로자입니다.`,
+    '',
+    `2. 발신인은 ${c.label}에 아래와 같이 총 ${fmtDuration(result.baseMin)} 근무하였습니다.`,
+    ...c.records.map((r) => `  - ${recordLine(r)}`),
+    '',
+    '3. 위 근무에 대한 임금은 다음과 같이 계산됩니다.',
+    ...calcLines(c).map((line) => `  ${line.startsWith(' ') ? line : `- ${line}`}`),
+    '',
+    `4. 그러나 발신인이 실제로 지급받은 금액은 ${won(payment.amount)}으로, ${won(c.diff)}이 지급되지 않았습니다.`,
+    '',
+    `5. 이에 미지급 임금 ${won(c.diff)}을 [지급 기한]까지 아래 계좌로 지급하여 주시기 바랍니다.`,
+    '  입금 계좌: [은행명 / 계좌번호 / 예금주]',
+    '',
+    '6. 위 기한까지 지급되지 않을 경우, 고용노동부에 임금체불 진정을 제기하는 등 필요한 절차를 진행할 수 있음을 알려드립니다.',
+    '',
+    '[작성일]',
+    '발신인 [발신인 성명] (서명 또는 인)',
+  ].join('\n')
 }
 
 // AI 연결이 안 될 때 쓰는 기본 문구 (1단계)
@@ -83,10 +122,18 @@ export function buildTemplate(c) {
   ].join('\n')
 }
 
+// 문구를 만든다. API 키가 있으면 Claude가 쓰고, 없거나 실패하면 기본 문구를 쓴다
+export async function makeMessage(stage, c) {
+  const result = await requestMessage(stage, buildFacts(c))
+  if (result.text) return { text: result.text, source: 'ai' }
+  const text = stage === 1 ? buildTemplate(c) : buildCertifiedTemplate(c)
+  return { text, source: 'template', notice: errorText(result.error) }
+}
+
 // 서버(Claude)에 문구를 요청한다. 실패하면 { error } 를 돌려준다
-export async function requestMessage(stage, facts) {
+async function requestMessage(stage, facts) {
   try {
-    const res = await fetch('/api/settlement-message', {
+    const res = await fetch('./api/settlement-message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ stage, facts }),
@@ -99,14 +146,14 @@ export async function requestMessage(stage, facts) {
 }
 
 export const ERROR_TEXT = {
-  NO_KEY: 'API 키가 아직 없어요. .env 파일에 키를 넣고 npm run dev 를 다시 실행해 주세요.',
+  NO_KEY: '', // 키 없이 쓰는 것은 정상이라 안내하지 않는다
   BAD_KEY: 'API 키가 올바르지 않아요. .env 파일의 키를 확인해 주세요.',
   RATE_LIMIT: '요청이 잠시 몰렸어요. 조금 뒤에 다시 시도해 주세요.',
   REFUSED: 'AI가 이 요청에는 문구를 만들지 못했어요.',
-  OFFLINE: '서버에 연결하지 못했어요. npm run dev 가 켜져 있는지 확인해 주세요.',
+  OFFLINE: '', // 서버 없이(배포된 화면만) 쓰는 것도 정상
 }
 
-export const errorText = (code) => ERROR_TEXT[code] ?? 'AI 문구를 만드는 중 문제가 생겼어요. 잠시 뒤 다시 시도해 주세요.'
+const errorText = (code) => ERROR_TEXT[code] ?? 'AI 문구를 만드는 중 문제가 생겼어요.'
 
 // 주소가 https가 아니어도(같은 와이파이의 폰) 복사가 되도록 예비 방법을 둔다
 export async function copyText(text) {

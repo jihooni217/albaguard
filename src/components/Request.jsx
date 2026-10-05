@@ -1,13 +1,5 @@
 import { useState } from 'react'
-import {
-  buildFacts,
-  buildTemplate,
-  copyText,
-  errorText,
-  requestMessage,
-  shortfalls,
-  targetKey,
-} from '../lib/request'
+import { buildFacts, copyText, makeMessage, shortfalls, targetKey } from '../lib/request'
 import { dateKey } from '../lib/time'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
@@ -73,12 +65,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         button="메시지 만들기"
         saved={saved[1]}
         onSave={(value) => actions.saveRequest(current.key, 1, value)}
-        generate={async () => {
-          const result = await requestMessage(1, facts)
-          if (result.text) return { text: result.text, source: 'ai' }
-          // AI 연결이 안 되어도 시연이 멈추지 않도록 기본 문구를 쓴다
-          return { text: buildTemplate(current), source: 'template', notice: errorText(result.error) }
-        }}
+        generate={() => makeMessage(1, current)}
       />
 
       <Stage
@@ -89,10 +76,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         button="초안 만들기"
         saved={saved[2]}
         onSave={(value) => actions.saveRequest(current.key, 2, value)}
-        generate={async () => {
-          const result = await requestMessage(2, facts)
-          return result.text ? { text: result.text, source: 'ai' } : { error: errorText(result.error) }
-        }}
+        generate={() => makeMessage(2, current)}
       />
 
       <section className="card">
@@ -151,9 +135,7 @@ function Stage({ step, title, desc, button, saved, onSave, generate }) {
 
       {saved && (
         <>
-          {saved.source === 'template' && (
-            <p className="notice stage-notice">AI 대신 기본 문구로 만들었어요. {notice}</p>
-          )}
+          {notice && <p className="notice stage-notice">{notice} 대신 기본 문구로 만들었어요.</p>}
           <textarea
             className="input message"
             value={saved.text}
