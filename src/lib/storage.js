@@ -12,6 +12,7 @@ export const emptyData = {
   attachments: [], // { id, workplaceId, kind, date, note, addedAt } 증빙 사진 설명 (사진은 photos.js)
   sudoku: null, // 하던 스도쿠 판 { level, puzzle, solution, cells, elapsed, done }
   sudokuBest: {}, // 난이도별 최고 기록(초)
+  spotBest: {}, // 다른 곳 찾기의 난이도별 최고 기록(초)
   lastBackupAt: null, // 마지막으로 백업 파일을 만든 때
   requests: {}, // '근무지id|2026-10' → { 1: { text, source }, 2: { text, source } } 만든 정산 요청 문구
 }

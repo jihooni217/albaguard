@@ -1671,6 +1671,42 @@ a.btn {
   margin-top: 8px;
 }
 
+/* 다른 곳 찾기 */
+.spot-count {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.spot-scene {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.spot-scene.wrong {
+  box-shadow: 0 0 0 3px var(--red);
+}
+
+.spot-gap {
+  height: 10px;
+}
+
+/* 물체마다 얹는 누르는 범위. 찾으면 테두리가 생긴다 */
+.spot-hit {
+  fill: transparent;
+  stroke: none;
+}
+
+.spot-hit.found {
+  fill: rgba(255, 255, 255, 0.18);
+  stroke: #ff3b6b;
+  stroke-width: 3;
+}
+
 /* 아래에서 올라오는 창 */
 .modal-backdrop {
   position: fixed;

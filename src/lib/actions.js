@@ -161,6 +161,15 @@ export function makeActions(setData) {
       })
     },
 
+    // 다른 곳 찾기를 끝냈을 때: 더 빨리 찾았으면 최고 기록을 바꾼다
+    finishSpot(level, seconds) {
+      setData((d) => {
+        const best = d.spotBest ?? {}
+        if (best[level] != null && best[level] <= seconds) return d
+        return { ...d, spotBest: { ...best, [level]: seconds } }
+      })
+    },
+
     savePayment(key, value) {
       setData((d) => ({ ...d, payments: { ...d.payments, [key]: value } }))
     },

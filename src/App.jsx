@@ -8,6 +8,7 @@ import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import Pay from './components/Pay.jsx'
 import Request from './components/Request.jsx'
+import SpotGame from './components/SpotGame.jsx'
 import Sudoku from './components/Sudoku.jsx'
 import Workplaces from './components/Workplaces.jsx'
 
@@ -34,7 +35,7 @@ export default function App() {
     window.scrollTo(0, 0)
   }
   const [requestTarget, setRequestTarget] = useState(null) // 급여 비교에서 넘어올 때 고른 달
-  const [gameOpen, setGameOpen] = useState(false) // 근무 중에만 열리는 스도쿠
+  const [gameOpen, setGameOpen] = useState(null) // 근무 중에만 열리는 게임: null | 'sudoku' | 'spot'
   const [evidenceTarget, setEvidenceTarget] = useState(null) // 증빙 묶음을 볼 근무지·달
   const actions = useMemo(() => makeActions(setData), [])
 
@@ -71,7 +72,7 @@ export default function App() {
 
       <main className="app-main" key={tab}>
         {tab === 'home' && (
-          <Home data={data} actions={actions} goTo={setTab} openPay={openPay} openGame={() => setGameOpen(true)} />
+          <Home data={data} actions={actions} goTo={setTab} openPay={openPay} openGame={setGameOpen} />
         )}
         {tab === 'calendar' && <CalendarView data={data} actions={actions} goTo={setTab} />}
         {tab === 'pay' && <Pay data={data} actions={actions} goTo={setTab} openRequest={openRequest} openEvidence={setEvidenceTarget} target={payTarget} />}
@@ -95,8 +96,11 @@ export default function App() {
         ))}
       </nav>
     </div>
-    {gameOpen && data.active && (
-      <Sudoku game={data.sudoku} best={data.sudokuBest ?? {}} actions={actions} onClose={() => setGameOpen(false)} />
+    {gameOpen === 'sudoku' && data.active && (
+      <Sudoku game={data.sudoku} best={data.sudokuBest ?? {}} actions={actions} onClose={() => setGameOpen(null)} />
+    )}
+    {gameOpen === 'spot' && data.active && (
+      <SpotGame best={data.spotBest ?? {}} actions={actions} onClose={() => setGameOpen(null)} />
     )}
     {evidenceTarget && <Evidence data={data} target={evidenceTarget} onClose={() => setEvidenceTarget(null)} />}
     </>

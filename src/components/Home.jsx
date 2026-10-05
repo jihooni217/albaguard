@@ -133,9 +133,13 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
 
       {active && (
         <section className="card alerts">
-          <button className="alert-row ask" onClick={openGame}>
+          <button className="alert-row ask" onClick={() => openGame('sudoku')}>
             <span>손님 없는 틈에 · 스도쿠</span>
             <b>{data.sudoku && !data.sudoku.done ? '이어 하기' : '한 판 하기'}</b>
+          </button>
+          <button className="alert-row ask" onClick={() => openGame('spot')}>
+            <span>손님 없는 틈에 · 다른 곳 찾기</span>
+            <b>한 판 하기</b>
           </button>
         </section>
       )}
