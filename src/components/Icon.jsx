@@ -38,6 +38,10 @@ const PATHS = {
       <path d="M14 3v5h5M9 13h6M9 17h6" />
     </>
   ),
+  phone: (
+    <path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" />
+  ),
+  external: <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5" />,
   chevronLeft: <path d="M15 5l-7 7 7 7" />,
   chevronRight: <path d="M9 5l7 7-7 7" />,
   close: <path d="M6 6l12 12M18 6L6 18" />,

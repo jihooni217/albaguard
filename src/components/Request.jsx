@@ -89,8 +89,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
             <b>상담</b> — 고용노동부 고객상담센터 ☎ 1350 에서 먼저 물어볼 수 있어요.
           </li>
           <li>
-            <b>진정 접수</b> — 고용노동부 노동포털(labor.moel.go.kr)에서 온라인으로 내거나, 사업장 관할 지방고용노동관서를
-            방문해요.
+            <b>진정 접수</b> — 고용노동부 노동포털에서 온라인으로 내거나, 사업장 관할 지방고용노동관서를 방문해요.
           </li>
           <li>
             <b>준비할 것</b> — 근무 기록과 수정 이력, 계산 내역, 입금 내역, 사장님과 주고받은 메시지.
@@ -99,6 +98,28 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
             <b>이후</b> — 근로감독관이 양쪽 이야기를 듣고 사실을 확인해요.
           </li>
         </ol>
+
+        <div className="link-row">
+          <a className="btn with-icon" href="tel:1350">
+            <Icon name="phone" size={20} /> 1350 전화 상담
+          </a>
+          <a className="btn with-icon" href="https://labor.moel.go.kr/" target="_blank" rel="noreferrer">
+            <Icon name="external" size={20} /> 노동포털 열기
+          </a>
+        </div>
+
+        <div className="notice link-note">
+          <p>
+            여기서 만든 <b>증빙 묶음 PDF</b>는 진정을 낼 때 첨부 자료로 쓸 수 있고, 진정서 작성을 도와주는 서비스에 증거
+            파일로 올릴 수도 있어요. 통장 거래 내역과 함께 준비해 두세요.
+          </p>
+          <button
+            className="btn block with-icon"
+            onClick={() => openEvidence({ workplaceId: current.workplace.id, ym: current.ym })}
+          >
+            <Icon name="file" size={20} /> 증빙 묶음 PDF 만들기
+          </button>
+        </div>
         <p className="muted">임금은 받을 수 있게 된 날부터 3년이 지나면 청구하기 어려워져요.</p>
       </section>
 

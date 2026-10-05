@@ -954,6 +954,29 @@ textarea {
   margin-top: 10px;
 }
 
+.link-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.link-row .btn {
+  padding: 0 10px;
+  font-size: 15px;
+  text-decoration: none;
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.link-note {
+  margin-bottom: 12px;
+}
+
+.link-note .btn {
+  background: #fff;
+}
+
 /* 증빙 묶음 (화면 미리보기 + 인쇄) */
 .evidence-screen {
   position: fixed;
