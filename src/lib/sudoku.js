@@ -5,7 +5,7 @@ export const MAX_HINTS = 3 // 한 판에 쓸 수 있는 힌트 수
 export const LEVELS = {
   easy: { label: '쉬움', blanks: 38 },
   normal: { label: '보통', blanks: 46 },
-  hard: { label: '어려움', blanks: 52 },
+  hard: { label: '어려움', blanks: 56 },
 }
 
 function shuffle(list) {
