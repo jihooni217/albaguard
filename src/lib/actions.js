@@ -1,10 +1,20 @@
 // 데이터를 바꾸는 동작 모음. 화면에서는 이 함수들만 부른다
+import { buildDemoData } from './demo'
+import { newId } from './id'
+import { emptyData } from './storage'
 import { nowMinute } from './time'
-
-const newId = () => crypto.randomUUID()
 
 export function makeActions(setData) {
   return {
+    // 지금 있는 데이터를 모두 지우고 시연용 예시로 바꾼다
+    loadDemo() {
+      setData(buildDemoData())
+    },
+
+    resetAll() {
+      setData(emptyData)
+    },
+
     saveWorkplace(wp) {
       const id = wp.id ?? newId()
       setData((d) => {

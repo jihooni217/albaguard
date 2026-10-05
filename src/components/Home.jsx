@@ -24,6 +24,9 @@ export default function Home({ data, actions, goTo }) {
         <button className="btn primary" onClick={() => goTo('workplaces')}>
           근무지 등록하기
         </button>
+        <button className="btn ghost block" onClick={actions.loadDemo}>
+          예시 데이터로 둘러보기
+        </button>
       </div>
     )
   }

@@ -2,7 +2,7 @@
 
 const KEY = 'albaguard-v1'
 
-const EMPTY = {
+export const emptyData = {
   workplaces: [], // { id, name, wage, fivePlus }
   selectedWorkplaceId: null,
   active: null, // 근무 중일 때 { workplaceId, start }
@@ -15,9 +15,9 @@ const EMPTY = {
 export function loadData() {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY))
-    return { ...EMPTY, ...saved }
+    return { ...emptyData, ...saved }
   } catch {
-    return EMPTY
+    return emptyData
   }
 }
 

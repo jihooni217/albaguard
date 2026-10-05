@@ -42,6 +42,32 @@ export default function Workplaces({ data, actions }) {
         </div>
       ))}
 
+      <div className="section-head">
+        <h2>시연 도구</h2>
+      </div>
+      <div className="card">
+        <p className="muted">지난달부터 어제까지의 근무 기록, 예정 스케줄, 덜 받은 급여가 들어 있는 예시를 넣어요.</p>
+        <button
+          className="btn block"
+          onClick={() => {
+            const hasData = workplaces.length > 0
+            if (!hasData || window.confirm('지금 있는 기록이 모두 지워지고 예시 데이터로 바뀌어요. 계속할까요?')) {
+              actions.loadDemo()
+            }
+          }}
+        >
+          시연용 예시 데이터 넣기
+        </button>
+        <button
+          className="btn danger-text block"
+          onClick={() => {
+            if (window.confirm('모든 근무지와 기록이 지워져요. 되돌릴 수 없어요. 계속할까요?')) actions.resetAll()
+          }}
+        >
+          모든 데이터 지우기
+        </button>
+      </div>
+
       {editing && (
         <WorkplaceForm
           workplace={editing}
