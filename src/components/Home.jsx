@@ -138,7 +138,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
             <b>{data.sudoku && !data.sudoku.done ? '이어 하기' : '한 판 하기'}</b>
           </button>
           <button className="alert-row ask" onClick={() => openGame('spot')}>
-            <span>손님 없는 틈에 · 다른 곳 찾기</span>
+            <span>손님 없는 틈에 · 틀린 그림 찾기</span>
             <b>한 판 하기</b>
           </button>
         </section>

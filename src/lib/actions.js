@@ -162,7 +162,7 @@ export function makeActions(setData) {
       })
     },
 
-    // 다른 곳 찾기를 끝냈을 때: 더 빨리 찾았으면 최고 기록을 바꾼다
+    // 틀린 그림 찾기를 끝냈을 때: 더 빨리 찾았으면 최고 기록을 바꾼다
     finishSpot(level, seconds) {
       setData((d) => {
         const best = d.spotBest ?? {}
@@ -176,7 +176,7 @@ export function makeActions(setData) {
       })
     },
 
-    // 다른 곳 찾기 그림을 열 때: 연 그림 수를 올려서 같은 그림이 다시 나오지 않게 한다
+    // 틀린 그림 찾기 그림을 열 때: 연 그림 수를 올려서 같은 그림이 다시 나오지 않게 한다
     seeSpot(level) {
       setData((d) => {
         const seen = d.spotSeen ?? {}
