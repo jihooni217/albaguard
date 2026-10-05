@@ -1374,6 +1374,17 @@ a.btn {
   background: var(--surface);
 }
 
+.rq-body .link-row {
+  gap: 8px;
+}
+
+.rq-body .link-row .btn {
+  gap: 6px;
+  padding: 0 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .request-diff {
   font-family: var(--font-num);
   font-size: 27px;
