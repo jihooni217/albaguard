@@ -3,11 +3,13 @@ import { loadData, saveData } from './lib/storage'
 import { makeActions } from './lib/actions'
 import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
+import Pay from './components/Pay.jsx'
 import Workplaces from './components/Workplaces.jsx'
 
 const TABS = [
   { id: 'home', label: '근무 기록', icon: '⏱' },
   { id: 'calendar', label: '캘린더', icon: '📅' },
+  { id: 'pay', label: '급여 비교', icon: '💰' },
   { id: 'workplaces', label: '근무지', icon: '🏪' },
 ]
 
@@ -30,6 +32,7 @@ export default function App() {
       <main className="app-main">
         {tab === 'home' && <Home data={data} actions={actions} goTo={setTab} />}
         {tab === 'calendar' && <CalendarView data={data} actions={actions} goTo={setTab} />}
+        {tab === 'pay' && <Pay data={data} actions={actions} goTo={setTab} />}
         {tab === 'workplaces' && <Workplaces data={data} actions={actions} />}
       </main>
 

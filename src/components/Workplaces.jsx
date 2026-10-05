@@ -1,7 +1,6 @@
 import { useState } from 'react'
+import { MIN_WAGE_2026 } from '../lib/pay'
 import Modal from './Modal.jsx'
-
-const MIN_WAGE_2026 = 10320
 
 export default function Workplaces({ data, actions }) {
   const { workplaces, records, active } = data

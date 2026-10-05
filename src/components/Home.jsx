@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
+import { mondayOf, weekSummary } from '../lib/pay'
+import { dateKey, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
 
@@ -36,6 +37,9 @@ export default function Home({ data, actions, goTo }) {
     .filter((r) => !r.deleted)
     .reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
   const workDays = monthRecords.filter((r) => !r.deleted).length
+  const selectedWorkplace = workplaces.find((w) => w.id === selectedWorkplaceId)
+  const thisWeek =
+    selectedWorkplace && weekSummary(selectedWorkplace, records, data.schedules, mondayOf(now), dateKey(now))
   const activeWorkplace = active && workplaces.find((w) => w.id === active.workplaceId)
 
   return (
@@ -84,6 +88,12 @@ export default function Home({ data, actions, goTo }) {
           <p className="summary-value">{workDays}회</p>
         </div>
       </section>
+
+      {thisWeek?.eligible && (
+        <button className="card holiday-banner" onClick={() => goTo('pay')}>
+          🎉 이번 주 주휴수당 대상이에요 <b>+{thisWeek.pay.toLocaleString()}원</b>
+        </button>
+      )}
 
       <section>
         <div className="section-head">

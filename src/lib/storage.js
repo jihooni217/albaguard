@@ -8,6 +8,7 @@ const EMPTY = {
   active: null, // 근무 중일 때 { workplaceId, start }
   records: [], // { id, workplaceId, start, end, source, createdAt, addReason, deleted, history[] }
   schedules: [], // { id, workplaceId, date, start, end }
+  payments: {}, // '근무지id|2026-10' → { amount, taxed } 실제 받은 금액
 }
 
 export function loadData() {
