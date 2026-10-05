@@ -1,0 +1,13 @@
+# API 키 — 절대 커밋하지 않음
+.env
+.env.*
+!.env.example
+
+# 의존성·빌드
+node_modules/
+dist/
+build/
+
+# 시스템
+.DS_Store
+Thumbs.db
