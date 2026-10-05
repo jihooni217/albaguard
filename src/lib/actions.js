@@ -1,6 +1,7 @@
 // 데이터를 바꾸는 동작 모음. 화면에서는 이 함수들만 부른다
 import { buildDemoData } from './demo'
 import { newId } from './id'
+import { clearPhotos, deletePhoto, replacePhotos } from './photos'
 import { emptyData } from './storage'
 import { nowMinute } from './time'
 
@@ -8,16 +9,30 @@ export function makeActions(setData) {
   return {
     // 지금 있는 데이터를 모두 지우고 시연용 예시로 바꾼다
     loadDemo() {
+      clearPhotos()
       setData(buildDemoData())
     },
 
     resetAll() {
+      clearPhotos()
       setData(emptyData)
     },
 
     // 백업 파일의 내용으로 전부 바꾼다
-    restore(saved) {
+    async restore(saved, photos) {
+      await replacePhotos(photos)
       setData({ ...emptyData, ...saved })
+    },
+
+    // 사진 자체는 photos.js가 따로 저장하고, 여기에는 설명만 남긴다
+    addAttachment(attachment) {
+      const addedAt = new Date().toISOString()
+      setData((d) => ({ ...d, attachments: [...d.attachments, { ...attachment, addedAt }] }))
+    },
+
+    deleteAttachment(id) {
+      deletePhoto(id)
+      setData((d) => ({ ...d, attachments: d.attachments.filter((a) => a.id !== id) }))
     },
 
     markBackup() {

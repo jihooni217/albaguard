@@ -95,5 +95,7 @@ export function buildDemoData() {
     schedules,
     payments: { [paymentKey(workplace.id, lastYm)]: { amount: lastMonth.basePay, taxed: false } },
     requests: {},
+    attachments: [],
+    lastBackupAt: null,
   }
 }

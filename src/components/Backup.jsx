@@ -25,9 +25,10 @@ export default function Backup({ data, actions }) {
     setMessage('')
     try {
       const backup = await readBackup(file)
-      const summary = `근무지 ${backup.data.workplaces.length}곳, 근무 기록 ${backup.data.records.length}건 (${fmtDateTime(backup.exportedAt)} 백업)`
+      const photoCount = Object.keys(backup.photos ?? {}).length
+      const summary = `근무지 ${backup.data.workplaces.length}곳, 근무 기록 ${backup.data.records.length}건, 사진 ${photoCount}장 (${fmtDateTime(backup.exportedAt)} 백업)`
       if (!window.confirm(`${summary}\n\n지금 있는 기록은 지워지고 이 백업으로 바뀌어요. 계속할까요?`)) return
-      actions.restore(backup.data)
+      await actions.restore(backup.data, backup.photos ?? {})
       setMessage('백업에서 기록을 불러왔어요.')
     } catch (e) {
       setError(e.message)

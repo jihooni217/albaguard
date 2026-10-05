@@ -1,9 +1,16 @@
 // 기록 백업: 모든 데이터를 파일 하나로 내보내고, 그 파일로 되돌린다
+import { allPhotos } from './photos'
 import { dateKey } from './time'
 
 // 파일을 폰에 저장한다. 공유 창을 쓸 수 있으면 공유 창으로, 아니면 바로 내려받기
 export async function exportBackup(data) {
-  const payload = { app: 'albaguard', version: 1, exportedAt: new Date().toISOString(), data }
+  const payload = {
+    app: 'albaguard',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    data,
+    photos: await allPhotos(),
+  }
   const name = `알바가드_백업_${dateKey(new Date())}.json`
   const file = new File([JSON.stringify(payload)], name, { type: 'application/json' })
 

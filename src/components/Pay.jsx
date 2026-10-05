@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MIN_WAGE_2026, calcMonth, paymentKey, tax33, ymOf } from '../lib/pay'
 import { dateKey, fmtDuration } from '../lib/time'
+import Attachments from './Attachments.jsx'
 import Icon from './Icon.jsx'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
@@ -147,7 +148,12 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
         <p className="muted note">
           주휴수당은 일요일이 들어 있는 달에 넣어 계산했어요. 연장근로 가산과 휴게시간은 반영하지 않은 금액이에요.
         </p>
-        <button className="btn block with-icon" onClick={() => openEvidence({ workplaceId: workplace.id, ym })}>
+      </section>
+
+      <Attachments data={data} actions={actions} workplace={workplace} ym={ym} />
+
+      <section>
+        <button className="btn primary block with-icon" onClick={() => openEvidence({ workplaceId: workplace.id, ym })}>
           <Icon name="file" size={20} /> 증빙 묶음 PDF 만들기
         </button>
       </section>

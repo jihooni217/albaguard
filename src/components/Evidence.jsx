@@ -1,21 +1,33 @@
 import { calcMonth, paymentKey, tax33 } from '../lib/pay'
+import { KINDS, attachmentsFor } from '../lib/photos'
 import { dateKey, fmtDate, fmtDateTime, fmtDuration, fmtRange, minutesBetween, monthKey } from '../lib/time'
+import { Photo } from './Attachments.jsx'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 const shortDate = (key) => `${Number(key.slice(5, 7))}/${Number(key.slice(8, 10))}`
+const monthLabel = (ym) => `${Number(ym.slice(0, 4))}년 ${Number(ym.slice(5, 7))}월`
 
-// 증빙 묶음: 한 달치 근무 기록·수정 이력·계산 근거·입금 내역을 한 문서로 보여주고 PDF로 저장한다
+// 증빙 묶음: 근무 기록·수정 이력·계산 근거·입금 내역·첨부 사진을 한 문서로 보여주고 PDF로 저장한다.
+// target은 { workplaceId, ym } (한 달) 또는 { workplaceId, yms } (여러 달)
 export default function Evidence({ data, target, onClose }) {
   const workplace = data.workplaces.find((w) => w.id === target.workplaceId)
-  const { ym } = target
-  const [y, m] = ym.split('-').map(Number)
+  const yms = [...(target.yms ?? [target.ym])].sort()
   const now = new Date()
-  const result = calcMonth(workplace, data.records, data.schedules, ym, dateKey(now))
-  const payment = data.payments[paymentKey(workplace.id, ym)]
-  const expected = payment?.taxed ? result.total - tax33(result.total) : result.total
+  const todayKey = dateKey(now)
+
+  const months = yms.map((ym) => {
+    const result = calcMonth(workplace, data.records, data.schedules, ym, todayKey)
+    const payment = data.payments[paymentKey(workplace.id, ym)]
+    const expected = payment?.taxed ? result.total - tax33(result.total) : result.total
+    return { ym, result, payment, expected }
+  })
+  const totalMin = months.reduce((sum, m) => sum + m.result.baseMin, 0)
+  const paid = months.filter((m) => m.payment)
+  const expectedSum = paid.reduce((sum, m) => sum + m.expected, 0)
+  const paidSum = paid.reduce((sum, m) => sum + m.payment.amount, 0)
 
   const records = data.records
-    .filter((r) => r.workplaceId === workplace.id && monthKey(r.start) === ym)
+    .filter((r) => r.workplaceId === workplace.id && yms.includes(monthKey(r.start)))
     .sort((a, b) => new Date(a.start) - new Date(b.start))
 
   // 직접 입력·수정·삭제를 일어난 순서대로 모은다
@@ -26,10 +38,15 @@ export default function Evidence({ data, target, onClose }) {
     ])
     .sort((a, b) => new Date(a.at) - new Date(b.at))
 
+  const photos = attachmentsFor(data, workplace.id, yms)
+  const period = yms.length === 1 ? monthLabel(yms[0]) : `${monthLabel(yms[0])} ~ ${monthLabel(yms.at(-1))}`
+  const diffText = (expected, amount) =>
+    expected - amount >= 0 ? `${won(expected - amount)} 부족` : `${won(amount - expected)} 초과`
+
   function savePdf() {
     // 인쇄 창에서 'PDF로 저장'을 고르면 파일 이름으로 쓰인다
     const title = document.title
-    document.title = `알바가드_증빙_${workplace.name}_${ym}`
+    document.title = `알바가드_증빙_${workplace.name}_${yms[0]}${yms.length > 1 ? `~${yms.at(-1)}` : ''}`
     window.addEventListener('afterprint', () => (document.title = title), { once: true })
     window.print()
   }
@@ -59,9 +76,7 @@ export default function Evidence({ data, target, onClose }) {
             </tr>
             <tr>
               <th>대상 기간</th>
-              <td>
-                {y}년 {m}월
-              </td>
+              <td>{period}</td>
             </tr>
             <tr>
               <th>시급</th>
@@ -71,7 +86,7 @@ export default function Evidence({ data, target, onClose }) {
             </tr>
             <tr>
               <th>총 근무 시간</th>
-              <td>{fmtDuration(result.baseMin)}</td>
+              <td>{fmtDuration(totalMin)}</td>
             </tr>
             <tr>
               <th>문서 작성</th>
@@ -84,7 +99,7 @@ export default function Evidence({ data, target, onClose }) {
 
         <h2>1. 근무 기록</h2>
         {records.length === 0 ? (
-          <p>이 달의 근무 기록이 없습니다.</p>
+          <p>이 기간의 근무 기록이 없습니다.</p>
         ) : (
           <table>
             <thead>
@@ -151,86 +166,107 @@ export default function Evidence({ data, target, onClose }) {
         )}
 
         <h2>3. 계산 근거</h2>
-        <table>
-          <tbody>
-            <tr>
-              <th>기본급</th>
-              <td>
-                {fmtDuration(result.baseMin)} × {won(workplace.wage)}
-              </td>
-              <td className="num">{won(result.basePay)}</td>
-            </tr>
-            <tr>
-              <th>주휴수당</th>
-              <td>
-                {result.weeks.filter((w) => w.eligible).length === 0
-                  ? '대상 주 없음'
-                  : result.weeks
-                      .filter((w) => w.eligible)
-                      .map((w) => (
-                        <div key={w.startKey}>
-                          {shortDate(w.startKey)}~{shortDate(w.endKey)} 주 {fmtDuration(w.basisMin)} ÷ 40시간 × 8시간 ×
-                          시급 = {won(w.pay)}
-                        </div>
-                      ))}
-              </td>
-              <td className="num">{won(result.holidayPay)}</td>
-            </tr>
-            <tr>
-              <th>야간수당</th>
-              <td>
-                {workplace.fivePlus
-                  ? `22시~06시 ${fmtDuration(result.nightMin)} × 시급의 50%`
-                  : '5인 미만 사업장은 해당 없음'}
-              </td>
-              <td className="num">{won(result.nightPay)}</td>
-            </tr>
-            <tr>
-              <th>예상 급여</th>
-              <td>기본급 + 주휴수당 + 야간수당</td>
-              <td className="num strong">{won(result.total)}</td>
-            </tr>
-          </tbody>
-        </table>
+        {months.map(({ ym, result }) => (
+          <table key={ym} className="calc-table">
+            {yms.length > 1 && <caption>{monthLabel(ym)}</caption>}
+            <tbody>
+              <tr>
+                <th>기본급</th>
+                <td>
+                  {fmtDuration(result.baseMin)} × {won(workplace.wage)}
+                </td>
+                <td className="num">{won(result.basePay)}</td>
+              </tr>
+              <tr>
+                <th>주휴수당</th>
+                <td>
+                  {result.weeks.filter((w) => w.eligible).length === 0
+                    ? '대상 주 없음'
+                    : result.weeks
+                        .filter((w) => w.eligible)
+                        .map((w) => (
+                          <div key={w.startKey}>
+                            {shortDate(w.startKey)}~{shortDate(w.endKey)} 주 {fmtDuration(w.basisMin)} ÷ 40시간 × 8시간
+                            × 시급 = {won(w.pay)}
+                          </div>
+                        ))}
+                </td>
+                <td className="num">{won(result.holidayPay)}</td>
+              </tr>
+              <tr>
+                <th>야간수당</th>
+                <td>
+                  {workplace.fivePlus
+                    ? `22시~06시 ${fmtDuration(result.nightMin)} × 시급의 50%`
+                    : '5인 미만 사업장은 해당 없음'}
+                </td>
+                <td className="num">{won(result.nightPay)}</td>
+              </tr>
+              <tr>
+                <th>예상 급여</th>
+                <td>기본급 + 주휴수당 + 야간수당</td>
+                <td className="num strong">{won(result.total)}</td>
+              </tr>
+            </tbody>
+          </table>
+        ))}
         <p className="small">
           주휴수당은 주 15시간 이상 일한 주에 대해 계산했고, 한 주는 월~일, 일요일이 든 달에 포함했습니다. 연장근로 가산과
           휴게시간은 반영하지 않았습니다.
         </p>
 
         <h2>4. 입금 내역</h2>
-        {payment ? (
+        {paid.length === 0 ? (
+          <p>실제 받은 금액이 아직 입력되지 않았습니다.</p>
+        ) : (
           <table>
-            <tbody>
-              {payment.taxed && (
-                <tr>
-                  <th>3.3% 뗀 예상 급여</th>
-                  <td className="num">{won(expected)}</td>
-                </tr>
-              )}
-              {!payment.taxed && (
-                <tr>
-                  <th>예상 급여</th>
-                  <td className="num">{won(expected)}</td>
-                </tr>
-              )}
+            <thead>
               <tr>
-                <th>실제 받은 금액 (본인 입력)</th>
-                <td className="num">{won(payment.amount)}</td>
-              </tr>
-              <tr>
+                <th>달</th>
+                <th>예상 급여</th>
+                <th>받은 금액 (본인 입력)</th>
                 <th>차액</th>
-                <td className="num strong">
-                  {expected - payment.amount >= 0
-                    ? `${won(expected - payment.amount)} 부족`
-                    : `${won(payment.amount - expected)} 초과`}
-                </td>
               </tr>
+            </thead>
+            <tbody>
+              {paid.map((m) => (
+                <tr key={m.ym}>
+                  <td>{monthLabel(m.ym)}</td>
+                  <td className="num">
+                    {won(m.expected)}
+                    {m.payment.taxed && <div className="small">3.3% 공제 후</div>}
+                  </td>
+                  <td className="num">{won(m.payment.amount)}</td>
+                  <td className="num strong">{diffText(m.expected, m.payment.amount)}</td>
+                </tr>
+              ))}
+              {paid.length > 1 && (
+                <tr>
+                  <th>합계</th>
+                  <td className="num strong">{won(expectedSum)}</td>
+                  <td className="num strong">{won(paidSum)}</td>
+                  <td className="num strong">{diffText(expectedSum, paidSum)}</td>
+                </tr>
+              )}
             </tbody>
           </table>
-        ) : (
-          <p>실제 받은 금액이 아직 입력되지 않았습니다.</p>
         )}
         <p className="small">입금 내역은 통장 거래 내역이나 급여명세서 사본을 함께 첨부하면 좋습니다.</p>
+
+        <h2>5. 첨부 사진</h2>
+        {photos.length === 0 ? (
+          <p>첨부한 사진이 없습니다.</p>
+        ) : (
+          photos.map((a, i) => (
+            <figure key={a.id} className="evidence-photo">
+              <figcaption>
+                [{i + 1}] {KINDS[a.kind]} · {fmtDate(a.date)} 자료 · {fmtDateTime(a.addedAt)} 첨부
+                {a.note && ` · ${a.note}`}
+              </figcaption>
+              <Photo id={a.id} alt={KINDS[a.kind]} />
+            </figure>
+          ))
+        )}
 
         <p className="small footer">
           이 문서는 알바가드 앱에 저장된 기록을 그대로 출력한 것입니다. 기록을 고치거나 지운 경우 그 전후 내용과 시점, 사유가
