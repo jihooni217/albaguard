@@ -161,9 +161,10 @@
 - 주소 끝의 `#탭이름`(`#home`, `#calendar`, `#pay`, `#request`, `#workplaces`)으로 그 탭이 바로 열린다
 
 ### README 화면 캡처
-- `docs/screenshots/`에 폰 크기(375×812) 캡처 4장(1-home, 2-calendar, 3-pay, 4-request)이 있고 README "화면 구성"에서 보여준다. 디자인이 바뀌면 다시 찍어 같은 파일 이름으로 바꾼다
+- `docs/screenshots/`에 폰 크기(375×812) 캡처 5장(1-home, 2-calendar, 3-pay, 4-request, 5-sudoku)이 있고 README "화면 구성"에서 보여준다. 디자인이 바뀌면 다시 찍어 같은 파일 이름으로 바꾼다
 - 찍는 방법: 밝은 화면으로 두고 예시 데이터를 넣고, 탭마다 `http://localhost:5173/?shot=이름#탭이름`처럼 새로 열어서 찍는다. 화면 안에서 탭을 눌러 이동한 뒤 찍으면 캡처가 깨진다
 - 정산 요청 캡처는 메시지를 미리 만들어 둔 뒤 찍는다
+- 스도쿠 캡처(5-sudoku)는 주소로 바로 열 수 없다. 근무 중 상태와 하던 판을 미리 저장해 두고 첫 화면을 새로 연 뒤, 스도쿠 줄을 눌러서 찍는다
 
 ### 코드 위치
 - `src/components/` — 화면 (Home: 근무 기록, CalendarView: 캘린더, Pay: 급여 비교, Request: 정산 요청, Workplaces: 설정 탭, Evidence: 증빙 묶음, Attachments: 증빙 사진, Backup: 기록 백업, RecordForm·RecordItem: 기록 수정·표시, Modal, Icon)
