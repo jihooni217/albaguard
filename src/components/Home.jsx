@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { mondayOf, weekSummary } from '../lib/pay'
-import { shortfallTotal } from '../lib/request'
+import { shortfallTotal, unpaidMonths } from '../lib/request'
 import { dateKey, fmtDate, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
 import Icon from './Icon.jsx'
 import RecordItem from './RecordItem.jsx'
@@ -21,7 +21,7 @@ function LiveClock() {
   )
 }
 
-export default function Home({ data, actions, goTo }) {
+export default function Home({ data, actions, goTo, openPay }) {
   const { workplaces, selectedWorkplaceId, active, records } = data
   const [, setTick] = useState(0)
   const [form, setForm] = useState(null) // null | { record } | { add: true }
@@ -61,6 +61,7 @@ export default function Home({ data, actions, goTo }) {
   const thisWeek =
     selectedWorkplace && weekSummary(selectedWorkplace, records, data.schedules, mondayOf(now), dateKey(now))
   const owed = shortfallTotal(data, dateKey(now))
+  const pending = unpaidMonths(data, dateKey(now))
   const activeWorkplace = active && workplaces.find((w) => w.id === active.workplaceId)
 
   return (
@@ -116,6 +117,16 @@ export default function Home({ data, actions, goTo }) {
           <span>
             이번 주 주휴수당 대상
             <b>+{thisWeek.pay.toLocaleString()}원</b>
+          </span>
+          <Icon name="chevronRight" size={18} />
+        </button>
+      )}
+
+      {pending.length > 0 && (
+        <button className="card holiday-banner ask" onClick={() => openPay(pending[0])}>
+          <span>
+            {pending[0].month}월 급여 받으셨나요?
+            <b>받은 금액 넣기</b>
           </span>
           <Icon name="chevronRight" size={18} />
         </button>

@@ -7,11 +7,13 @@ import Icon from './Icon.jsx'
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 const shortDate = (key) => `${Number(key.slice(5, 7))}/${Number(key.slice(8, 10))}`
 
-export default function Pay({ data, actions, goTo, openRequest, openEvidence }) {
+export default function Pay({ data, actions, goTo, openRequest, openEvidence, target }) {
   const { workplaces, selectedWorkplaceId, records, schedules, payments } = data
   const todayKey = dateKey(new Date())
-  const [workplaceId, setWorkplaceId] = useState(selectedWorkplaceId ?? workplaces[0]?.id)
+  // target이 있으면(첫 화면 알림에서 넘어옴) 그 근무지·달을 먼저 보여준다
+  const [workplaceId, setWorkplaceId] = useState(target?.workplaceId ?? selectedWorkplaceId ?? workplaces[0]?.id)
   const [month, setMonth] = useState(() => {
+    if (target) return { y: Number(target.ym.slice(0, 4)), m: Number(target.ym.slice(5, 7)) - 1 }
     const d = new Date()
     return { y: d.getFullYear(), m: d.getMonth() }
   })

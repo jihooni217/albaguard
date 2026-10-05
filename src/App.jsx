@@ -24,7 +24,9 @@ export default function App() {
     const fromHash = location.hash.slice(1)
     return TABS.some((t) => t.id === fromHash) ? fromHash : 'home'
   })
+  const [payTarget, setPayTarget] = useState(null) // 첫 화면 알림에서 급여 비교로 넘어올 때 고른 달
   function setTab(id) {
+    setPayTarget(null)
     setTabState(id)
     history.replaceState(null, '', `#${id}`)
     window.scrollTo(0, 0)
@@ -36,6 +38,11 @@ export default function App() {
   useEffect(() => {
     saveData(data)
   }, [data])
+
+  function openPay(target) {
+    setTab('pay')
+    setPayTarget({ workplaceId: target.workplaceId, ym: target.ym })
+  }
 
   function openRequest(target) {
     setRequestTarget(target)
@@ -54,9 +61,9 @@ export default function App() {
       </header>
 
       <main className="app-main" key={tab}>
-        {tab === 'home' && <Home data={data} actions={actions} goTo={setTab} />}
+        {tab === 'home' && <Home data={data} actions={actions} goTo={setTab} openPay={openPay} />}
         {tab === 'calendar' && <CalendarView data={data} actions={actions} goTo={setTab} />}
-        {tab === 'pay' && <Pay data={data} actions={actions} goTo={setTab} openRequest={openRequest} openEvidence={setEvidenceTarget} />}
+        {tab === 'pay' && <Pay data={data} actions={actions} goTo={setTab} openRequest={openRequest} openEvidence={setEvidenceTarget} target={payTarget} />}
         {tab === 'request' && (
           <Request
             data={data}

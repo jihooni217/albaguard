@@ -1,4 +1,4 @@
-// 시연용 예시 데이터. 오늘 날짜를 기준으로 두 달 전~이번 달 기록을 만든다
+// 시연용 예시 데이터. 오늘 날짜를 기준으로 석 달 전~이번 달 기록을 만든다
 import { newId } from './id'
 import { calcMonth, paymentKey } from './pay'
 import { dateKey, monthKey } from './time'
@@ -31,15 +31,15 @@ export function buildDemoData() {
     ...extra,
   })
 
-  const firstMonthStart = new Date(today.getFullYear(), today.getMonth() - 2, 1)
-  const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+  const firstMonthStart = new Date(today.getFullYear(), today.getMonth() - 3, 1)
+  const secondMonthStart = new Date(today.getFullYear(), today.getMonth() - 2, 1)
   const thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0)
   const schedules = []
   const records = []
   let count = 0
 
   for (let day = new Date(firstMonthStart); day <= thisMonthEnd; day.setDate(day.getDate() + 1)) {
-    // 대타: 지난 두 달의 둘째 일요일, 예정에 없던 근무
+    // 대타: 지난 석 달의 둘째 일요일, 예정에 없던 근무
     if (day.getDay() === 0 && day.getDate() >= 8 && day.getDate() <= 14 && day < today && day.getMonth() !== today.getMonth()) {
       records.push(record(day, 12, 16))
     }
@@ -84,9 +84,10 @@ export function buildDemoData() {
     }
   }
 
-  // 지난 두 달 급여는 기본급만 들어온 상황 (주휴수당·야간수당이 빠짐)
+  // 석 달 전·두 달 전 급여는 기본급만 들어온 상황 (주휴수당·야간수당이 빠짐).
+  // 지난달은 받은 금액을 비워 둬서 첫 화면에 "급여 받으셨나요?" 알림이 뜬다
   const payments = {}
-  for (const start of [firstMonthStart, lastMonthStart]) {
+  for (const start of [firstMonthStart, secondMonthStart]) {
     const ym = monthKey(start)
     const month = calcMonth(workplace, records, schedules, ym, dateKey(today))
     payments[paymentKey(workplace.id, ym)] = { amount: month.basePay, taxed: false }

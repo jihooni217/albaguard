@@ -499,6 +499,14 @@ a.btn {
   color: var(--red);
 }
 
+.holiday-banner.ask b {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .holiday-banner .icon {
   color: var(--faint);
 }

@@ -55,6 +55,22 @@ export function shortfallTotal(data, todayKey) {
   return { count: months.length, amount: months.reduce((total, c) => total + c.diff, 0) }
 }
 
+// 근무 기록은 있는데 받은 금액을 아직 안 넣은 지난 달 (최근 달 먼저). 첫 화면에서 확인을 권한다
+export function unpaidMonths(data, todayKey) {
+  const thisYm = todayKey.slice(0, 7)
+  const list = []
+  for (const workplace of data.workplaces) {
+    const yms = new Set(
+      data.records.filter((r) => !r.deleted && r.workplaceId === workplace.id).map((r) => monthKey(r.start)),
+    )
+    for (const ym of yms) {
+      if (ym >= thisYm || data.payments[paymentKey(workplace.id, ym)]) continue
+      list.push({ workplaceId: workplace.id, workplace, ym, month: Number(ym.slice(5, 7)) })
+    }
+  }
+  return list.sort((a, b) => b.ym.localeCompare(a.ym))
+}
+
 // 여러 달 합계일 때 쓰는 달별 한 줄
 const monthLine = (c) =>
   `${c.label}: 근무 ${fmtDuration(c.result.baseMin)} / 계산한 금액 ${won(c.target)} / 받은 금액 ${won(c.payment.amount)} / 차이 ${won(c.diff)}`
