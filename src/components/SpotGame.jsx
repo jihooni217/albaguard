@@ -197,10 +197,10 @@ export default function SpotGame({ best, seen, cleared, actions, onClose }) {
 function Levels({ best, cleared, onPick }) {
   return (
     <div className="game-levels">
-      {Object.entries(SPOT_LEVELS).map(([level, { label, hint }]) => (
+      {Object.entries(SPOT_LEVELS).map(([level, { label }]) => (
         <button key={level} className="btn" onClick={() => onPick(level)}>
           <b>{label}</b>
-          <span>{cleared[level] ? `${cleared[level]}개 깸 · 최고 ${fmtClock(best[level] ?? 0)}` : hint}</span>
+          <span>{cleared[level] ? `${cleared[level]}개 깸 · 최고 ${fmtClock(best[level] ?? 0)}` : '기록 없음'}</span>
         </button>
       ))}
     </div>

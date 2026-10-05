@@ -7,9 +7,9 @@
 // 해 본 번호를 세어 두고 다음 번호를 내기 때문에 안 해 본 그림만 나온다
 
 export const SPOT_LEVELS = {
-  easy: { label: '쉬움', hint: '자동차 휠', diffs: 3 },
-  normal: { label: '보통', hint: '도심 거리', diffs: 5 },
-  hard: { label: '어려움', hint: '작은 차이', diffs: 6 },
+  easy: { label: '쉬움', diffs: 3 },
+  normal: { label: '보통', diffs: 5 },
+  hard: { label: '어려움', diffs: 6 },
 }
 
 export const CHANCES = 3 // 틀린 곳을 누를 수 있는 횟수. 다 쓰면 그 그림은 실패로 넘어간다(막 눌러서 찾지 못하게)
