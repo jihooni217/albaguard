@@ -118,12 +118,14 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
         onRequest={() => openRequest({ workplaceId: workplace.id, ym })}
       />
 
-      <section>
-        <div className="section-head">
-          <h2>주별 주휴수당</h2>
-        </div>
+      <details className="card fold">
+        <summary>
+          <span className="stage-title">주별 주휴수당</span>
+          <span className="muted">대상 {result.weeks.filter((w) => w.eligible).length}주</span>
+          <Icon name="chevronRight" size={18} />
+        </summary>
         {result.weeks.map((w) => (
-          <div className="card week" key={w.startKey}>
+          <div className="week" key={w.startKey}>
             <div>
               <p className="week-range">
                 {shortDate(w.startKey)} ~ {shortDate(w.endKey)}
@@ -151,7 +153,7 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence }) 
             ? `무급 휴게시간(4시간마다 ${workplace.breakMin}분)은 뺐어요.`
             : '휴게시간은 빼지 않았어요. 무급 휴게시간이 있다면 설정의 근무지 수정에서 넣어 주세요.'}
         </p>
-      </section>
+      </details>
 
       <Attachments data={data} actions={actions} workplace={workplace} ym={ym} />
 

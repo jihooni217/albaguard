@@ -100,14 +100,14 @@ export default function Home({ data, actions, goTo }) {
         )}
       </section>
 
-      <section className="summary">
-        <div className="card stat">
-          <p className="muted">{now.getMonth() + 1}월 총 근무 시간</p>
-          <p className="summary-value">{fmtDuration(totalMin)}</p>
+      <section className="stats">
+        <div>
+          <span>{now.getMonth() + 1}월 근무 시간</span>
+          <b>{fmtDuration(totalMin)}</b>
         </div>
-        <div className="card stat">
-          <p className="muted">근무 횟수</p>
-          <p className="summary-value">{workDays}회</p>
+        <div>
+          <span>근무 횟수</span>
+          <b>{workDays}회</b>
         </div>
       </section>
 

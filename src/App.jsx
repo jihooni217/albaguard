@@ -46,13 +46,11 @@ export default function App() {
     <>
     <div className="app">
       <header className="app-header">
-        <span className="logo">
-          <Icon name="shield" size={22} />
-        </span>
-        <div>
-          <h1>{tab === 'home' ? '알바가드' : TABS.find((t) => t.id === tab).label}</h1>
-          <p>{tab === 'home' ? '못 받은 알바비, 기록으로 찾는 앱' : '알바가드'}</p>
-        </div>
+        <p className="brand">
+          <i />
+          알바가드
+        </p>
+        <h1>{TABS.find((t) => t.id === tab).label}</h1>
       </header>
 
       <main className="app-main" key={tab}>

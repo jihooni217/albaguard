@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { MIN_WAGE_2026, nextWageHistory, wageText } from '../lib/pay'
+import { getTheme, setTheme } from '../lib/theme'
 import { dateKey } from '../lib/time'
 import Backup from './Backup.jsx'
 import Modal from './Modal.jsx'
@@ -7,6 +8,7 @@ import Modal from './Modal.jsx'
 export default function Workplaces({ data, actions }) {
   const { workplaces, records, active } = data
   const [editing, setEditing] = useState(null) // null | {} (새로 등록) | 근무지
+  const [theme, setThemeState] = useState(getTheme)
 
   return (
     <>
@@ -44,6 +46,32 @@ export default function Workplaces({ data, actions }) {
           </button>
         </div>
       ))}
+
+      <div className="section-head">
+        <h2>화면</h2>
+      </div>
+      <div className="card">
+        <div className="segment" role="radiogroup" aria-label="화면 밝기">
+          {[
+            ['system', '폰 설정대로'],
+            ['light', '밝게'],
+            ['dark', '어둡게'],
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              role="radio"
+              aria-checked={theme === value}
+              className={theme === value ? 'active' : ''}
+              onClick={() => {
+                setTheme(value)
+                setThemeState(value)
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="section-head">
         <h2>기록 백업</h2>

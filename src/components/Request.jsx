@@ -63,6 +63,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         title="사장님께 보낼 메시지"
         desc="먼저 대화로 확인을 부탁하는 정중한 메시지예요. 보내기 전에 숫자를 한 번 확인하고, 내 말투에 맞게 고쳐도 돼요."
         button="메시지 만들기"
+        defaultOpen
         saved={saved[1]}
         onSave={(value) => actions.saveRequest(current.key, 1, value)}
         generate={() => makeMessage(1, current)}
@@ -79,9 +80,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         generate={() => makeMessage(2, current)}
       />
 
-      <section className="card">
-        <p className="stage-step">3단계</p>
-        <h2 className="stage-title">진정 절차 안내</h2>
+      <Fold step="3단계" title="진정 절차 안내">
         <p className="muted">그래도 받지 못했다면 고용노동부에 임금체불 진정을 낼 수 있어요.</p>
         <ol className="guide">
           <li>
@@ -117,7 +116,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
           </button>
         </div>
         <p className="muted">임금은 받을 수 있게 된 날부터 3년이 지나면 청구하기 어려워져요.</p>
-      </section>
+      </Fold>
 
       <p className="muted note">
         알바가드는 내 기록을 정리하고 문구 초안을 만들어 주는 도구예요. 법률 자문이나 신고 대행이 아니고, 만든 문서의 법적
@@ -127,8 +126,23 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
   )
 }
 
+// 제목을 누르면 펼쳐지는 단계 카드
+function Fold({ step, title, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <details className="card fold" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
+      <summary>
+        <span className="stage-step">{step}</span>
+        <span className="stage-title">{title}</span>
+        <Icon name="chevronRight" size={18} />
+      </summary>
+      {children}
+    </details>
+  )
+}
+
 // 문구를 만들고, 고치고, 복사하는 한 단계
-function Stage({ step, title, desc, button, saved, onSave, generate }) {
+function Stage({ step, title, desc, button, saved, onSave, generate, defaultOpen }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -151,9 +165,7 @@ function Stage({ step, title, desc, button, saved, onSave, generate }) {
   }
 
   return (
-    <section className="card">
-      <p className="stage-step">{step}</p>
-      <h2 className="stage-title">{title}</h2>
+    <Fold step={step} title={title} defaultOpen={defaultOpen || Boolean(saved)}>
       <p className="muted">{desc}</p>
 
       {saved && (
@@ -176,6 +188,6 @@ function Stage({ step, title, desc, button, saved, onSave, generate }) {
       <button className={saved ? 'btn block' : 'btn primary block'} onClick={run} disabled={loading}>
         {loading ? '만드는 중…' : saved ? '다시 만들기' : button}
       </button>
-    </section>
+    </Fold>
   )
 }
