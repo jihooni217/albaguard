@@ -15,7 +15,7 @@ function LiveClock() {
   return <span className="clock-now">{fmtTime(now)}</span>
 }
 
-export default function Home({ data, actions, goTo, openPay }) {
+export default function Home({ data, actions, goTo, openPay, openGame }) {
   const { workplaces, selectedWorkplaceId, active, records } = data
   const [, setTick] = useState(0)
   const [form, setForm] = useState(null) // null | { record } | { add: true }
@@ -130,6 +130,15 @@ export default function Home({ data, actions, goTo, openPay }) {
           </div>
         )}
       </section>
+
+      {active && (
+        <section className="card alerts">
+          <button className="alert-row ask" onClick={openGame}>
+            <span>손님 없는 틈에 · 스도쿠</span>
+            <b>{data.sudoku && !data.sudoku.done ? '이어 하기' : '한 판 하기'}</b>
+          </button>
+        </section>
+      )}
 
       {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible) && (
         <section className="card alerts">

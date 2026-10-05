@@ -147,6 +147,20 @@ export function makeActions(setData) {
       setData((d) => ({ ...d, schedules: [...d.schedules, ...items] }))
     },
 
+    setSudoku(game) {
+      setData((d) => ({ ...d, sudoku: game }))
+    },
+
+    // 다 푼 판을 저장하고, 더 빨리 풀었으면 최고 기록을 바꾼다
+    finishSudoku(game) {
+      setData((d) => {
+        const best = d.sudokuBest ?? {}
+        const record = best[game.level]
+        const sudokuBest = !record || game.elapsed < record ? { ...best, [game.level]: game.elapsed } : best
+        return { ...d, sudoku: game, sudokuBest }
+      })
+    },
+
     savePayment(key, value) {
       setData((d) => ({ ...d, payments: { ...d.payments, [key]: value } }))
     },
