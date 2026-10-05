@@ -141,6 +141,3 @@ Claude가 문구를 쓰게 하려면 `.env.example` 을 복사해 `.env` 로 만
 - `docs/02_아이템_기획_및_가치_제안서.md` / `.hwpx`
 - `docs/screenshots/` — 화면 캡처 6장
 - `CLAUDE.md` — Claude Code용 프로젝트 컨텍스트 (계산 규칙, 디자인, 법적 검토 메모)
-
-## 팀
-4조 — 이지훈, 손유호, 박명진
