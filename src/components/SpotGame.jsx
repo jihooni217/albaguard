@@ -1,45 +1,90 @@
 import { useEffect, useState } from 'react'
-import { SCENE, SPOT_LEVELS, WRONG_PENALTY, boxOf, generateSpot } from '../lib/spot'
+import {
+  CHANCES,
+  HINT_PENALTY,
+  SCENE,
+  SKIES,
+  SPOT_LEVELS,
+  boxOf,
+  firstHint,
+  generateSpot,
+  secondHint,
+} from '../lib/spot'
 import { fmtClock } from '../lib/sudoku'
 
 // 근무 중에만 열리는 다른 곳 찾기. 위아래 두 그림에서 서로 다른 곳을 찾는다
-export default function SpotGame({ best, actions, onClose }) {
+// seen: 난이도별로 지금까지 연 그림 수, cleared: 답을 보지 않고 다 찾은 그림 수
+export default function SpotGame({ best, seen, cleared, actions, onClose }) {
   const [game, setGame] = useState(null)
   const [found, setFound] = useState([])
   const [wrong, setWrong] = useState(false)
+  const [misses, setMisses] = useState(0) // 틀린 곳을 누른 횟수
   const [elapsed, setElapsed] = useState(0)
-  const done = game !== null && found.length === game.answers.length
+  const [hintStep, setHintStep] = useState(0) // 0 없음, 1 1차, 2 2차, 3 최종(답 보기)
+  const [hintId, setHintId] = useState(null) // 1차 힌트가 가리키는 답
+  const solved = game !== null && found.length === game.answers.length
+  const shown = hintStep === 3 // 답을 봤다
+  const failed = misses >= CHANCES // 기회를 다 썼다
+  const over = solved || shown || failed
 
   // 화면이 켜져 있는 동안만 시간이 흐른다
   useEffect(() => {
-    if (!game || done) return
+    if (!game || over) return
     const timer = setInterval(() => {
       if (!document.hidden) setElapsed((s) => s + 1)
     }, 1000)
     return () => clearInterval(timer)
-  }, [game, done])
+  }, [game, over])
 
+  // 그 난이도에서 아직 안 해 본 다음 번호의 그림을 연다
   function start(level) {
-    setGame(generateSpot(level))
+    const number = (seen[level] ?? 0) + 1
+    actions.seeSpot(level)
+    setGame(generateSpot(level, number))
     setFound([])
     setWrong(false)
+    setMisses(0)
     setElapsed(0)
+    setHintStep(0)
+    setHintId(null)
   }
 
   // id가 없으면 빈 곳을 누른 것
   function tap(id) {
-    if (done || found.includes(id)) return
+    if (over || found.includes(id)) return
     if (id && game.answers.includes(id)) {
       const next = [...found, id]
       setFound(next)
       if (next.length === game.answers.length) actions.finishSpot(game.level, elapsed)
       return
     }
-    // 아무 데나 눌러서 찾지 못하게 시간을 더한다
-    setElapsed((s) => s + WRONG_PENALTY)
+    // 아무 데나 눌러서 찾지 못하게 기회를 깎는다
+    setMisses((n) => n + 1)
     setWrong(true)
     setTimeout(() => setWrong(false), 450)
   }
+
+  function nextHint() {
+    const step = hintStep + 1
+    if (step === 1) setHintId(game.answers.find((id) => !found.includes(id)))
+    if (step <= 2) setElapsed((s) => s + HINT_PENALTY[step - 1])
+    setHintStep(step)
+  }
+
+  const left = game ? game.answers.filter((id) => !found.includes(id)) : []
+  const hintOne = hintId && left.includes(hintId) ? firstHint(game, hintId) : null
+  const scene = (objects, name) => (
+    <Scene
+      objects={objects}
+      found={found}
+      shown={shown || failed ? left : []}
+      wrong={wrong}
+      onTap={tap}
+      name={name}
+      plain={game.level === 'easy'}
+      sky={game.sky}
+    />
+  )
 
   return (
     <div className="game-screen">
@@ -47,7 +92,9 @@ export default function SpotGame({ best, actions, onClose }) {
         <button className="btn small" onClick={onClose}>
           닫기
         </button>
-        <span className="game-title">다른 곳 찾기{game && ` · ${SPOT_LEVELS[game.level].label}`}</span>
+        <span className="game-title">
+          다른 곳 찾기{game && ` · ${SPOT_LEVELS[game.level].label} ${game.number}번`}
+        </span>
         <span className="game-time">{game && fmtClock(elapsed)}</span>
       </div>
 
@@ -56,45 +103,89 @@ export default function SpotGame({ best, actions, onClose }) {
           <>
             <p className="game-lead">위아래 그림에서 다른 곳을 찾아보세요</p>
             <p className="muted">
-              쉬움은 자동차 휠, 보통은 도심 거리의 자동차·자전거·건물. 어려움은 건물이 돌아선 각도나 창문 한 칸처럼 작은 차이예요. 틀린 곳을 누르면{' '}
-              {WRONG_PENALTY}초가 더해져요.
+              쉬움은 자동차 휠, 보통은 도심 거리의 자동차·자전거·건물. 어려움은 건물이 돌아선 각도나 창문 한 칸처럼 작은 차이예요. 틀린 곳을 누를 수 있는 기회는{' '}
+              {CHANCES}번이에요. 한 번 본 그림은 다시 나오지 않아요.
             </p>
-            <Levels best={best} onPick={start} />
+            <Levels best={best} cleared={cleared} onPick={start} />
           </>
         ) : (
           <>
             <p className="spot-count">
-              찾은 곳 {found.length} / {game.answers.length}
+              <span>
+                찾은 곳 {found.length} / {game.answers.length}
+              </span>
+              <span className={misses > 0 ? 'spot-chances used' : 'spot-chances'}>
+                남은 기회 {'●'.repeat(Math.max(CHANCES - misses, 0))}
+                {'○'.repeat(Math.min(misses, CHANCES))}
+              </span>
             </p>
-            <Scene objects={game.top} found={found} wrong={wrong} onTap={tap} name="위쪽 그림" plain={game.level === 'easy'} />
+            {scene(game.top, '위쪽 그림')}
             <div className="spot-gap" />
-            <Scene
-              objects={game.bottom}
-              found={found}
-              wrong={wrong}
-              onTap={tap}
-              name="아래쪽 그림"
-              plain={game.level === 'easy'}
-            />
+            {scene(game.bottom, '아래쪽 그림')}
 
-            {done ? (
+            {solved && (
               <div className="game-done">
                 <p className="game-lead">다 찾았어요</p>
                 <p className="muted">
                   {fmtClock(elapsed)} 걸렸어요
                   {best[game.level] === elapsed ? ' · 내 최고 기록' : ` · 최고 기록 ${fmtClock(best[game.level] ?? elapsed)}`}
                 </p>
-                <Levels best={best} onPick={start} />
               </div>
+            )}
+            {failed && (
+              <div className="game-done">
+                <p className="game-lead">기회를 다 썼어요</p>
+                <p className="muted">못 찾은 곳을 주황색으로 표시했어요. 이 그림은 깬 것으로 치지 않고 넘어가요.</p>
+              </div>
+            )}
+            {shown && !failed && (
+              <div className="game-done">
+                <p className="game-lead">답을 봤어요</p>
+                <p className="muted">못 찾은 곳을 주황색으로 표시했어요. 이 그림은 깬 것으로 치지 않고 넘어가요.</p>
+              </div>
+            )}
+
+            {over ? (
+              <>
+                <div className="game-actions">
+                  <button className="btn primary" onClick={() => start(game.level)}>
+                    다음 그림
+                  </button>
+                  <button className="btn" onClick={() => setGame(null)}>
+                    난이도 바꾸기
+                  </button>
+                </div>
+              </>
             ) : (
-              <div className="game-actions">
-                <button className="btn" onClick={() => start(game.level)}>
-                  다른 그림
+              <>
+                {hintStep >= 1 && (
+                  <div className="spot-hint">
+                    {hintOne && (
+                      <p>
+                        <b>1차</b> {hintOne}
+                      </p>
+                    )}
+                    {hintStep >= 2 && (
+                      <p>
+                        <b>2차</b> 남은 곳: {secondHint(game, found)}
+                      </p>
+                    )}
+                  </div>
+                )}
+                <button className="btn spot-hint-btn" onClick={nextHint}>
+                  {hintStep === 0 && `1차 힌트 · 하나만 살짝 (+${HINT_PENALTY[0]}초)`}
+                  {hintStep === 1 && `2차 힌트 · 남은 곳 요약 (+${HINT_PENALTY[1]}초)`}
+                  {hintStep === 2 && '최종 힌트 · 답 보고 넘어가기'}
                 </button>
-                <button className="btn" onClick={() => setGame(null)}>
-                  난이도 바꾸기
-                </button>
-              </div>
+                <div className="game-actions">
+                  <button className="btn" onClick={() => start(game.level)}>
+                    다른 그림
+                  </button>
+                  <button className="btn" onClick={() => setGame(null)}>
+                    난이도 바꾸기
+                  </button>
+                </div>
+              </>
             )}
           </>
         )}
@@ -103,13 +194,13 @@ export default function SpotGame({ best, actions, onClose }) {
   )
 }
 
-function Levels({ best, onPick }) {
+function Levels({ best, cleared, onPick }) {
   return (
     <div className="game-levels">
       {Object.entries(SPOT_LEVELS).map(([level, { label, hint }]) => (
         <button key={level} className="btn" onClick={() => onPick(level)}>
           <b>{label}</b>
-          <span>{best[level] != null ? `최고 ${fmtClock(best[level])}` : hint}</span>
+          <span>{cleared[level] ? `${cleared[level]}개 깸 · 최고 ${fmtClock(best[level] ?? 0)}` : hint}</span>
         </button>
       ))}
     </div>
@@ -117,8 +208,9 @@ function Levels({ best, onPick }) {
 }
 
 // 그림 한 장. plain이면 배경 없이(휠만), 아니면 하늘·인도·도로를 깐다
-function Scene({ objects, found, wrong, onTap, name, plain }) {
+function Scene({ objects, found, shown, wrong, onTap, name, plain, sky }) {
   const { w, h, ground, road } = SCENE
+  const tone = SKIES[sky]
   const order = { cloud: 0, building: 1, bike: 2, car: 3, wheel: 4 }
   const sorted = [...objects].sort((a, b) => order[a.type] - order[b.type])
   return (
@@ -133,8 +225,8 @@ function Scene({ objects, found, wrong, onTap, name, plain }) {
         <rect width={w} height={h} fill="#e9e6df" />
       ) : (
         <>
-          <rect width={w} height={h} fill="#dcecf3" />
-          <circle cx="318" cy="30" r="13" fill="#fbe6a2" />
+          <rect width={w} height={h} fill={tone.sky} />
+          <circle cx="318" cy="30" r="13" fill={tone.sun} />
           <rect y={ground} width={w} height="10" fill="#cfccc4" />
           <rect y={ground + 10} width={w} height={h - ground - 10} fill="#5b6068" />
           <path d={`M0 ${ground + 34}H${w}`} stroke="#e9e6df" strokeWidth="2" strokeDasharray="14 12" />
@@ -144,7 +236,7 @@ function Scene({ objects, found, wrong, onTap, name, plain }) {
       {sorted.map((o) => (
         <g key={o.id}>
           {o.type === 'wheel' && <Wheel cx={o.cx} cy={o.cy} r={o.r} style={o.style} rim={o.rim} hub={o.hub} />}
-          {o.type === 'cloud' && <Cloud s={o} />}
+          {o.type === 'cloud' && <Cloud s={o} fill={tone.cloud} />}
           {o.type === 'building' && <Building b={o} />}
           {o.type === 'bike' && (
             <g transform={`translate(0 ${road})`}>
@@ -162,7 +254,7 @@ function Scene({ objects, found, wrong, onTap, name, plain }) {
       {/* 누르는 범위와 찾았다는 표시. 그림 위에 따로 얹는다 */}
       {sorted.map((o) => {
         const box = boxOf(o)
-        const isFound = found.includes(o.id)
+        const mark = found.includes(o.id) ? ' found' : shown.includes(o.id) ? ' shown' : ''
         return (
           <rect
             key={`hit-${o.id}`}
@@ -171,7 +263,7 @@ function Scene({ objects, found, wrong, onTap, name, plain }) {
             width={box.w}
             height={box.h}
             rx="8"
-            className={isFound ? 'spot-hit found' : 'spot-hit'}
+            className={`spot-hit${mark}`}
             onClick={(e) => {
               e.stopPropagation()
               onTap(o.id)
@@ -211,9 +303,9 @@ function Wheel({ cx, cy, r, style, rim = '#d7dbe0', hub = '#3b3f46' }) {
   )
 }
 
-function Cloud({ s }) {
+function Cloud({ s, fill }) {
   return (
-    <g transform={`translate(${s.x} ${s.y}) scale(${s.s})`} fill="#ffffff">
+    <g transform={`translate(${s.x} ${s.y}) scale(${s.s})`} fill={fill}>
       <ellipse cx="-10" cy="3" rx="11" ry="7" />
       <ellipse cx="2" cy="-2" rx="12" ry="9" />
       <ellipse cx="13" cy="4" rx="9" ry="6" />

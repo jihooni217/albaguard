@@ -1,8 +1,10 @@
-// 다른 곳 찾기: 장면을 이루는 물체(바퀴·건물·자동차·자전거)를 코드로 만들고, 몇 개만 서로 다르게 한다.
+// 다른 곳 찾기: 장면을 이루는 물체(바퀴·건물·자동차·자전거·구름)를 코드로 만들고, 몇 개만 서로 다르게 한다.
 // 그림 파일 없이 SpotGame.jsx가 이 값들로 그린다
 //  - 쉬움: 자동차 휠 8개 중 다른 것 찾기
 //  - 보통: 도심 거리(건물, 자동차, 자전거)에서 색·모양 차이 찾기
 //  - 어려움: 건물을 비스듬히 본 입체 모양으로 그린다. 차이가 작다(건물이 돌아선 각도, 창문 한 칸, 건물 높이, 헬멧 색처럼)
+// 그림마다 번호가 있고, 같은 난이도·같은 번호면 항상 같은 그림이 나온다.
+// 해 본 번호를 세어 두고 다음 번호를 내기 때문에 안 해 본 그림만 나온다
 
 export const SPOT_LEVELS = {
   easy: { label: '쉬움', hint: '자동차 휠', diffs: 3 },
@@ -10,9 +12,17 @@ export const SPOT_LEVELS = {
   hard: { label: '어려움', hint: '작은 차이', diffs: 6 },
 }
 
-export const WRONG_PENALTY = 5 // 틀린 곳을 누르면 더해지는 시간(초)
+export const CHANCES = 3 // 틀린 곳을 누를 수 있는 횟수. 다 쓰면 그 그림은 실패로 넘어간다(막 눌러서 찾지 못하게)
+export const HINT_PENALTY = [10, 20] // 1차, 2차 힌트를 볼 때 더해지는 시간(초)
 // 하늘을 넉넉히 둬서 구름이 건물에 가리지 않게 한다. road는 자동차·자전거를 내려 그리는 만큼
 export const SCENE = { w: 360, h: 240, ground: 180, road: 30 }
+
+// 그림 분위기. 번호에 따라 낮·노을·밤이 섞여 나온다
+export const SKIES = {
+  day: { sky: '#dcecf3', sun: '#fbe6a2', cloud: '#ffffff' },
+  sunset: { sky: '#f6d2b8', sun: '#f08a5d', cloud: '#fbeee4' },
+  night: { sky: '#2f3a5f', sun: '#f3f0d8', cloud: '#56618a' },
+}
 
 const WHEELS = ['spoke3', 'spoke4', 'spoke5', 'spoke6', 'spoke8', 'disc', 'ring']
 const RIMS = ['#d7dbe0', '#f2c14e', '#b9c4cf', '#e8e2d0']
@@ -25,13 +35,34 @@ const FRAMES = ['#3b3f46', '#d64545', '#2f6fde', '#2a9d8f']
 const WALLS = ['#c9b79c', '#a8b5c4', '#d9a58b', '#b7c9a8', '#9aa0b5', '#e0c98f', '#c7a9c9']
 const ROOFS = ['flat', 'peak', 'step']
 // 어려움에서 건물이 돌아선 각도(도). 0이면 정면, 클수록 옆면이 많이 보인다. +는 오른쪽 옆면, -는 왼쪽 옆면
-const ANGLES = [-40, -30, -20, 20, 30, 40]
-const ANGLE_STEP = 8 // 위아래 그림에서 각도가 달라지는 정도
+const ANGLES = [-44, -30, -16, 16, 30, 44]
+const ANGLE_STEP = 14 // 위아래 그림에서 각도가 달라지는 정도
 
-const rand = (min, max) => min + Math.floor(Math.random() * (max - min + 1))
-const pick = (list) => list[Math.floor(Math.random() * list.length)]
+const KINDS = { wheel: '휠', car: '자동차', bike: '자전거', cloud: '구름', building: '건물' }
+
+// 번호(seed)가 같으면 같은 순서로 수가 나오는 난수
+let random = Math.random
+function seeded(seed) {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+const rand = (min, max) => min + Math.floor(random() * (max - min + 1))
+const pick = (list) => list[Math.floor(random() * list.length)]
 const pickOther = (list, current) => pick(list.filter((x) => x !== current))
-const shuffle = (list) => [...list].sort(() => Math.random() - 0.5)
+function shuffle(list) {
+  const out = [...list]
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out
+}
 
 // 목록에서 바로 옆 값으로 바꾼다. 비슷한 것끼리 붙어 있어서 차이가 작다
 function neighbor(list, current) {
@@ -41,59 +72,61 @@ function neighbor(list, current) {
   return list[i + pick([-1, 1])]
 }
 
+// 아래 두 함수는 [바뀐 물체, 무엇이 바뀌었는지]를 돌려준다. 뒤의 말은 힌트에 쓴다
+
 // 어려움용: 물체 한 개를 조금만 바꾼다. turn이면 건물이 돌아선 각도를 바꾼다
 function changeSubtle(o, turn) {
   if (o.type === 'car') {
     const kind = pick(['glass', 'glassShape', 'wheel', 'lamp'])
-    if (kind === 'glass') return { ...o, glass: neighbor(GLASS, o.glass) }
-    if (kind === 'glassShape') return { ...o, glassShape: pickOther(GLASS_SHAPES, o.glassShape) }
-    if (kind === 'wheel') return { ...o, wheel: neighbor(WHEELS, o.wheel) }
-    return { ...o, lamp: !o.lamp }
+    if (kind === 'glass') return [{ ...o, glass: neighbor(GLASS, o.glass) }, '유리 색']
+    if (kind === 'glassShape') return [{ ...o, glassShape: pickOther(GLASS_SHAPES, o.glassShape) }, '유리 모양']
+    if (kind === 'wheel') return [{ ...o, wheel: neighbor(WHEELS, o.wheel) }, '휠 모양']
+    return [{ ...o, lamp: !o.lamp }, '전조등 색']
   }
   if (o.type === 'bike') {
     const kind = pick(['helmet', 'frame'])
-    if (kind === 'helmet') return { ...o, helmet: pickOther(SHIRTS, o.helmet) }
-    return { ...o, frame: pickOther(FRAMES, o.frame) }
+    if (kind === 'helmet') return [{ ...o, helmet: pickOther(SHIRTS, o.helmet) }, '헬멧 색']
+    return [{ ...o, frame: pickOther(FRAMES, o.frame) }, '자전거 색']
   }
-  if (o.type === 'cloud') return { ...o, x: o.x + pick([-9, 9]) }
+  if (o.type === 'cloud') return [{ ...o, x: o.x + pick([-9, 9]) }, '위치']
   if (turn) {
     const size = Math.abs(o.angle)
-    const step = size <= 20 ? ANGLE_STEP : size >= 40 ? -ANGLE_STEP : pick([-ANGLE_STEP, ANGLE_STEP])
-    return { ...o, angle: Math.sign(o.angle) * (size + step) }
+    const step = size <= 16 ? ANGLE_STEP : size >= 44 ? -ANGLE_STEP : pick([-ANGLE_STEP, ANGLE_STEP])
+    return [{ ...o, angle: Math.sign(o.angle) * (size + step) }, '돌아선 각도']
   }
   const kind = pick(['dark', 'dark', 'height'])
-  if (kind === 'dark') return { ...o, dark: rand(0, o.rows * o.cols - 1) }
-  return { ...o, h: o.h + pick([-7, 7]) }
+  if (kind === 'dark') return [{ ...o, dark: rand(0, o.rows * o.cols - 1) }, '창문 한 칸']
+  return [{ ...o, h: o.h + pick([-7, 7]) }, '높이']
 }
 
 // 물체 한 개를 눈에 띄게 다르게 바꾼다
 function change(o) {
-  if (o.type === 'cloud') return { ...o, s: o.s > 1 ? 0.7 : 1.5 }
+  if (o.type === 'cloud') return [{ ...o, s: o.s > 1 ? 0.7 : 1.5 }, '크기']
   if (o.type === 'wheel') {
     const kind = pick(['style', 'style', 'rim', 'hub'])
-    if (kind === 'style') return { ...o, style: pickOther(WHEELS, o.style) }
-    if (kind === 'rim') return { ...o, rim: pickOther(RIMS, o.rim) }
-    return { ...o, hub: pickOther(HUBS, o.hub) }
+    if (kind === 'style') return [{ ...o, style: pickOther(WHEELS, o.style) }, '살 모양']
+    if (kind === 'rim') return [{ ...o, rim: pickOther(RIMS, o.rim) }, '안쪽 색']
+    return [{ ...o, hub: pickOther(HUBS, o.hub) }, '가운데 색']
   }
   if (o.type === 'car') {
     const kind = pick(['color', 'glass', 'glassShape', 'wheel'])
-    if (kind === 'color') return { ...o, color: pickOther(CAR_COLORS, o.color) }
-    if (kind === 'glass') return { ...o, glass: pickOther(GLASS, o.glass) }
-    if (kind === 'glassShape') return { ...o, glassShape: pickOther(GLASS_SHAPES, o.glassShape) }
-    return { ...o, wheel: pickOther(WHEELS, o.wheel) }
+    if (kind === 'color') return [{ ...o, color: pickOther(CAR_COLORS, o.color) }, '차 색']
+    if (kind === 'glass') return [{ ...o, glass: pickOther(GLASS, o.glass) }, '유리 색']
+    if (kind === 'glassShape') return [{ ...o, glassShape: pickOther(GLASS_SHAPES, o.glassShape) }, '유리 모양']
+    return [{ ...o, wheel: pickOther(WHEELS, o.wheel) }, '휠 모양']
   }
   if (o.type === 'bike') {
     const kind = pick(['shirt', 'shirt', 'helmet', 'frame'])
-    if (kind === 'shirt') return { ...o, shirt: pickOther(SHIRTS, o.shirt) }
-    if (kind === 'helmet') return { ...o, helmet: pickOther(SHIRTS, o.helmet) }
-    return { ...o, frame: pickOther(FRAMES, o.frame) }
+    if (kind === 'shirt') return [{ ...o, shirt: pickOther(SHIRTS, o.shirt) }, '옷 색']
+    if (kind === 'helmet') return [{ ...o, helmet: pickOther(SHIRTS, o.helmet) }, '헬멧 색']
+    return [{ ...o, frame: pickOther(FRAMES, o.frame) }, '자전거 색']
   }
   // 건물
   const kind = pick(['color', 'roof', 'rows', 'cols'])
-  if (kind === 'color') return { ...o, color: pickOther(WALLS, o.color) }
-  if (kind === 'roof') return { ...o, roof: pickOther(ROOFS, o.roof) }
-  if (kind === 'rows') return { ...o, rows: o.rows > 2 ? o.rows - 1 : o.rows + 1 }
-  return { ...o, cols: o.cols > 2 ? o.cols - 1 : o.cols + 1 }
+  if (kind === 'color') return [{ ...o, color: pickOther(WALLS, o.color) }, '벽 색']
+  if (kind === 'roof') return [{ ...o, roof: pickOther(ROOFS, o.roof) }, '지붕']
+  if (kind === 'rows') return [{ ...o, rows: o.rows > 2 ? o.rows - 1 : o.rows + 1 }, '창문 수']
+  return [{ ...o, cols: o.cols > 2 ? o.cols - 1 : o.cols + 1 }, '창문 수']
 }
 
 function wheels() {
@@ -138,11 +171,12 @@ function street(buildingCount, solid) {
   ;[rand(30, 80), rand(170, 240)].forEach((x, i) =>
     list.push({ id: `s${i}`, type: 'cloud', x, y: rand(14, 24), s: pick([0.9, 1, 1.1]) }),
   )
-  // 자전거(뒤쪽 차로)와 자동차(앞쪽 차로)는 서로 가리지 않게 번갈아 놓는다
-  ;[122, 300].forEach((x, i) =>
+  // 자전거(뒤쪽 차로)와 자동차(앞쪽 차로)는 서로 가리지 않게 번갈아 놓는다. 그림마다 순서가 바뀐다
+  const flip = random() < 0.5
+  ;(flip ? [18, 196] : [122, 300]).forEach((x, i) =>
     list.push({ id: `k${i}`, type: 'bike', x, shirt: pick(SHIRTS), helmet: pick(SHIRTS), frame: pick(FRAMES) }),
   )
-  ;[16, 198].forEach((x, i) =>
+  ;(flip ? [84, 262] : [16, 198]).forEach((x, i) =>
     list.push({
       id: `c${i}`,
       type: 'car',
@@ -157,7 +191,11 @@ function street(buildingCount, solid) {
   return list
 }
 
-export function generateSpot(level) {
+// number: 그 난이도의 몇 번째 그림인지(1부터)
+export function generateSpot(level, number) {
+  random = seeded(number * 7919 + Object.keys(SPOT_LEVELS).indexOf(level) * 104729 + 1)
+
+  const sky = level === 'easy' ? 'day' : pick(['day', 'day', 'sunset', 'night'])
   const top = level === 'easy' ? wheels() : street(level === 'hard' ? 6 : 5, level === 'hard')
   let answers = shuffle(top.map((o) => o.id)).slice(0, SPOT_LEVELS[level].diffs)
 
@@ -170,11 +208,34 @@ export function generateSpot(level) {
     answers = [...turnIds, ...rest.slice(0, SPOT_LEVELS.hard.diffs - turnIds.length)]
   }
 
+  const clues = {} // 답마다 { kind: 어떤 물체인지, what: 무엇이 다른지 }
   const bottom = top.map((o) => {
     if (!answers.includes(o.id)) return o
-    return level === 'hard' ? changeSubtle(o, turnIds.includes(o.id)) : change(o)
+    const [changed, what] = level === 'hard' ? changeSubtle(o, turnIds.includes(o.id)) : change(o)
+    clues[o.id] = { kind: KINDS[o.type], what }
+    return changed
   })
-  return { level, top, bottom, answers }
+  random = Math.random
+  return { level, number, sky, top, bottom, answers, clues }
+}
+
+// 1차 힌트: 못 찾은 것 하나가 어떤 물체인지
+export function firstHint(game, id) {
+  return `${game.clues[id].kind} 하나가 달라요`
+}
+
+// 2차 힌트: 못 찾은 것 전부가 무엇이 다른지
+export function secondHint(game, found) {
+  const counts = {}
+  for (const id of game.answers) {
+    if (found.includes(id)) continue
+    const { kind, what } = game.clues[id]
+    const key = `${kind}의 ${what}`
+    counts[key] = (counts[key] ?? 0) + 1
+  }
+  return Object.entries(counts)
+    .map(([key, n]) => `${key} ${n}곳`)
+    .join(' · ')
 }
 
 // 물체가 차지하는 네모 영역. 누르는 범위와 찾았다는 표시에 쓴다

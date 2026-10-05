@@ -165,8 +165,21 @@ export function makeActions(setData) {
     finishSpot(level, seconds) {
       setData((d) => {
         const best = d.spotBest ?? {}
-        if (best[level] != null && best[level] <= seconds) return d
-        return { ...d, spotBest: { ...best, [level]: seconds } }
+        const cleared = d.spotCleared ?? {}
+        const faster = best[level] == null || seconds < best[level]
+        return {
+          ...d,
+          spotCleared: { ...cleared, [level]: (cleared[level] ?? 0) + 1 },
+          spotBest: faster ? { ...best, [level]: seconds } : best,
+        }
+      })
+    },
+
+    // 다른 곳 찾기 그림을 열 때: 연 그림 수를 올려서 같은 그림이 다시 나오지 않게 한다
+    seeSpot(level) {
+      setData((d) => {
+        const seen = d.spotSeen ?? {}
+        return { ...d, spotSeen: { ...seen, [level]: (seen[level] ?? 0) + 1 } }
       })
     },
 

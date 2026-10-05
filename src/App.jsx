@@ -100,7 +100,13 @@ export default function App() {
       <Sudoku game={data.sudoku} best={data.sudokuBest ?? {}} actions={actions} onClose={() => setGameOpen(null)} />
     )}
     {gameOpen === 'spot' && data.active && (
-      <SpotGame best={data.spotBest ?? {}} actions={actions} onClose={() => setGameOpen(null)} />
+      <SpotGame
+        best={data.spotBest ?? {}}
+        seen={data.spotSeen ?? {}}
+        cleared={data.spotCleared ?? {}}
+        actions={actions}
+        onClose={() => setGameOpen(null)}
+      />
     )}
     {evidenceTarget && <Evidence data={data} target={evidenceTarget} onClose={() => setEvidenceTarget(null)} />}
     </>
