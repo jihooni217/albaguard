@@ -113,11 +113,8 @@ export default function Home({ data, actions, goTo }) {
 
       {thisWeek?.eligible && (
         <button className="card holiday-banner" onClick={() => goTo('pay')}>
-          <span className="banner-icon">
-            <Icon name="gift" size={22} />
-          </span>
           <span>
-            이번 주 주휴수당 대상이에요
+            이번 주 주휴수당 대상
             <b>+{thisWeek.pay.toLocaleString()}원</b>
           </span>
           <Icon name="chevronRight" size={18} />
@@ -126,11 +123,8 @@ export default function Home({ data, actions, goTo }) {
 
       {owed.count > 0 && (
         <button className="card holiday-banner owed" onClick={() => goTo('request')}>
-          <span className="banner-icon">
-            <Icon name="won" size={22} />
-          </span>
           <span>
-            덜 받은 급여가 있어요 ({owed.count}개월)
+            덜 받은 급여 · {owed.count}개월
             <b>{owed.amount.toLocaleString()}원</b>
           </span>
           <Icon name="chevronRight" size={18} />

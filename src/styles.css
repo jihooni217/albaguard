@@ -172,7 +172,7 @@ a.btn {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--muted);
 }
 
@@ -185,8 +185,8 @@ a.btn {
 
 .app-header h1 {
   margin-top: 2px;
-  font-size: 30px;
-  font-weight: 800;
+  font-size: 28px;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.04em;
 }
@@ -207,7 +207,7 @@ a.btn {
   background: var(--surface);
   border-radius: var(--radius);
   padding: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .muted {
@@ -226,20 +226,20 @@ a.btn {
   align-items: center;
   justify-content: space-between;
   min-height: 40px;
-  margin: 26px 4px 8px;
+  margin: 28px 4px 8px;
 }
 
 .section-head h2 {
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--muted);
 }
 
 .sub-head {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--muted);
-  margin: 22px 4px 8px;
+  margin: 28px 4px 8px;
 }
 
 /* 버튼 */
@@ -249,7 +249,7 @@ a.btn {
   border: none;
   border-radius: 14px;
   background: var(--chip);
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition:
     transform 0.08s,
@@ -318,9 +318,9 @@ a.btn {
 
 /* 출퇴근: 먹색 판 위에 초록 버튼. 근무 중에는 흰 판 + 초록 테두리로 바뀐다 */
 .hero {
-  margin-bottom: 4px;
-  padding: 22px 20px 20px;
-  border-radius: 26px;
+  margin-bottom: 8px;
+  padding: 20px 20px 18px;
+  border-radius: 24px;
   background: var(--hero);
   color: var(--on-hero);
   text-align: center;
@@ -343,8 +343,8 @@ a.btn {
 }
 
 .hero-clock {
-  font-size: 52px;
-  font-weight: 800;
+  font-size: 44px;
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
@@ -374,7 +374,7 @@ a.btn {
   min-height: 38px;
   margin-top: 10px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .dot {
@@ -393,15 +393,15 @@ a.btn {
 
 .clock-btn {
   display: block;
-  width: 148px;
-  height: 148px;
-  margin: 18px auto 16px;
+  width: 116px;
+  height: 116px;
+  margin: 16px auto 12px;
   border: none;
   border-radius: 50%;
-  font-size: 34px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-indent: 0.06em;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-indent: 0.04em;
   cursor: pointer;
   transition: transform 0.1s;
 }
@@ -422,7 +422,7 @@ a.btn {
 
 .hero-start {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
@@ -440,7 +440,7 @@ a.btn {
 }
 
 .stats div {
-  padding: 16px 0 14px;
+  padding: 14px 0 14px;
 }
 
 .stats div + div {
@@ -451,53 +451,56 @@ a.btn {
 .stats span {
   display: block;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--muted);
 }
 
 .stats b {
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 
-/* 알림 줄 (주휴수당 대상, 덜 받은 급여) */
+/* 알림 줄 (주휴수당 대상, 덜 받은 급여): 흰 줄에 금액만 색으로 */
 .holiday-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  margin: 10px 0 0;
-  padding: 14px 16px;
+  margin: 12px 0 0;
+  padding: 16px 14px 16px 18px;
   border: none;
-  background: var(--green-soft);
-  color: var(--green);
-  font-size: 13px;
-  font-weight: 700;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
 }
 
-.holiday-banner.owed {
-  background: var(--red-soft);
-  color: var(--red);
-}
-
-.holiday-banner > span:nth-child(2) {
+.holiday-banner > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
   flex: 1;
 }
 
 .holiday-banner b {
-  display: block;
-  font-size: 19px;
-  font-weight: 800;
+  color: var(--green);
+  font-size: 17px;
+  font-weight: 700;
   letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
-.banner-icon {
-  display: grid;
-  place-items: center;
+.holiday-banner.owed b {
+  color: var(--red);
+}
+
+.holiday-banner .icon {
+  color: var(--faint);
 }
 
 /* 근무 기록: 종이 위의 줄. 카드 없이 구분선만 */
@@ -526,13 +529,13 @@ a.btn {
 
 .record-day span {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--faint);
 }
 
 .record-day b {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -545,7 +548,7 @@ a.btn {
 
 .record-range {
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -570,13 +573,11 @@ a.btn {
 }
 
 .record-duration {
-  padding: 2px 9px;
-  border-radius: 8px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 14px;
-  font-weight: 800;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .record-edit {
@@ -614,7 +615,7 @@ a.btn {
   padding: 2px 8px;
   border-radius: 6px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .badge.orange {
@@ -654,7 +655,7 @@ a.btn {
 }
 
 .history-when {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .before {
@@ -663,7 +664,7 @@ a.btn {
 }
 
 .after {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* 입력 */
@@ -671,7 +672,7 @@ a.btn {
   display: block;
   margin-bottom: 14px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--muted);
   flex: 1;
 }
@@ -755,7 +756,7 @@ a.btn {
 
 .empty-title {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   margin-bottom: 6px;
 }
@@ -775,7 +776,7 @@ a.btn {
 
 .workplace-name {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
@@ -801,7 +802,7 @@ a.btn {
   background: transparent;
   color: var(--muted);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -852,7 +853,7 @@ a.btn {
 
 .cal-head h2 {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
@@ -865,7 +866,7 @@ a.btn {
 .cal-dow {
   text-align: center;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--faint);
   padding: 4px 0 6px;
 }
@@ -895,7 +896,7 @@ a.btn {
 }
 
 .cal-cell.today .cal-day {
-  font-weight: 800;
+  font-weight: 700;
   box-shadow: inset 0 0 0 1.5px var(--text);
 }
 
@@ -909,7 +910,7 @@ a.btn {
   padding: 1px 6px;
   border-radius: 5px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -983,7 +984,7 @@ a.btn {
 }
 
 .compare-title {
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .compare-row {
@@ -997,7 +998,7 @@ a.btn {
 /* 급여 비교 */
 .pay-total {
   font-size: 40px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.045em;
   margin-bottom: 12px;
@@ -1011,7 +1012,7 @@ a.btn {
   gap: 12px;
   padding: 12px 0;
   border-top: 1px solid var(--line);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .pay-row small {
@@ -1022,7 +1023,7 @@ a.btn {
 }
 
 .pay-row b {
-  font-weight: 800;
+  font-weight: 700;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -1051,7 +1052,7 @@ a.btn {
 
 .diff-title {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
 }
 
@@ -1078,17 +1079,17 @@ a.btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .week-ok {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--green);
 }
 
 .week-pay {
-  font-weight: 800;
+  font-weight: 700;
   color: var(--green);
   white-space: nowrap;
 }
@@ -1111,7 +1112,7 @@ a.btn {
 /* 정산 요청 */
 .request-diff {
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.04em;
   color: var(--red);
@@ -1128,7 +1129,7 @@ a.btn {
 
 .facts summary {
   padding: 8px 0;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -1152,12 +1153,12 @@ a.btn {
   background: var(--accent);
   color: var(--on-accent);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .stage-title {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -1238,7 +1239,7 @@ a.btn {
 .photo-kind {
   padding: 6px 8px 0;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .photo-date {
@@ -1269,7 +1270,7 @@ a.btn {
   overflow: hidden;
   background: transparent;
   color: var(--muted);
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -1283,7 +1284,7 @@ a.btn {
 .backup-last {
   margin: 10px 0 4px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* 증빙 묶음 (화면 미리보기 + 인쇄). 문서 자체는 어두운 화면에서도 흰 종이로 둔다 */
@@ -1484,7 +1485,7 @@ a.btn {
 
 .modal-head h2 {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
 }
 
@@ -1534,7 +1535,7 @@ a.btn {
 
 .tab.active {
   color: var(--text);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .tab.active::before {
