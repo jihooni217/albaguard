@@ -155,6 +155,15 @@ export function makeActions(setData) {
       setData((d) => ({ ...d, requests: { ...d.requests, [key]: { ...d.requests[key], [stage]: value } } }))
     },
 
+    // 사장님과 합의해서 쉰 날로 표시하거나 되돌린다 (표시한 시점도 남김)
+    toggleScheduleOff(id) {
+      const at = new Date().toISOString()
+      setData((d) => ({
+        ...d,
+        schedules: d.schedules.map((s) => (s.id === id ? { ...s, off: !s.off, offAt: s.off ? null : at } : s)),
+      }))
+    },
+
     deleteSchedule(id) {
       setData((d) => ({ ...d, schedules: d.schedules.filter((s) => s.id !== id) }))
     },

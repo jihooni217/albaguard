@@ -88,7 +88,8 @@ export function weekSummary(workplace, records, schedules, monday, todayKey) {
   const usePlan = plannedMin > 0
   const basisMin = usePlan ? plannedMin : actualMin
   const workedDays = new Set(recs.map((r) => dateKey(r.start)))
-  const missed = sched.some((s) => s.date < todayKey && !workedDays.has(s.date))
+  // 합의해서 쉰 날(off)은 결근으로 보지 않는다. 약속된 근무 시간(plannedMin)에는 그대로 포함
+  const missed = sched.some((s) => !s.off && s.date < todayKey && !workedDays.has(s.date))
   const inProgress = endKey >= todayKey
 
   let reason = ''

@@ -1,3 +1,4 @@
+import { recordTags } from '../lib/compare'
 import { baseText, calcMonth, paymentKey, tax33, wageText } from '../lib/pay'
 import { KINDS, attachmentsFor } from '../lib/photos'
 import { dateKey, fmtDate, fmtDateTime, fmtDuration, fmtRange, minutesBetween, monthKey } from '../lib/time'
@@ -38,6 +39,11 @@ export default function Evidence({ data, target, onClose }) {
     ])
     .sort((a, b) => new Date(a.at) - new Date(b.at))
 
+  const tags = recordTags(workplace.id, data.schedules, data.records, todayKey)
+  // 사장님과 합의해서 쉰 날
+  const offDays = data.schedules
+    .filter((s) => s.off && s.workplaceId === workplace.id && yms.includes(s.date.slice(0, 7)))
+    .sort((a, b) => a.date.localeCompare(b.date))
   const photos = attachmentsFor(data, workplace.id, yms)
   const period = yms.length === 1 ? monthLabel(yms[0]) : `${monthLabel(yms[0])} ~ ${monthLabel(yms.at(-1))}`
   const diffText = (expected, amount) =>
@@ -118,6 +124,7 @@ export default function Evidence({ data, target, onClose }) {
                 const edits = r.history.filter((h) => h.type === 'edit').length
                 const notes = [
                   r.source === 'manual' ? '나중에 입력' : '버튼 기록',
+                  tags[r.id],
                   edits > 0 && `수정 ${edits}회`,
                   r.deleted && '삭제됨(합계 제외)',
                 ].filter(Boolean)
@@ -132,6 +139,13 @@ export default function Evidence({ data, target, onClose }) {
               })}
             </tbody>
           </table>
+        )}
+
+        {offDays.length > 0 && (
+          <p className="small">
+            합의하여 쉰 날(결근 아님):{' '}
+            {offDays.map((s) => `${fmtDate(s.date)} ${s.start}~${s.end} (${fmtDateTime(s.offAt)} 표시)`).join(', ')}
+          </p>
         )}
 
         <h2>2. 수정 이력</h2>

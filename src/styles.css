@@ -739,6 +739,17 @@ textarea {
   color: var(--red);
 }
 
+.cal-tag.off {
+  background: transparent;
+  color: var(--faint);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.schedule.off .record-range {
+  color: var(--faint);
+  text-decoration: line-through;
+}
+
 .legend {
   display: flex;
   flex-wrap: wrap;

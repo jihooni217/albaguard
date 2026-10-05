@@ -87,6 +87,7 @@ export default function CalendarView({ data, actions, goTo }) {
           <span className="cal-tag extra">대타</span>
           <span className="cal-tag under">단축</span>
           <span className="cal-tag missed">미근무</span>
+          <span className="cal-tag off">휴무</span>
         </div>
       </section>
 
@@ -108,17 +109,23 @@ export default function CalendarView({ data, actions, goTo }) {
         <h3 className="sub-head">예정 스케줄</h3>
         {daySchedules.length === 0 && <p className="muted">예정된 근무가 없어요.</p>}
         {daySchedules.map((s) => (
-          <div className="card schedule" key={s.id}>
+          <div className={s.off ? 'card schedule off' : 'card schedule'} key={s.id}>
             <div>
               <p className="record-range">
                 {s.start} ~ {s.end <= s.start ? '다음날 ' : ''}
                 {s.end}
               </p>
               <p className="muted">{nameOf(s.workplaceId)}</p>
+              {s.off && <span className="badge gray">합의해서 쉼 · 결근 아님</span>}
             </div>
-            <button className="btn small ghost" onClick={() => actions.deleteSchedule(s.id)}>
-              삭제
-            </button>
+            <div className="record-actions">
+              <button className="btn small" onClick={() => actions.toggleScheduleOff(s.id)}>
+                {s.off ? '쉼 취소' : '합의해서 쉼'}
+              </button>
+              <button className="btn small ghost" onClick={() => actions.deleteSchedule(s.id)}>
+                삭제
+              </button>
+            </div>
           </div>
         ))}
         <button className="btn block" onClick={() => setScheduleOpen(true)}>

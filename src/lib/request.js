@@ -1,4 +1,5 @@
 // 정산 요청에 쓸 근거 자료 정리
+import { recordTags } from './compare'
 import { baseText, calcMonth, paymentKey, tax33, wageText } from './pay'
 import { fmtDate, fmtDuration, fmtRange, minutesBetween, monthKey } from './time'
 
@@ -16,9 +17,11 @@ export function shortfalls(data, todayKey) {
     const target = payment.taxed ? result.total - tax33(result.total) : result.total
     const diff = target - payment.amount
     if (diff < 10) continue
+    const tags = recordTags(workplaceId, data.schedules, data.records, todayKey)
     const records = data.records
       .filter((r) => !r.deleted && r.workplaceId === workplaceId && monthKey(r.start) === ym)
       .sort((a, b) => new Date(a.start) - new Date(b.start))
+      .map((r) => ({ ...r, tag: tags[r.id] }))
     const [y, m] = ym.split('-').map(Number)
     list.push({ key, workplace, ym, label: `${y}년 ${m}월`, month: m, result, payment, target, diff, records })
   }
@@ -66,7 +69,7 @@ function monthDetail(c) {
 export const targetKey = (target) => (target ? paymentKey(target.workplaceId, target.ym) : null)
 
 const recordLine = (r) =>
-  `${fmtDate(r.start)} ${fmtRange(r.start, r.end)} (${fmtDuration(minutesBetween(r.start, r.end))})`
+  `${fmtDate(r.start)} ${fmtRange(r.start, r.end)} (${fmtDuration(minutesBetween(r.start, r.end))})${r.tag ? ` · ${r.tag}` : ''}`
 
 // 기본급·주휴수당·야간수당·합계를 한 줄씩
 function calcLines(c) {
