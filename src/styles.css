@@ -371,6 +371,11 @@ textarea {
   cursor: pointer;
 }
 
+.holiday-banner.owed {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
 .holiday-banner > span:nth-child(2) {
   flex: 1;
 }

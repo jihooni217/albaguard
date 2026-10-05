@@ -52,7 +52,7 @@ export default function Workplaces({ data, actions }) {
         <h2>시연 도구</h2>
       </div>
       <div className="card">
-        <p className="muted">지난달부터 어제까지의 근무 기록, 예정 스케줄, 덜 받은 급여가 들어 있는 예시를 넣어요.</p>
+        <p className="muted">두 달 전부터 어제까지의 근무 기록, 예정 스케줄, 두 달치 덜 받은 급여가 들어 있는 예시를 넣어요.</p>
         <button
           className="btn block"
           onClick={() => {

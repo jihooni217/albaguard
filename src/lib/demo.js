@@ -1,4 +1,4 @@
-// 시연용 예시 데이터. 오늘 날짜를 기준으로 지난달~이번 달 기록을 만든다
+// 시연용 예시 데이터. 오늘 날짜를 기준으로 두 달 전~이번 달 기록을 만든다
 import { newId } from './id'
 import { calcMonth, paymentKey } from './pay'
 import { dateKey, monthKey } from './time'
@@ -31,14 +31,15 @@ export function buildDemoData() {
     ...extra,
   })
 
+  const firstMonthStart = new Date(today.getFullYear(), today.getMonth() - 2, 1)
   const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1)
   const thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0)
   const schedules = []
   const records = []
   let count = 0
 
-  for (let day = new Date(lastMonthStart); day <= thisMonthEnd; day.setDate(day.getDate() + 1)) {
-    // 대타: 지난달 둘째 일요일, 예정에 없던 근무
+  for (let day = new Date(firstMonthStart); day <= thisMonthEnd; day.setDate(day.getDate() + 1)) {
+    // 대타: 지난 두 달의 둘째 일요일, 예정에 없던 근무
     if (day.getDay() === 0 && day.getDate() >= 8 && day.getDate() <= 14 && day < today && day.getMonth() !== today.getMonth()) {
       records.push(record(day, 12, 16))
     }
@@ -83,9 +84,13 @@ export function buildDemoData() {
     }
   }
 
-  // 지난달 급여는 기본급만 들어온 상황 (주휴수당·야간수당이 빠짐)
-  const lastYm = monthKey(lastMonthStart)
-  const lastMonth = calcMonth(workplace, records, schedules, lastYm, dateKey(today))
+  // 지난 두 달 급여는 기본급만 들어온 상황 (주휴수당·야간수당이 빠짐)
+  const payments = {}
+  for (const start of [firstMonthStart, lastMonthStart]) {
+    const ym = monthKey(start)
+    const month = calcMonth(workplace, records, schedules, ym, dateKey(today))
+    payments[paymentKey(workplace.id, ym)] = { amount: month.basePay, taxed: false }
+  }
 
   return {
     workplaces: [workplace],
@@ -93,7 +98,7 @@ export function buildDemoData() {
     active: null,
     records,
     schedules,
-    payments: { [paymentKey(workplace.id, lastYm)]: { amount: lastMonth.basePay, taxed: false } },
+    payments,
     requests: {},
     attachments: [],
     lastBackupAt: null,

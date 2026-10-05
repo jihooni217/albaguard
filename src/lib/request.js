@@ -22,7 +22,45 @@ export function shortfalls(data, todayKey) {
     const [y, m] = ym.split('-').map(Number)
     list.push({ key, workplace, ym, label: `${y}년 ${m}월`, month: m, result, payment, target, diff, records })
   }
-  return list.sort((a, b) => b.ym.localeCompare(a.ym))
+  list.sort((a, b) => b.ym.localeCompare(a.ym))
+
+  // 한 근무지에서 덜 받은 달이 둘 이상이면, 한 번에 요청할 수 있게 '합계' 항목을 맨 앞에 둔다
+  const combined = []
+  for (const workplace of data.workplaces) {
+    const months = list.filter((c) => c.workplace.id === workplace.id).reverse()
+    if (months.length < 2) continue
+    const sum = (pick) => months.reduce((total, c) => total + pick(c), 0)
+    combined.push({
+      key: `${workplace.id}|all`,
+      combined: true,
+      workplace,
+      months,
+      yms: months.map((c) => c.ym),
+      label: `${months.length}개월 합계 (${months[0].label} ~ ${months.at(-1).label})`,
+      totalMin: sum((c) => c.result.baseMin),
+      target: sum((c) => c.target),
+      paid: sum((c) => c.payment.amount),
+      diff: sum((c) => c.diff),
+    })
+  }
+  return [...combined, ...list]
+}
+
+// 덜 받은 금액 전체 합계 (홈 화면 알림용)
+export function shortfallTotal(data, todayKey) {
+  const months = shortfalls(data, todayKey).filter((c) => !c.combined)
+  return { count: months.length, amount: months.reduce((total, c) => total + c.diff, 0) }
+}
+
+// 여러 달 합계일 때 쓰는 달별 한 줄
+const monthLine = (c) =>
+  `${c.label}: 근무 ${fmtDuration(c.result.baseMin)} / 계산한 금액 ${won(c.target)} / 받은 금액 ${won(c.payment.amount)} / 차이 ${won(c.diff)}`
+
+function monthDetail(c) {
+  const items = [`기본급 ${won(c.result.basePay)}`]
+  if (c.result.holidayPay > 0) items.push(`주휴수당 ${won(c.result.holidayPay)}`)
+  if (c.result.nightPay > 0) items.push(`야간수당 ${won(c.result.nightPay)}`)
+  return `  (${items.join(' + ')}${c.payment.taxed ? ', 3.3% 세금 제외' : ''})`
 }
 
 export const targetKey = (target) => (target ? paymentKey(target.workplaceId, target.ym) : null)
@@ -53,6 +91,19 @@ function calcLines(c) {
 // Claude에게 넘기고, 화면에서 '근거'로도 보여주는 글
 export function buildFacts(c) {
   const { workplace, result, payment } = c
+  if (c.combined) {
+    return [
+      `[근무지] ${workplace.name} / 시급 ${won(workplace.wage)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
+      `[대상] ${c.label} 급여`,
+      '',
+      '[달별 내역]',
+      ...c.months.flatMap((m) => [monthLine(m), monthDetail(m)]),
+      '',
+      `[합계] 총 근무 ${fmtDuration(c.totalMin)} / 계산한 금액 ${won(c.target)} / 받은 금액 ${won(c.paid)}`,
+      `[차액] ${won(c.diff)} 덜 받음`,
+      '날짜별 근무 기록은 증빙 묶음에 따로 정리되어 있음',
+    ].join('\n')
+  }
   return [
     `[근무지] ${workplace.name} / 시급 ${won(workplace.wage)} / ${workplace.fivePlus ? '5인 이상' : '5인 미만'} 사업장`,
     `[대상] ${c.label} 급여`,
@@ -72,6 +123,33 @@ export function buildFacts(c) {
 // 내용증명 기본 초안 (2단계). [대괄호]는 사용자가 직접 채운다
 export function buildCertifiedTemplate(c) {
   const { workplace, result, payment } = c
+  if (c.combined) {
+    return [
+      '임금 지급 요청',
+      '',
+      `수신인: [수신인 성명] (${workplace.name} 대표)`,
+      '주소: [사업장 주소]',
+      '발신인: [발신인 성명]',
+      '주소: [발신인 주소]',
+      '',
+      `1. 발신인은 ${workplace.name}에서 시급 ${won(workplace.wage)}으로 근무한 근로자입니다.`,
+      '',
+      `2. 발신인은 ${c.months[0].label}부터 ${c.months.at(-1).label}까지 총 ${fmtDuration(c.totalMin)} 근무하였으며, 달별 임금 계산과 지급 내역은 다음과 같습니다.`,
+      ...c.months.flatMap((m) => [`  - ${monthLine(m)}`, `  ${monthDetail(m)}`]),
+      '',
+      `3. 위 기간에 지급되어야 할 임금은 합계 ${won(c.target)}이나, 발신인이 실제로 지급받은 금액은 ${won(c.paid)}으로, ${won(c.diff)}이 지급되지 않았습니다.`,
+      '',
+      `4. 이에 미지급 임금 ${won(c.diff)}을 [지급 기한]까지 아래 계좌로 지급하여 주시기 바랍니다.`,
+      '  입금 계좌: [은행명 / 계좌번호 / 예금주]',
+      '',
+      '5. 위 기한까지 지급되지 않을 경우, 고용노동부에 임금체불 진정을 제기하는 등 필요한 절차를 진행할 수 있음을 알려드립니다.',
+      '',
+      '첨부: 날짜별 근무 기록 및 계산 내역',
+      '',
+      '[작성일]',
+      '발신인 [발신인 성명] (서명 또는 인)',
+    ].join('\n')
+  }
   return [
     '임금 지급 요청',
     '',
@@ -103,6 +181,20 @@ export function buildCertifiedTemplate(c) {
 // AI 연결이 안 될 때 쓰는 기본 문구 (1단계)
 export function buildTemplate(c) {
   const { result, payment } = c
+  if (c.combined) {
+    return [
+      '사장님 안녕하세요. 그동안 받은 급여 관련해서 여쭤볼 게 있어서 연락드려요.',
+      '',
+      '제가 기록해 둔 근무 시간으로 계산해 보니 아래처럼 받은 금액과 차이가 나서요.',
+      ...c.months.map(monthLine),
+      '',
+      `${c.months.length}개월을 합치면 ${won(c.diff)} 정도 차이가 나요.`,
+      '',
+      '제가 계산을 잘 몰라서 틀렸을 수도 있어서, 한번 확인 부탁드려도 될까요? 날짜별 근무 시간은 정리해 두어서 필요하시면 바로 보내드릴게요.',
+      '',
+      '바쁘신데 번거롭게 해 드려 죄송해요. 확인해 주시면 감사하겠습니다.',
+    ].join('\n')
+  }
   const items = [`기본급 ${won(result.basePay)}`]
   if (result.holidayPay > 0) items.push(`주휴수당 ${won(result.holidayPay)}`)
   if (result.nightPay > 0) items.push(`야간수당 ${won(result.nightPay)}`)

@@ -24,6 +24,8 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
 
   const facts = buildFacts(current)
   const saved = data.requests[current.key] ?? {}
+  // 합계를 골랐으면 증빙 묶음도 그 달들을 모두 담는다
+  const evidenceTarget = { workplaceId: current.workplace.id, yms: current.yms ?? [current.ym] }
 
   return (
     <>
@@ -37,7 +39,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
           >
             {candidates.map((c) => (
               <option key={c.key} value={c.key}>
-                {c.label} · {c.workplace.name}
+                {c.label} · {c.workplace.name} · {won(c.diff)}
               </option>
             ))}
           </select>
@@ -50,10 +52,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
           <summary>근거 보기 (근무 기록·계산 내역)</summary>
           <pre>{facts}</pre>
         </details>
-        <button
-          className="btn block with-icon"
-          onClick={() => openEvidence({ workplaceId: current.workplace.id, ym: current.ym })}
-        >
+        <button className="btn block with-icon" onClick={() => openEvidence(evidenceTarget)}>
           <Icon name="file" size={20} /> 증빙 묶음 PDF 만들기
         </button>
       </section>
@@ -113,10 +112,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
             여기서 만든 <b>증빙 묶음 PDF</b>는 진정을 낼 때 첨부 자료로 쓸 수 있고, 진정24처럼 진정서 작성을 도와주는 서비스에
             증거 파일로 올릴 수도 있어요. 통장 거래 내역과 함께 준비해 두세요.
           </p>
-          <button
-            className="btn block with-icon"
-            onClick={() => openEvidence({ workplaceId: current.workplace.id, ym: current.ym })}
-          >
+          <button className="btn block with-icon" onClick={() => openEvidence(evidenceTarget)}>
             <Icon name="file" size={20} /> 증빙 묶음 PDF 만들기
           </button>
         </div>
