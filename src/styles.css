@@ -1636,6 +1636,151 @@ a.btn {
   font-weight: 600;
 }
 
+/* 급여 비교: 정산 요청과 같은 줄 모양을 쓴다 */
+.rq-owed.plain {
+  color: var(--text);
+}
+
+.rq-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.pay-rows {
+  border-top: 1px solid var(--line);
+}
+
+.pay-evidence {
+  margin-top: 0;
+  border-top: none;
+}
+
+.pay-warn {
+  margin: 12px 4px 0;
+  color: var(--red);
+  font-size: 14px;
+}
+
+.pay-ask {
+  margin: 22px -4px 0;
+  padding: 16px 4px 18px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.pay-ask-title {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.pay-ask-input {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 8px;
+  border-bottom: 2px solid var(--text);
+}
+
+.pay-ask-input:focus-within {
+  border-color: var(--accent);
+}
+
+.pay-ask-input input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-ask-input input::placeholder {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.pay-ask-input b {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.pay-check {
+  margin: 12px 0 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.pay-check input {
+  width: 20px;
+  height: 20px;
+}
+
+.pay-fix {
+  display: block;
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.rq-top .bars {
+  margin-top: 16px;
+}
+
+.rq-top .btn.block {
+  margin-top: 14px;
+}
+
+.pay-weeks {
+  padding: 0 4px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pay-weeks .week:first-child {
+  border-top: none;
+}
+
+.pay-thisweek {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pay-note {
+  padding: 10px 4px;
+  font-size: 13px;
+}
+
+.pay-add {
+  border-top: 1px solid var(--line);
+}
+
+.cv-counts {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.cv-counts b {
+  font-weight: 600;
+}
+
 /* 단계: 번호가 세로 선으로 이어진다 */
 .rq-step {
   position: relative;

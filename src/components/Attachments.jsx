@@ -13,16 +13,10 @@ export default function Attachments({ data, actions, workplace, ym }) {
 
   return (
     <section>
-      <div className="section-head">
-        <h2>증빙 사진</h2>
-        <button className="btn small" onClick={() => setAdding(true)}>
-          + 사진 추가
-        </button>
-      </div>
+      <h2 className="rq-title">증빙 사진</h2>
       {items.length === 0 ? (
-        <p className="muted note">
-          근무표, 시급이 적힌 계약서·구인 공고·메시지, 통장 입금 내역을 사진으로 붙여 두면 증빙 묶음에 함께 들어가요. 내가
-          적은 기록을 뒷받침하는 자료가 돼요.
+        <p className="muted pay-note">
+          근무표, 시급이 적힌 계약서·공고·메시지, 통장 입금 내역을 붙여 두면 증빙 묶음에 함께 들어가요.
         </p>
       ) : (
         <div className="photo-grid">
@@ -35,6 +29,9 @@ export default function Attachments({ data, actions, workplace, ym }) {
           ))}
         </div>
       )}
+      <button className="cv-add pay-add" onClick={() => setAdding(true)}>
+        <span>+</span>사진 추가
+      </button>
 
       {adding && <AddForm workplace={workplace} ym={ym} actions={actions} onClose={() => setAdding(false)} />}
       {viewing && (

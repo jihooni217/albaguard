@@ -66,6 +66,11 @@ export default function CalendarView({ data, actions, goTo }) {
     .reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
   const statusOf = (day) => dayStatus(keyOf(day), schedules, records, todayKey)
   const changedDays = cells.filter((day) => day && CHANGED.includes(statusOf(day)?.type)).length
+  // 종류별 개수: 있는 것만 "연장 1 · 대타 1"처럼 보여준다
+  const changedCounts = CHANGED.map((type) => {
+    const days = cells.filter((day) => day && statusOf(day)?.type === type)
+    return { type, label: days[0] && statusOf(days[0]).label, count: days.length }
+  }).filter((c) => c.count > 0)
 
   const plannedList = daySchedules.filter((x) => !x.off)
   const actualList = dayRecords.filter((r) => !r.deleted)
@@ -142,6 +147,15 @@ export default function CalendarView({ data, actions, goTo }) {
           <i className="cv-dash" />
           휴무
         </span>
+        {changedCounts.length > 0 && (
+          <span className="cv-counts">
+            {changedCounts.map((c) => (
+              <span key={c.type}>
+                <b className={TONE[c.type]}>{c.label}</b> {c.count}
+              </span>
+            ))}
+          </span>
+        )}
       </div>
 
       <div className="cv-day-head">
