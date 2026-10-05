@@ -25,6 +25,9 @@
 
 근무 기록 · 캘린더 · 급여 비교 · 정산 요청 (예시 데이터를 넣은 화면, 2026.10.5 기준)
 
+주소 끝에 `#calendar`, `#pay`, `#request`, `#workplaces`를 붙이면 그 탭이 바로 열린다.
+예: https://jihooni217.github.io/albaguard/#pay
+
 | 탭 | 화면 |
 |---|---|
 | 근무 기록 | 현재 시각과 큰 원형 출근·퇴근 버튼, 이번 달 근무 시간, 덜 받은 급여 알림, 날짜별 기록 목록 |
@@ -95,10 +98,12 @@ Claude가 문구를 쓰게 하려면 `.env.example` 을 복사해 `.env` 로 만
 - `src/lib/` — 급여 계산, 예정·실제 비교, 요청 문구, 백업, 사진 저장
 - `server/` — Claude API 호출 (개발 서버에서만)
 - `public/` — 앱 아이콘, 설치 설정, 오프라인용 파일
+- `docs/screenshots/` — README에 쓰는 화면 캡처. 디자인이 바뀌면 다시 찍는다
 
 ## 문서
 - `docs/01_문제_정의서.hwpx`
 - `docs/02_아이템_기획_및_가치_제안서.md` / `.hwpx`
+- `docs/screenshots/` — 화면 캡처 4장
 - `CLAUDE.md` — Claude Code용 프로젝트 컨텍스트 (계산 규칙, 디자인, 법적 검토 메모)
 
 ## 팀
