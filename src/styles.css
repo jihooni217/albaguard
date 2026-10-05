@@ -709,6 +709,136 @@ select {
   opacity: 0.6;
 }
 
+/* 증빙 묶음 (화면 미리보기 + 인쇄) */
+.evidence-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.evidence-bar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  background: var(--bg);
+}
+
+.evidence-hint {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.evidence-doc {
+  max-width: 480px;
+  margin: 0 auto 24px;
+  padding: 20px 16px;
+  background: #fff;
+  color: #000;
+  font-size: 13px;
+}
+
+.evidence-doc h1 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.evidence-doc h2 {
+  font-size: 15px;
+  margin: 20px 0 8px;
+}
+
+.evidence-doc table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.evidence-doc th,
+.evidence-doc td {
+  padding: 5px 6px;
+  border: 1px solid #bbb;
+  text-align: left;
+  vertical-align: top;
+}
+
+.evidence-doc th {
+  background: #f1f1f1;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.evidence-doc .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.evidence-doc .strong {
+  font-weight: 800;
+}
+
+.evidence-doc .struck td {
+  color: #777;
+  text-decoration: line-through;
+}
+
+.evidence-doc .small {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #444;
+}
+
+.evidence-doc .footer {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #bbb;
+}
+
+@page {
+  size: A4;
+  margin: 15mm;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .app,
+  .evidence-bar,
+  .evidence-hint {
+    display: none !important;
+  }
+
+  .evidence-screen {
+    position: static;
+    overflow: visible;
+    background: #fff;
+  }
+
+  .evidence-doc {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  .evidence-doc tr {
+    break-inside: avoid;
+  }
+
+  .evidence-doc h2 {
+    break-after: avoid;
+  }
+}
+
 /* 아래에서 올라오는 창 */
 .modal-backdrop {
   position: fixed;

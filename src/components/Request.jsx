@@ -12,7 +12,7 @@ import { dateKey } from '../lib/time'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 
-export default function Request({ data, actions, target, goTo }) {
+export default function Request({ data, actions, target, goTo, openEvidence }) {
   const candidates = shortfalls(data, dateKey(new Date()))
   const [selectedKey, setSelectedKey] = useState(targetKey(target))
   const current = candidates.find((c) => c.key === selectedKey) ?? candidates[0]
@@ -57,6 +57,12 @@ export default function Request({ data, actions, target, goTo }) {
           <summary>근거 보기 (근무 기록·계산 내역)</summary>
           <pre>{facts}</pre>
         </details>
+        <button
+          className="btn block"
+          onClick={() => openEvidence({ workplaceId: current.workplace.id, ym: current.ym })}
+        >
+          📄 증빙 묶음 PDF 만들기
+        </button>
       </section>
 
       <Stage

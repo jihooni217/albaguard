@@ -5,7 +5,7 @@ import { dateKey, fmtDuration } from '../lib/time'
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 const shortDate = (key) => `${Number(key.slice(5, 7))}/${Number(key.slice(8, 10))}`
 
-export default function Pay({ data, actions, goTo, openRequest }) {
+export default function Pay({ data, actions, goTo, openRequest, openEvidence }) {
   const { workplaces, selectedWorkplaceId, records, schedules, payments } = data
   const todayKey = dateKey(new Date())
   const [workplaceId, setWorkplaceId] = useState(selectedWorkplaceId ?? workplaces[0]?.id)
@@ -146,6 +146,9 @@ export default function Pay({ data, actions, goTo, openRequest }) {
         <p className="muted note">
           주휴수당은 일요일이 들어 있는 달에 넣어 계산했어요. 연장근로 가산과 휴게시간은 반영하지 않은 금액이에요.
         </p>
+        <button className="btn block" onClick={() => openEvidence({ workplaceId: workplace.id, ym })}>
+          📄 증빙 묶음 PDF 만들기
+        </button>
       </section>
     </>
   )
