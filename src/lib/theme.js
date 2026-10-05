@@ -1,6 +1,6 @@
 // 화면 밝기: 'system'(폰 설정대로) | 'light' | 'dark'. 기록과 별개로 이 폰에만 저장한다
 const KEY = 'albaguard-theme'
-const BAR_COLOR = { light: '#f3f1ec', dark: '#111113' }
+const BAR_COLOR = { light: '#f4f3ef', dark: '#0e1116' }
 
 export const getTheme = () => localStorage.getItem(KEY) ?? 'system'
 

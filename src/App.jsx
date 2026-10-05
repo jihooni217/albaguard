@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { loadData, saveData } from './lib/storage'
 import { makeActions } from './lib/actions'
 import Evidence from './components/Evidence.jsx'
-import Icon from './components/Icon.jsx'
+import { fmtDate } from './lib/time'
 import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import Pay from './components/Pay.jsx'
@@ -54,10 +54,10 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <p className="brand">
-          <i />
-          알바가드
+          <span>알바가드</span>
+          <span className="brand-date">{fmtDate(new Date())}</span>
         </p>
-        <h1>{TABS.find((t) => t.id === tab).label}</h1>
+        {tab !== 'home' && <h1>{TABS.find((t) => t.id === tab).label}</h1>}
       </header>
 
       <main className="app-main" key={tab}>
@@ -79,7 +79,6 @@ export default function App() {
       <nav className="tabbar">
         {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? 'tab active' : 'tab'} onClick={() => setTab(t.id)}>
-            <Icon name={t.icon} />
             {t.label}
           </button>
         ))}

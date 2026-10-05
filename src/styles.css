@@ -1,106 +1,103 @@
 /*
-  알바가드 디자인: 종이 위의 근무 기록표.
-  - 따뜻한 종이색 바탕 + 먹색 글자, 포인트는 짙은 초록 한 가지 (받을 돈·지켜 준다는 뜻)
-  - 그라데이션·그림자 없이 평평하게. 목록은 카드 대신 줄과 구분선
-  - 밝은 화면 / 어두운 화면 모두 아래 변수만 바꿔서 만든다
+  알바가드 디자인 (Claude Design 시안 J: 차분 + 돈 먼저)
+  - 밝은 화면은 종이색 바탕 + 먹색, 어두운 화면은 짙은 남회색 바탕
+  - 글꼴: IBM Plex Sans KR, 큰 금액 숫자만 Hahmlet(명조)
+  - 큰 숫자는 가늘게, 구분은 가는 선으로. 포인트는 초록 계열 한 가지
+  - 밝은 화면 / 어두운 화면 모두 아래 변수만 바꿔서 만든다. 색을 직접 쓰지 말 것
 */
 :root {
   color-scheme: light;
-  --bg: #f3f1ec;
+  --bg: #f4f3ef;
   --surface: #ffffff;
-  --field: #f3f1ec;
-  --text: #16161a;
-  --muted: #6d6c67;
-  --faint: #9b9a94;
-  --line: #e2dfd6;
-  --primary: #17694a; /* 주요 버튼 바탕 */
+  --field: #f4f3ef;
+  --text: #15171a;
+  --muted: #5d636d;
+  --faint: #8b9099;
+  --line: #dcd9d0;
+  --primary: #15171a; /* 주요 버튼 바탕 */
   --on-primary: #ffffff;
-  --accent: #17694a; /* 짙은 초록 */
+  --accent: #0f7a55; /* 포인트: 초록 */
   --on-accent: #ffffff;
-  --accent-soft: rgba(23, 105, 74, 0.12);
-  --hero: #16161a; /* 출근 판: 먹색 */
-  --on-hero: #ffffff;
-  --hero-btn: #45c08a;
-  --on-hero-btn: #0c1f17;
-  --chip: #eae7df;
-  --red: #dc3f26;
-  --red-soft: rgba(220, 63, 38, 0.1);
-  --orange: #c2610a;
-  --orange-soft: rgba(224, 122, 20, 0.14);
-  --green: #17694a;
-  --green-soft: rgba(23, 105, 74, 0.12);
+  --accent-soft: rgba(15, 122, 85, 0.12);
+  --out: #15171a; /* 퇴근 버튼 */
+  --on-out: #ffffff;
+  --chip: #e9e7e0;
+  --red: #c2331c;
+  --red-soft: rgba(194, 51, 28, 0.1);
+  --orange: #b4600f;
+  --orange-soft: rgba(214, 122, 20, 0.14);
+  --green: #0f7a55;
+  --green-soft: rgba(15, 122, 85, 0.12);
   --purple: #6b45c9;
   --purple-soft: rgba(107, 69, 201, 0.12);
   --blue: #2c5fd6;
   --blue-soft: rgba(44, 95, 214, 0.11);
-  --overlay: rgba(22, 22, 26, 0.5);
+  --overlay: rgba(21, 23, 26, 0.5);
   --radius: 18px;
+  --font: 'IBM Plex Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', system-ui, sans-serif;
+  --font-num: 'Hahmlet', 'IBM Plex Sans KR', 'Apple SD Gothic Neo', serif;
 }
 
-/* 어두운 화면: 폰이 다크 모드이거나 설정에서 '어둡게'를 골랐을 때 */
+/* 어두운 화면: 폰이 다크 모드이거나 설정에서 '어둡게'를 골랐을 때. 아래 두 묶음은 값이 같아야 한다 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --bg: #111113;
-    --surface: #1c1c20;
-    --field: #27272c;
-    --text: #f1f0ea;
-    --muted: #a09f98;
-    --faint: #73726c;
-    --line: #2d2d32;
-    --primary: #45c08a;
+    --bg: #0e1116;
+    --surface: #171b22;
+    --field: #0e1116;
+    --text: #e9edf2;
+    --muted: #9aa4b2;
+    --faint: #6f7987;
+    --line: #232a34;
+    --primary: #7ce0b5;
     --on-primary: #0c1f17;
-    --accent: #45c08a;
+    --accent: #7ce0b5;
     --on-accent: #0c1f17;
-    --accent-soft: rgba(69, 192, 138, 0.16);
-    --hero: #1c1c20;
-    --on-hero: #f1f0ea;
-    --hero-btn: #45c08a;
-    --on-hero-btn: #0c1f17;
-    --chip: #2b2b30;
-    --red: #ff7a63;
-    --red-soft: rgba(255, 122, 99, 0.14);
-    --orange: #f0a04b;
-    --orange-soft: rgba(240, 160, 75, 0.14);
-    --green: #45c08a;
-    --green-soft: rgba(69, 192, 138, 0.14);
-    --purple: #a98bf5;
-    --purple-soft: rgba(169, 139, 245, 0.15);
-    --blue: #7ea6ff;
-    --blue-soft: rgba(126, 166, 255, 0.14);
+    --accent-soft: rgba(124, 224, 181, 0.14);
+    --out: #e9edf2;
+    --on-out: #0e1116;
+    --chip: #222832;
+    --red: #ff9a85;
+    --red-soft: rgba(255, 154, 133, 0.14);
+    --orange: #f2b56b;
+    --orange-soft: rgba(242, 181, 107, 0.14);
+    --green: #7ce0b5;
+    --green-soft: rgba(124, 224, 181, 0.13);
+    --purple: #b39bf5;
+    --purple-soft: rgba(179, 155, 245, 0.15);
+    --blue: #8fb8ff;
+    --blue-soft: rgba(143, 184, 255, 0.14);
     --overlay: rgba(0, 0, 0, 0.62);
   }
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #111113;
-  --surface: #1c1c20;
-  --field: #27272c;
-  --text: #f1f0ea;
-  --muted: #a09f98;
-  --faint: #73726c;
-  --line: #2d2d32;
-  --primary: #45c08a;
+  --bg: #0e1116;
+  --surface: #171b22;
+  --field: #0e1116;
+  --text: #e9edf2;
+  --muted: #9aa4b2;
+  --faint: #6f7987;
+  --line: #232a34;
+  --primary: #7ce0b5;
   --on-primary: #0c1f17;
-  --accent: #45c08a;
+  --accent: #7ce0b5;
   --on-accent: #0c1f17;
-  --accent-soft: rgba(69, 192, 138, 0.16);
-  --hero: #1c1c20;
-  --on-hero: #f1f0ea;
-  --hero-btn: #45c08a;
-  --on-hero-btn: #0c1f17;
-  --chip: #2b2b30;
-  --red: #ff7a63;
-  --red-soft: rgba(255, 122, 99, 0.14);
-  --orange: #f0a04b;
-  --orange-soft: rgba(240, 160, 75, 0.14);
-  --green: #45c08a;
-  --green-soft: rgba(69, 192, 138, 0.14);
-  --purple: #a98bf5;
-  --purple-soft: rgba(169, 139, 245, 0.15);
-  --blue: #7ea6ff;
-  --blue-soft: rgba(126, 166, 255, 0.14);
+  --accent-soft: rgba(124, 224, 181, 0.14);
+  --out: #e9edf2;
+  --on-out: #0e1116;
+  --chip: #222832;
+  --red: #ff9a85;
+  --red-soft: rgba(255, 154, 133, 0.14);
+  --orange: #f2b56b;
+  --orange-soft: rgba(242, 181, 107, 0.14);
+  --green: #7ce0b5;
+  --green-soft: rgba(124, 224, 181, 0.13);
+  --purple: #b39bf5;
+  --purple-soft: rgba(179, 155, 245, 0.15);
+  --blue: #8fb8ff;
+  --blue-soft: rgba(143, 184, 255, 0.14);
   --overlay: rgba(0, 0, 0, 0.62);
 }
 
@@ -116,8 +113,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR',
-    'Malgun Gothic', system-ui, sans-serif;
+  font-family: var(--font);
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: -0.015em;
@@ -160,39 +156,39 @@ a.btn {
   max-width: 480px;
   min-height: 100dvh;
   margin: 0 auto;
-  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 
 .app-header {
-  padding: calc(14px + env(safe-area-inset-top)) 20px 12px;
+  padding: calc(18px + env(safe-area-inset-top)) 24px 10px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.brand-date {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--muted);
 }
 
-.brand i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
 .app-header h1 {
-  margin-top: 2px;
-  font-size: 28px;
-  font-weight: 700;
+  margin-top: 14px;
+  font-size: 26px;
+  font-weight: 600;
   line-height: 1.2;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
 }
 
 .app-main {
-  padding: 4px 16px 16px;
+  padding: 8px 20px 16px;
   animation: rise 0.2s ease-out;
 }
 
@@ -316,70 +312,140 @@ a.btn {
   opacity: 0.7;
 }
 
-/* 출퇴근: 먹색 판 위에 초록 버튼. 근무 중에는 흰 판 + 초록 테두리로 바뀐다 */
-.hero {
-  margin-bottom: 8px;
-  padding: 20px 20px 18px;
-  border-radius: 24px;
-  background: var(--hero);
-  color: var(--on-hero);
-  text-align: center;
+/* 이번 달 받을 돈: 첫 화면의 주인공 */
+.earn {
+  padding: 6px 4px 20px;
 }
 
-.hero.working {
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
-
-.hero.working .hero-status {
-  color: var(--accent);
-}
-
-.hero-date {
+.earn-label,
+.earn-sub {
   font-size: 13px;
+  color: var(--muted);
+}
+
+.earn-amount {
+  font-family: var(--font-num);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.earn-amount span {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+/* 출퇴근: 시계 눈금 다이얼 안의 둥근 버튼 + 지금 시각 */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 8px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: var(--surface);
+}
+
+.dial {
+  position: relative;
+  flex-shrink: 0;
+  width: 112px;
+  height: 112px;
+}
+
+.dial svg {
+  position: absolute;
+  inset: 0;
+}
+
+.dial circle {
+  fill: none;
+  stroke-width: 6;
+}
+
+.dial-ticks {
+  stroke: var(--line);
+}
+
+.dial-marks {
+  stroke: var(--accent);
+}
+
+.hero.working .dial-ticks {
+  stroke: var(--accent);
+}
+
+.clock-btn {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: 84px;
+  height: 84px;
+  border: none;
+  border-radius: 50%;
+  font-family: inherit;
+  font-size: 20px;
   font-weight: 600;
-  opacity: 0.6;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.clock-btn.in {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.clock-btn.out {
+  background: var(--out);
+  color: var(--on-out);
+}
+
+.clock-btn:active {
+  transform: scale(0.94);
+}
+
+.hero-info {
+  min-width: 0;
+  flex: 1;
 }
 
 .hero-clock {
-  font-size: 44px;
-  font-weight: 700;
+  font-size: 40px;
+  font-weight: 300;
   line-height: 1.1;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 
 .hero-select {
   max-width: 100%;
-  min-height: 38px;
-  margin-top: 10px;
-  padding: 0 12px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
+  min-height: 36px;
+  margin: 2px 0 0 -4px;
+  padding: 0 4px;
+  border: none;
   background: transparent;
-  color: inherit;
+  color: var(--text);
   font-size: 14px;
-  font-weight: 600;
-}
-
-.hero-select option {
-  color: #16161a;
+  font-weight: 500;
 }
 
 .hero-status {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 38px;
-  margin-top: 10px;
+  margin-top: 4px;
+  color: var(--accent);
   font-size: 14px;
   font-weight: 600;
 }
 
 .dot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: currentColor;
   animation: pulse 1.4s ease-in-out infinite;
@@ -391,75 +457,9 @@ a.btn {
   }
 }
 
-.clock-btn {
-  display: block;
-  width: 116px;
-  height: 116px;
-  margin: 16px auto 12px;
-  border: none;
-  border-radius: 50%;
-  font-size: 25px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-indent: 0.04em;
-  cursor: pointer;
-  transition: transform 0.1s;
-}
-
-.clock-btn.in {
-  background: var(--hero-btn);
-  color: var(--on-hero-btn);
-}
-
-.clock-btn.out {
-  background: var(--text);
-  color: var(--bg);
-}
-
-.clock-btn:active {
-  transform: scale(0.94);
-}
-
-.hero-start {
-  font-size: 20px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
 .hero-sub {
   font-size: 13px;
-  opacity: 0.6;
-}
-
-/* 이번 달 요약: 카드 없이 숫자 두 개 */
-.stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin: 0 4px;
-  border-bottom: 1px solid var(--line);
-}
-
-.stats div {
-  padding: 14px 0 14px;
-}
-
-.stats div + div {
-  padding-left: 18px;
-  border-left: 1px solid var(--line);
-}
-
-.stats span {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
   color: var(--muted);
-}
-
-.stats b {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
 }
 
 /* 알림 줄 (주휴수당 대상, 덜 받은 급여): 흰 줄에 금액만 색으로 */
@@ -468,13 +468,15 @@ a.btn {
   align-items: center;
   gap: 8px;
   width: 100%;
-  margin: 12px 0 0;
-  padding: 16px 14px 16px 18px;
+  margin: 0;
+  padding: 16px 4px;
   border: none;
-  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
   color: var(--text);
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 400;
   text-align: left;
   cursor: pointer;
 }
@@ -487,20 +489,27 @@ a.btn {
   flex: 1;
 }
 
+.holiday-banner + section {
+  border-top: 1px solid var(--line);
+}
+
 .holiday-banner b {
   color: var(--green);
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 600;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 
 .holiday-banner.owed b {
   color: var(--red);
+  font-family: var(--font-num);
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .holiday-banner.ask b {
-  color: var(--text);
+  color: var(--accent);
   font-size: 15px;
   font-weight: 600;
   text-decoration: underline;
@@ -542,8 +551,8 @@ a.btn {
 }
 
 .record-day b {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 500;
   line-height: 1.1;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -556,7 +565,7 @@ a.btn {
 
 .record-range {
   font-size: 17px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -581,9 +590,9 @@ a.btn {
 }
 
 .record-duration {
-  color: var(--text);
+  color: var(--muted);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 400;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -1005,8 +1014,8 @@ a.btn {
 
 /* 급여 비교 */
 .pay-total {
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 48px;
+  font-weight: 300;
   line-height: 1.2;
   letter-spacing: -0.045em;
   margin-bottom: 12px;
@@ -1059,8 +1068,8 @@ a.btn {
 }
 
 .diff-title {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 500;
   letter-spacing: -0.03em;
 }
 
@@ -1119,7 +1128,8 @@ a.btn {
 
 /* 정산 요청 */
 .request-diff {
-  font-size: 32px;
+  font-family: var(--font-num);
+  font-size: 27px;
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.04em;
@@ -1509,7 +1519,7 @@ a.btn {
   }
 }
 
-/* 하단 탭: 고른 탭은 글자색과 위쪽 초록 막대로 표시 */
+/* 하단 탭: 글자만. 고른 탭은 포인트 색 */
 .tabbar {
   position: fixed;
   left: 50%;
@@ -1518,48 +1528,26 @@ a.btn {
   display: flex;
   width: 100%;
   max-width: 480px;
-  padding: 0 6px env(safe-area-inset-bottom);
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   border-top: 1px solid var(--line);
   background: var(--bg);
 }
 
 .tab {
-  position: relative;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  min-height: 60px;
-  padding: 10px 0 6px;
+  min-height: 44px;
   border: none;
   background: transparent;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--faint);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
   cursor: pointer;
 }
 
 .tab.active {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.tab.active::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 50%;
-  width: 28px;
-  height: 3px;
-  border-radius: 0 0 3px 3px;
-  background: var(--accent);
-  transform: translateX(-50%);
-}
-
-.tab:active .icon {
-  transform: scale(0.9);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {

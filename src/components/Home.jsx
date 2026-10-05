@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { mondayOf, weekSummary } from '../lib/pay'
+import { calcMonth, mondayOf, weekSummary } from '../lib/pay'
 import { shortfallTotal, unpaidMonths } from '../lib/request'
-import { dateKey, fmtDate, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
+import { dateKey, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
 import Icon from './Icon.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
@@ -13,12 +13,7 @@ function LiveClock() {
     const timer = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
-  return (
-    <>
-      <p className="hero-date">{fmtDate(now)}</p>
-      <p className="hero-clock">{fmtTime(now)}</p>
-    </>
-  )
+  return <p className="hero-clock">{fmtTime(now)}</p>
 }
 
 export default function Home({ data, actions, goTo, openPay }) {
@@ -56,7 +51,13 @@ export default function Home({ data, actions, goTo, openPay }) {
   const totalMin = monthRecords
     .filter((r) => !r.deleted)
     .reduce((sum, r) => sum + minutesBetween(r.start, r.end), 0)
-  const workDays = monthRecords.filter((r) => !r.deleted).length
+  // 이번 달 받을 돈: 모든 근무지의 예상 급여 합계
+  const earned = workplaces
+    .map((w) => calcMonth(w, records, data.schedules, thisMonth, dateKey(now)))
+    .reduce((sum, r) => ({ total: sum.total + r.total, holidayPay: sum.holidayPay + r.holidayPay }), {
+      total: 0,
+      holidayPay: 0,
+    })
   const selectedWorkplace = workplaces.find((w) => w.id === selectedWorkplaceId)
   const thisWeek =
     selectedWorkplace && weekSummary(selectedWorkplace, records, data.schedules, mondayOf(now), dateKey(now))
@@ -66,49 +67,62 @@ export default function Home({ data, actions, goTo, openPay }) {
 
   return (
     <>
+      <section className="earn">
+        <p className="earn-label">{now.getMonth() + 1}월에 받을 돈, 지금까지</p>
+        <p className="earn-amount">
+          {earned.total.toLocaleString()}
+          <span> 원</span>
+        </p>
+        <p className="earn-sub">
+          {fmtDuration(totalMin)} 일했어요
+          {earned.holidayPay > 0 && ` · 주휴수당 ${earned.holidayPay.toLocaleString()}원 포함`}
+        </p>
+      </section>
+
       <section className={active ? 'hero working' : 'hero'}>
-        <LiveClock />
-        {active ? (
-          <>
-            <p className="hero-status">
-              <span className="dot" /> {activeWorkplace?.name ?? '근무지'}에서 근무 중
-            </p>
+        <div className="dial">
+          <svg width="112" height="112" viewBox="0 0 112 112" aria-hidden="true">
+            <circle className="dial-ticks" cx="56" cy="56" r="52" strokeDasharray="1.5 3.945" />
+            <circle className="dial-marks" cx="56" cy="56" r="52" strokeDasharray="1.5 25.727" transform="rotate(-90.4 56 56)" />
+          </svg>
+          {active ? (
             <button className="clock-btn out" onClick={actions.clockOut}>
               퇴근
             </button>
-            <p className="hero-start">출근 {fmtTime(active.start)}</p>
-            <p className="hero-sub">{fmtDuration(minutesBetween(active.start, now))} 지났어요</p>
-          </>
-        ) : (
-          <>
-            <select
-              className="hero-select"
-              value={selectedWorkplaceId ?? ''}
-              onChange={(e) => actions.selectWorkplace(e.target.value)}
-              aria-label="근무지 선택"
-            >
-              {workplaces.map((w) => (
-                <option key={w.id} value={w.id}>
-                  {w.name} · 시급 {w.wage.toLocaleString()}원
-                </option>
-              ))}
-            </select>
+          ) : (
             <button className="clock-btn in" onClick={actions.clockIn}>
               출근
             </button>
-            <p className="hero-sub">버튼을 누르면 지금 시각으로 출근이 기록돼요</p>
-          </>
-        )}
-      </section>
-
-      <section className="stats">
-        <div>
-          <span>{now.getMonth() + 1}월 근무 시간</span>
-          <b>{fmtDuration(totalMin)}</b>
+          )}
         </div>
-        <div>
-          <span>근무 횟수</span>
-          <b>{workDays}회</b>
+        <div className="hero-info">
+          <LiveClock />
+          {active ? (
+            <>
+              <p className="hero-status">
+                <span className="dot" /> {activeWorkplace?.name ?? '근무지'}에서 근무 중
+              </p>
+              <p className="hero-sub">
+                출근 {fmtTime(active.start)} · {fmtDuration(minutesBetween(active.start, now))} 지났어요
+              </p>
+            </>
+          ) : (
+            <>
+              <select
+                className="hero-select"
+                value={selectedWorkplaceId ?? ''}
+                onChange={(e) => actions.selectWorkplace(e.target.value)}
+                aria-label="근무지 선택"
+              >
+                {workplaces.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name}
+                  </option>
+                ))}
+              </select>
+              <p className="hero-sub">아직 출근 전</p>
+            </>
+          )}
         </div>
       </section>
 
