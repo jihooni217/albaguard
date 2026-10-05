@@ -44,7 +44,10 @@ export default function Evidence({ data, target, onClose }) {
           PDF로 저장
         </button>
       </div>
-      <p className="evidence-hint">인쇄 창이 뜨면 프린터 대신 "PDF로 저장"을 골라 주세요.</p>
+      <p className="evidence-hint">
+        인쇄 창이 뜨면 프린터 대신 "PDF로 저장"을 골라 주세요. 이 자료는 내 기록을 정리한 참고용이라, 통장 내역이나 사장님과
+        나눈 메시지를 함께 내야 힘이 생겨요.
+      </p>
 
       <article className="evidence-doc">
         <h1>근무·급여 증빙 자료</h1>
@@ -232,6 +235,10 @@ export default function Evidence({ data, target, onClose }) {
         <p className="small footer">
           이 문서는 알바가드 앱에 저장된 기록을 그대로 출력한 것입니다. 기록을 고치거나 지운 경우 그 전후 내용과 시점, 사유가
           2번 항목에 남아 있습니다.
+        </p>
+        <p className="small">
+          본인이 직접 남긴 기록을 정리한 참고 자료이며, 이 문서만으로 법적 효력이나 증거 인정이 보장되지는 않습니다. 통장
+          거래 내역, 주고받은 메시지 등 다른 자료와 함께 제출하시기 바랍니다. 법률 자문이 아닙니다.
         </p>
       </article>
     </div>

@@ -101,6 +101,11 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         </ol>
         <p className="muted">임금은 받을 수 있게 된 날부터 3년이 지나면 청구하기 어려워져요.</p>
       </section>
+
+      <p className="muted note">
+        알바가드는 내 기록을 정리하고 문구 초안을 만들어 주는 도구예요. 법률 자문이나 신고 대행이 아니고, 만든 문서의 법적
+        효력을 보장하지 않아요. 정확한 판단은 고용노동부 상담(☎ 1350)이나 노무사에게 확인해 주세요.
+      </p>
     </>
   )
 }
