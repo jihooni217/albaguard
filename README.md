@@ -1,5 +1,3 @@
-<img src="docs/screenshots/icon-rounded.png" width="96" alt="알바가드 앱 아이콘" align="right">
-
 # 알바가드
 
 > 못 받은 알바비, 기록으로 찾는 앱
