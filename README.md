@@ -1,4 +1,4 @@
-<img src="public/icon-512.png" width="96" alt="알바가드 앱 아이콘" align="right">
+<img src="docs/screenshots/icon-rounded.png" width="96" alt="알바가드 앱 아이콘" align="right">
 
 # 알바가드
 
@@ -21,6 +21,10 @@
 디자인은 Claude Design에서 시안 12장을 그려 보고, 알바생 친구(하우머치 사용자)의 의견을 들어 정했다.
 
 **앱 아이콘**: 밝은 남색 바탕에 흰 고리 → 방패 → ₩. 방패는 알바비를 지킨다는 뜻, 고리는 쌓이는 근무 시간, 고리의 빨간 한 토막은 덜 받은 한 칸이다. 알바생 친구의 스케치에서 나온 구성이고, 색은 샘플 10가지 중에서 앱 첫 화면과 이어지는 밝은 남색을 골랐다.
+
+<img src="docs/screenshots/0-homescreen.png" width="240" alt="홈 화면에 알바가드 아이콘이 있는 모습">
+
+*홈 화면에 추가했을 때의 모습 (설명용 그림. 다른 앱 아이콘은 모양만 흉내 낸 것)*
 
 <p>
   <img src="docs/screenshots/1-home.jpg" width="200" alt="근무 기록 화면" />
