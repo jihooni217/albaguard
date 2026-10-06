@@ -115,6 +115,7 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
   const [wage, setWage] = useState(workplace.wage ?? MIN_WAGE_2026)
   const [fivePlus, setFivePlus] = useState(workplace.fivePlus ?? false)
   const [breakMin, setBreakMin] = useState(workplace.breakMin ?? 0)
+  const [startDate, setStartDate] = useState(workplace.startDate ?? '')
   const [raised, setRaised] = useState(true) // 시급이 실제로 바뀐 것인지(true), 잘못 넣은 걸 고치는지(false)
   const [wageFrom, setWageFrom] = useState(dateKey(new Date()))
   const wageChanged = isEdit && Number(wage) > 0 && Number(wage) !== workplace.wage
@@ -135,6 +136,7 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
         : workplace.wageHistory,
       fivePlus,
       breakMin: Number(breakMin),
+      startDate: startDate || undefined,
     })
     onClose()
   }
@@ -190,6 +192,13 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
       <p className="muted field-help">
         쉬는 시간 없이 일하거나 쉬는 시간에도 시급을 받으면 0. 법으로는 4시간에 30분이지만, 실제로 쉬지 못했다면 그
         시간도 근무 시간이에요.
+      </p>
+      <label className="field">
+        이곳에서 일 시작한 날 (선택)
+        <input className="input" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+      </label>
+      <p className="muted field-help">
+        1년 넘게 일하면 퇴직금 대상이 될 수 있어서 알려드려요. 비워 두면 첫 근무 기록 날을 시작으로 봐요.
       </p>
       <label className="check">
         <input type="checkbox" checked={fivePlus} onChange={(e) => setFivePlus(e.target.checked)} />

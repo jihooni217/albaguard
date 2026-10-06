@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { calcMonth, mondayOf, recordPay, weekSummary } from '../lib/pay'
 import { shortfallTotal, staleRequests, unpaidMonths } from '../lib/request'
+import { severanceAlerts } from '../lib/severance'
 import { dateKey, fmtDate, fmtDuration, fmtTime, fromInputValue, minutesBetween, monthKey, toInputValue } from '../lib/time'
 import Modal from './Modal.jsx'
 import RecordItem from './RecordItem.jsx'
@@ -24,6 +25,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
   const [, setTick] = useState(0)
   const [form, setForm] = useState(null) // null | { record } | { add: true }
   const [lateOut, setLateOut] = useState(false) // 퇴근을 잊었을 때 시각을 넣는 창
+  const [severanceOpen, setSeveranceOpen] = useState(null) // 퇴직금 설명 창에 보여줄 근무지
 
   // 근무 중일 때 경과 시간을 다시 그린다
   useEffect(() => {
@@ -68,6 +70,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
   const owed = shortfallTotal(data, dateKey(now))
   const pending = unpaidMonths(data, dateKey(now))
   const stale = staleRequests(data, dateKey(now))
+  const severance = severanceAlerts(data, dateKey(now))
   const activeWorkplace = active && workplaces.find((w) => w.id === active.workplaceId)
   // 출근한 지 12시간이 넘으면 퇴근 버튼을 잊은 것으로 보고, 바로 끝내지 않고 시각을 묻는다
   const overdue = active && minutesBetween(active.start, now) >= OVERDUE_MIN
@@ -161,8 +164,18 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         </section>
       )}
 
-      {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0) && (
+      {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0 || severance.length > 0) && (
         <section className="card alerts">
+          {severance.map(({ workplace, info }) => (
+            <button key={workplace.id} className="alert-row ask" onClick={() => setSeveranceOpen({ workplace, info })}>
+              <span>
+                {info.eligible
+                  ? `퇴직금 대상이에요 · ${workplace.name}`
+                  : `${info.daysLeft}일 뒤 퇴직금 대상 · ${workplace.name}`}
+              </span>
+              <b>약 {info.estimate.toLocaleString()}원</b>
+            </button>
+          ))}
           {stale.length > 0 && (
             <button className="alert-row ask" onClick={() => goTo('request')}>
               <span>
@@ -231,6 +244,11 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         )}
       </section>
 
+      {severanceOpen && (
+        <Modal title="퇴직금" onClose={() => setSeveranceOpen(null)}>
+          <SeveranceInfo workplace={severanceOpen.workplace} info={severanceOpen.info} />
+        </Modal>
+      )}
       {lateOut && active && (
         <LateOutForm
           active={active}
@@ -309,5 +327,46 @@ function LateOutForm({ active, schedules, now, onSave, onClose }) {
         아직 일하는 중이에요
       </button>
     </Modal>
+  )
+}
+
+// 퇴직금 설명: 왜 대상인지, 얼마쯤인지, 어떻게 계산했는지
+function SeveranceInfo({ workplace, info }) {
+  const months = Math.floor(info.days / 30)
+  return (
+    <>
+      <p className="rq-label">{info.eligible ? '받을 수 있는 퇴직금 (추정)' : `${info.daysLeft}일 뒤부터 받을 수 있는 퇴직금 (추정)`}</p>
+      <p className="rq-owed plain">
+        {info.estimate.toLocaleString()}
+        <small>원</small>
+      </p>
+      <div className="pay-rows sev-rows">
+        <div className="rq-row">
+          <span>일 시작한 날</span>
+          <b>
+            {info.startKey.slice(0, 4)}년 {fmtDate(info.startKey)}
+          </b>
+        </div>
+        <div className="rq-row">
+          <span>근속</span>
+          <b>
+            {info.days}일 (약 {months}개월)
+          </b>
+        </div>
+        <div className="rq-row">
+          <span>최근 4주 평균</span>
+          <b>주 {fmtDuration(info.avgWeekMin)}</b>
+        </div>
+      </div>
+      <p className="muted sev-note">
+        알바도 한 곳에서 <b>1년 이상</b>, <b>주 15시간 이상</b> 일했으면 퇴직금을 받을 수 있어요. 그만둔 날부터 14일 안에
+        받는 것이 원칙이에요. 금액은 그만두기 전 3개월 급여로 낸 하루 평균 × 30일 × (근속일 ÷ 365)로 어림한 것이라, 실제와
+        다를 수 있어요.
+      </p>
+      <p className="muted sev-note">
+        일 시작한 날이 다르면 설정 → 근무지 수정에서 고칠 수 있어요. 정확한 금액은 고용노동부 퇴직금 계산기나 1350 상담으로
+        확인해 주세요. 법률 자문이 아니에요.
+      </p>
+    </>
   )
 }

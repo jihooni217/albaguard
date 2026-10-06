@@ -6,9 +6,11 @@ import { dateKey, monthKey } from './time'
 const WORK_DAYS = [1, 3, 5, 6] // 월·수·금·토 18~22시 (주 16시간)
 
 export function buildDemoData() {
-  const workplace = { id: newId(), name: '모퉁이카페 (예시)', wage: 10320, fivePlus: true }
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+  // 13개월 전에 시작한 것으로 두어 퇴직금 알림이 보이게 한다 (기록은 석 달 전부터만 있음)
+  const began = new Date(today.getFullYear(), today.getMonth() - 13, 1)
+  const workplace = { id: newId(), name: '모퉁이카페 (예시)', wage: 10320, fivePlus: true, startDate: dateKey(began) }
   const at = (day, hour, minute = 0) => {
     const d = new Date(day)
     d.setHours(hour, minute, 0, 0)

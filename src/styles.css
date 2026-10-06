@@ -1890,6 +1890,22 @@ a.btn {
   cursor: pointer;
 }
 
+/* 퇴직금 설명 창 */
+.sev-rows {
+  margin-top: 16px;
+}
+
+.sev-note {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.sev-note b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* 단계: 번호가 세로 선으로 이어진다 */
 .rq-step {
   position: relative;
