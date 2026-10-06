@@ -3,7 +3,6 @@ import { calcMonth, mondayOf, recordPay, weekSummary } from '../lib/pay'
 import { shortfallTotal, staleRequests, unpaidMonths } from '../lib/request'
 import { severanceAlerts } from '../lib/severance'
 import { dateKey, fmtDate, fmtDuration, fmtTime, fromInputValue, minutesBetween, monthKey, toInputValue } from '../lib/time'
-import { AddForm } from './Attachments.jsx'
 import Modal from './Modal.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
@@ -27,8 +26,6 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
   const [form, setForm] = useState(null) // null | { record } | { add: true }
   const [lateOut, setLateOut] = useState(false) // 퇴근을 잊었을 때 시각을 넣는 창
   const [severanceOpen, setSeveranceOpen] = useState(null) // 퇴직금 설명 창에 보여줄 근무지
-  const [proofFor, setProofFor] = useState(null) // 시급 근거 사진을 권하는 근무지
-  const [photoFor, setPhotoFor] = useState(null) // 사진 추가 창을 열 근무지
 
   // 근무 중일 때 경과 시간을 다시 그린다
   useEffect(() => {
@@ -74,13 +71,6 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
   const pending = unpaidMonths(data, dateKey(now))
   const stale = staleRequests(data, dateKey(now))
   const severance = severanceAlerts(data, dateKey(now))
-  // 시급 근거 사진이 없는 근무지 (기록이 있는 곳만). 사진을 붙이거나 '나중에'를 누르면 사라진다
-  const noProof = workplaces.filter(
-    (w) =>
-      !w.wageProofSkipped &&
-      records.some((r) => !r.deleted && r.workplaceId === w.id) &&
-      !(data.attachments ?? []).some((a) => a.workplaceId === w.id && a.kind === 'wage'),
-  )
   const activeWorkplace = active && workplaces.find((w) => w.id === active.workplaceId)
   // 출근한 지 12시간이 넘으면 퇴근 버튼을 잊은 것으로 보고, 바로 끝내지 않고 시각을 묻는다
   const overdue = active && minutesBetween(active.start, now) >= OVERDUE_MIN
@@ -174,7 +164,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         </section>
       )}
 
-      {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0 || severance.length > 0 || noProof.length > 0) && (
+      {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0 || severance.length > 0) && (
         <section className="card alerts">
           {severance.map(({ workplace, info }) => (
             <button key={workplace.id} className="alert-row ask" onClick={() => setSeveranceOpen({ workplace, info })}>
@@ -204,12 +194,6 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
             <button className="alert-row owed" onClick={() => goTo('request')}>
               <span>덜 받은 급여 · {owed.count}개월</span>
               <b>{owed.amount.toLocaleString()}원</b>
-            </button>
-          )}
-          {noProof.length > 0 && (
-            <button className="alert-row ask" onClick={() => setProofFor(noProof[0])}>
-              <span>시급 근거 사진이 아직 없어요 · {noProof[0].name}</span>
-              <b>붙여 두기</b>
             </button>
           )}
           {thisWeek?.eligible && (
@@ -260,41 +244,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         )}
       </section>
 
-      {proofFor && (
-        <Modal title="시급 근거 사진" onClose={() => setProofFor(null)}>
-          <p className="muted">
-            급여 문제가 생기면 가장 먼저 "시급이 얼마였냐"부터 부딪혀요. 시급이 적힌 구인 공고, 계약서, 사장님과 나눈 메시지를
-            사진으로 붙여 두면 증빙 묶음에 같이 들어가요.
-          </p>
-          <button
-            className="btn primary block"
-            onClick={() => {
-              setPhotoFor(proofFor)
-              setProofFor(null)
-            }}
-          >
-            사진 찍기 / 고르기
-          </button>
-          <button
-            className="btn ghost block"
-            onClick={() => {
-              actions.saveWorkplace({ ...proofFor, wageProofSkipped: true })
-              setProofFor(null)
-            }}
-          >
-            나중에 할게요 (이 알림 끄기)
-          </button>
-        </Modal>
-      )}
-      {photoFor && (
-        <AddForm
-          workplace={photoFor}
-          ym={monthKey(now)}
-          actions={actions}
-          initialKind="wage"
-          onClose={() => setPhotoFor(null)}
-        />
-      )}
+
       {severanceOpen && (
         <Modal title="퇴직금" onClose={() => setSeveranceOpen(null)}>
           <SeveranceInfo workplace={severanceOpen.workplace} info={severanceOpen.info} />
