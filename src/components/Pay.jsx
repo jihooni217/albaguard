@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { MIN_WAGE_2026, baseText, calcMonth, paymentKey, tax33, ymOf } from '../lib/pay'
+import { baseText, calcMonth, paymentKey, tax33, wageOn, ymOf } from '../lib/pay'
+import { minWage } from '../lib/최저임금'
 import { dateKey, fmtDuration } from '../lib/time'
 import Attachments from './Attachments.jsx'
 import Icon from './Icon.jsx'
@@ -31,6 +32,9 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence, ta
   }
 
   const ym = ymOf(month.y, month.m)
+  // 그 달에 적용된 시급을 그 해 최저임금과 비교한다
+  const legal = minWage(month.y)
+  const monthWage = wageOn(workplace, `${ym}-31`)
   const key = paymentKey(workplace.id, ym)
   const result = calcMonth(workplace, records, schedules, ym, todayKey)
 
@@ -73,9 +77,9 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence, ta
         )}
       </div>
 
-      {workplace.wage < MIN_WAGE_2026 && (
+      {monthWage < legal.wage && (
         <p className="pay-warn">
-          시급 {won(workplace.wage)}은 2026년 최저시급({won(MIN_WAGE_2026)})보다 낮아요. 아래 금액은 등록한 시급으로
+          시급 {won(monthWage)}은 {legal.year}년 최저시급({won(legal.wage)})보다 낮아요. 아래 금액은 등록한 시급으로
           계산했어요.
         </p>
       )}

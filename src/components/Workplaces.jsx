@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { MIN_WAGE_2026, nextWageHistory, wageText } from '../lib/pay'
+import { nextWageHistory, wageText } from '../lib/pay'
+import { minWage } from '../lib/최저임금'
 import { getTheme, setTheme } from '../lib/theme'
 import { newId } from '../lib/id'
 import { dateKey } from '../lib/time'
@@ -13,6 +14,7 @@ export default function Workplaces({ data, actions }) {
   const [editing, setEditing] = useState(null) // null | {} (새로 등록) | 근무지
   const [theme, setThemeState] = useState(getTheme)
   const [proofFor, setProofFor] = useState(null) // 방금 등록한 근무지. 시급 근거 사진을 권하는 창
+  const legal = minWage() // 올해 최저임금
   const [photoFor, setPhotoFor] = useState(null) // 사진 추가 창을 열 근무지
 
   return (
@@ -30,8 +32,10 @@ export default function Workplaces({ data, actions }) {
                 시급 {wageText(w)} · {w.fivePlus ? '5인 이상' : '5인 미만'}
                 {w.breakMin > 0 && ` · 휴게 4시간마다 ${w.breakMin}분`}
               </small>
-              {w.wage < MIN_WAGE_2026 && (
-                <small className="down">2026년 최저시급({MIN_WAGE_2026.toLocaleString()}원)보다 낮아요</small>
+              {w.wage < legal.wage && (
+                <small className="down">
+                  {legal.year}년 최저시급({legal.wage.toLocaleString()}원)보다 낮아요
+                </small>
               )}
             </span>
             <span className="set-value">수정</span>
@@ -41,6 +45,11 @@ export default function Workplaces({ data, actions }) {
           <span>+</span>근무지 등록
         </button>
       </div>
+      {legal.missing && (
+        <p className="cv-none">
+          {legal.year}년 최저임금이 아직 앱에 반영되지 않았어요. 지금은 {legal.wage.toLocaleString()}원(이전 해)으로 비교해요
+        </p>
+      )}
 
       <h2 className="rq-title">화면</h2>
       <div className="pay-rows">
@@ -146,7 +155,8 @@ export default function Workplaces({ data, actions }) {
 function WorkplaceForm({ workplace, canDelete, actions, onClose, onCreated }) {
   const isEdit = Boolean(workplace.id)
   const [name, setName] = useState(workplace.name ?? '')
-  const [wage, setWage] = useState(workplace.wage ?? MIN_WAGE_2026)
+  const legal = minWage() // 올해 최저임금
+  const [wage, setWage] = useState(workplace.wage ?? legal.wage)
   const [fivePlus, setFivePlus] = useState(workplace.fivePlus ?? false)
   const [breakMin, setBreakMin] = useState(workplace.breakMin ?? 0)
   const [startDate, setStartDate] = useState(workplace.startDate ?? '')
@@ -193,8 +203,10 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose, onCreated }) {
           onChange={(e) => setWage(e.target.value)}
         />
       </label>
-      {Number(wage) > 0 && Number(wage) < MIN_WAGE_2026 && (
-        <p className="warn">2026년 최저시급은 {MIN_WAGE_2026.toLocaleString()}원이에요. 이보다 낮은 시급이에요.</p>
+      {Number(wage) > 0 && Number(wage) < legal.wage && (
+        <p className="warn">
+          {legal.year}년 최저시급은 {legal.wage.toLocaleString()}원이에요. 이보다 낮은 시급이에요.
+        </p>
       )}
       {wageChanged && (
         <div className="notice">

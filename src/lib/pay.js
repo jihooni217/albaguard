@@ -1,7 +1,6 @@
 // 예상 급여 계산 (기본급 + 주휴수당 + 야간수당)
 import { dateKey, fmtDuration, minutesBetween, monthKey, pad, scheduleMinutes } from './time'
 
-export const MIN_WAGE_2026 = 10320
 const HOLIDAY_PAY_MIN = 15 * 60 // 주 15시간 이상이면 주휴수당 대상
 const WEEK_CAP_MIN = 40 * 60 // 주휴수당 계산은 주 40시간까지만
 
