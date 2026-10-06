@@ -45,6 +45,16 @@ export default function Evidence({ data, target, onClose }) {
     .filter((s) => s.off && s.workplaceId === workplace.id && yms.includes(s.date.slice(0, 7)))
     .sort((a, b) => a.date.localeCompare(b.date))
   const photos = attachmentsFor(data, workplace.id, yms)
+  // 정산 요청을 보낸 기록. 이 달들과 '여러 달 합계' 요청을 모두 본다
+  const STAGE_NAMES = { 1: '정산 요청 메시지', 2: '내용증명 초안' }
+  const sentLog = Object.entries(data.requests ?? {})
+    .filter(([key]) => key.startsWith(`${workplace.id}|`) && (key.endsWith('|all') || yms.includes(key.split('|')[1])))
+    .flatMap(([key, stages]) =>
+      [1, 2]
+        .filter((stage) => stages[stage]?.sentAt)
+        .map((stage) => ({ at: stages[stage].sentAt, stage, period: key.endsWith('|all') ? '여러 달 합계' : monthLabel(key.split('|')[1]) })),
+    )
+    .sort((a, b) => new Date(a.at) - new Date(b.at))
   const period = yms.length === 1 ? monthLabel(yms[0]) : `${monthLabel(yms[0])} ~ ${monthLabel(yms.at(-1))}`
   const diffText = (expected, amount) =>
     expected - amount >= 0 ? `${won(expected - amount)} 부족` : `${won(amount - expected)} 초과`
@@ -285,6 +295,31 @@ export default function Evidence({ data, target, onClose }) {
             </figure>
           ))
         )}
+
+        <h2>6. 정산 요청 이력</h2>
+        {sentLog.length === 0 ? (
+          <p>앱에서 보낸 것으로 표시한 정산 요청이 아직 없습니다.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>보낸 시각 (본인 표시)</th>
+                <th>내용</th>
+                <th>대상 기간</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sentLog.map((e, i) => (
+                <tr key={i}>
+                  <td>{fmtDateTime(e.at)}</td>
+                  <td>{STAGE_NAMES[e.stage]}</td>
+                  <td>{e.period}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        <p className="small">보낸 시각은 앱에서 "보냈어요"를 누른 시각입니다. 실제로 보낸 메시지 화면을 함께 첨부하면 좋습니다.</p>
 
         <p className="small footer">
           이 문서는 알바가드 앱에 저장된 기록을 그대로 출력한 것입니다. 기록을 고치거나 지운 경우 그 전후 내용과 시점, 사유가

@@ -49,6 +49,25 @@ export function shortfalls(data, todayKey) {
   return [...combined, ...list]
 }
 
+// 요청을 보낸 뒤 이만큼 지나도 답이 없으면 다음 단계를 권한다(일)
+export const FOLLOW_UP_DAYS = 14
+
+export const daysSince = (iso, now = new Date()) => Math.floor((now - new Date(iso)) / 86400000)
+
+// 보낸 요청 중 답을 기다린 지 오래된 것 (홈 화면 알림용). 아직 덜 받은 상태인 것만
+export function staleRequests(data, todayKey) {
+  const list = []
+  for (const c of shortfalls(data, todayKey)) {
+    const saved = data.requests[c.key] ?? {}
+    // 내용증명까지 보냈으면 그 날짜를, 아니면 메시지 보낸 날짜를 본다
+    const stage = saved[2]?.sentAt ? 2 : saved[1]?.sentAt ? 1 : 0
+    if (!stage) continue
+    const days = daysSince(saved[stage].sentAt)
+    if (days >= FOLLOW_UP_DAYS) list.push({ key: c.key, label: c.label, workplace: c.workplace, stage, days })
+  }
+  return list
+}
+
 // 덜 받은 금액 전체 합계 (홈 화면 알림용)
 export function shortfallTotal(data, todayKey) {
   const months = shortfalls(data, todayKey).filter((c) => !c.combined)

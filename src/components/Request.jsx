@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { buildFacts, copyText, makeMessage, shortfalls, targetKey } from '../lib/request'
-import { dateKey } from '../lib/time'
+import { FOLLOW_UP_DAYS, buildFacts, copyText, daysSince, makeMessage, shortfalls, targetKey } from '../lib/request'
+import { dateKey, fmtDateTime, nowMinute } from '../lib/time'
 import Icon from './Icon.jsx'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
@@ -30,6 +30,10 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
   // 고르는 칸에 들어갈 짧은 이름. 합계는 "7월~8월 합계"처럼 줄여 쓴다
   const shortLabel = (c) => (c.combined ? `${c.months[0].month}월~${c.months.at(-1).month}월 합계` : c.label)
   const paid = current.combined ? current.paid : current.payment.amount
+  // 앞 단계를 보낸 지 오래됐으면 접힌 다음 단계에 "이제 볼 때"라고 적는다
+  const waited = (stage) => (saved[stage]?.sentAt ? daysSince(saved[stage].sentAt) : null)
+  const nudge = (stage, base) =>
+    waited(stage) >= FOLLOW_UP_DAYS ? `${stage === 1 ? '메시지' : '내용증명'}를 보낸 지 ${waited(stage)}일 · 이제 볼 때예요` : base
 
   return (
     <>
@@ -97,7 +101,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         key={`${current.key}-2`}
         step={2}
         title="내용증명 초안"
-        when="대화로 풀리지 않을 때"
+        when={nudge(1, '대화로 풀리지 않을 때')}
         desc="메시지를 보냈는데도 해결되지 않을 때 쓰는 문서 초안이에요. [대괄호] 부분은 직접 채워야 하고, 우체국에서 내용증명으로 보낼 수 있어요. 법률 자문은 아니에요."
         button="초안 만들기"
         saved={saved[2]}
@@ -105,7 +109,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         generate={() => makeMessage(2, current)}
       />
 
-      <Fold step={3} title="진정 절차 안내" when="그래도 받지 못했을 때 · 1350 상담, 노동포털">
+      <Fold step={3} title="진정 절차 안내" when={nudge(2, '그래도 받지 못했을 때 · 1350 상담, 노동포털')}>
         <p className="muted">그래도 받지 못했다면 고용노동부에 임금체불 진정을 낼 수 있어요.</p>
         <ol className="guide">
           <li>
@@ -185,7 +189,8 @@ function Stage({ step, title, when, desc, button, saved, onSave, generate, defau
     setLoading(false)
     if (result.error) return setError(result.error)
     setNotice(result.notice ?? '')
-    onSave({ text: result.text, source: result.source })
+    // 다시 만들어도 보낸 날짜는 남겨 둔다
+    onSave({ ...saved, text: result.text, source: result.source })
   }
 
   async function copy() {
@@ -209,6 +214,19 @@ function Stage({ step, title, when, desc, button, saved, onSave, generate, defau
           <button className="btn primary block" onClick={copy}>
             {copied ? '복사했어요 ✓' : '복사하기'}
           </button>
+          {saved.sentAt ? (
+            <p className="rq-sent">
+              <b>{fmtDateTime(saved.sentAt)}에 보냈어요</b> · {daysSince(saved.sentAt)}일 지남
+              {daysSince(saved.sentAt) >= FOLLOW_UP_DAYS && ' · 답이 없다면 다음 단계를 볼 때예요'}
+              <button className="rq-sent-undo" onClick={() => onSave({ ...saved, sentAt: undefined })}>
+                보낸 기록 지우기
+              </button>
+            </p>
+          ) : (
+            <button className="rq-sent-btn" onClick={() => onSave({ ...saved, sentAt: nowMinute() })}>
+              보냈어요 · 보낸 날짜 남기기
+            </button>
+          )}
         </>
       )}
 

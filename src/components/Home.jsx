@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { calcMonth, mondayOf, recordPay, weekSummary } from '../lib/pay'
-import { shortfallTotal, unpaidMonths } from '../lib/request'
+import { shortfallTotal, staleRequests, unpaidMonths } from '../lib/request'
 import { dateKey, fmtDate, fmtDuration, fmtTime, fromInputValue, minutesBetween, monthKey, toInputValue } from '../lib/time'
 import Modal from './Modal.jsx'
 import RecordItem from './RecordItem.jsx'
@@ -67,6 +67,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
     selectedWorkplace && weekSummary(selectedWorkplace, records, data.schedules, mondayOf(now), dateKey(now))
   const owed = shortfallTotal(data, dateKey(now))
   const pending = unpaidMonths(data, dateKey(now))
+  const stale = staleRequests(data, dateKey(now))
   const activeWorkplace = active && workplaces.find((w) => w.id === active.workplaceId)
   // 출근한 지 12시간이 넘으면 퇴근 버튼을 잊은 것으로 보고, 바로 끝내지 않고 시각을 묻는다
   const overdue = active && minutesBetween(active.start, now) >= OVERDUE_MIN
@@ -160,8 +161,16 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         </section>
       )}
 
-      {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible) && (
+      {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0) && (
         <section className="card alerts">
+          {stale.length > 0 && (
+            <button className="alert-row ask" onClick={() => goTo('request')}>
+              <span>
+                {stale[0].stage === 1 ? '메시지' : '내용증명'} 보낸 지 {stale[0].days}일 · 답이 없나요?
+              </span>
+              <b>다음 단계 보기</b>
+            </button>
+          )}
           {pending.length > 0 && (
             <button className="alert-row ask" onClick={() => openPay(pending[0])}>
               <span>{pending[0].month}월 급여 받으셨나요?</span>
