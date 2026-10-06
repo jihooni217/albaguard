@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { MIN_WAGE_2026, nextWageHistory, wageText } from '../lib/pay'
 import { getTheme, setTheme } from '../lib/theme'
+import { newId } from '../lib/id'
 import { dateKey } from '../lib/time'
+import { AddForm } from './Attachments.jsx'
 import Backup from './Backup.jsx'
 import Icon from './Icon.jsx'
 import Modal from './Modal.jsx'
@@ -10,6 +12,8 @@ export default function Workplaces({ data, actions }) {
   const { workplaces, records, active } = data
   const [editing, setEditing] = useState(null) // null | {} (새로 등록) | 근무지
   const [theme, setThemeState] = useState(getTheme)
+  const [proofFor, setProofFor] = useState(null) // 방금 등록한 근무지. 시급 근거 사진을 권하는 창
+  const [photoFor, setPhotoFor] = useState(null) // 사진 추가 창을 열 근무지
 
   return (
     <>
@@ -103,13 +107,43 @@ export default function Workplaces({ data, actions }) {
           }
           actions={actions}
           onClose={() => setEditing(null)}
+          onCreated={(w) => setProofFor(w)}
+        />
+      )}
+      {proofFor && (
+        <Modal title="시급 근거를 지금 남겨 두세요" onClose={() => setProofFor(null)}>
+          <p className="muted">
+            나중에 급여 문제가 생기면 가장 먼저 "시급이 얼마였냐"부터 부딪혀요. 시급이 적힌 구인 공고, 계약서, 사장님과 나눈
+            메시지를 지금 사진으로 찍어 두면 증빙 묶음에 같이 들어가요.
+          </p>
+          <button
+            className="btn primary block"
+            onClick={() => {
+              setPhotoFor(proofFor)
+              setProofFor(null)
+            }}
+          >
+            사진 찍기 / 고르기
+          </button>
+          <button className="btn ghost block" onClick={() => setProofFor(null)}>
+            나중에 할게요
+          </button>
+        </Modal>
+      )}
+      {photoFor && (
+        <AddForm
+          workplace={photoFor}
+          ym={dateKey(new Date()).slice(0, 7)}
+          actions={actions}
+          initialKind="wage"
+          onClose={() => setPhotoFor(null)}
         />
       )}
     </>
   )
 }
 
-function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
+function WorkplaceForm({ workplace, canDelete, actions, onClose, onCreated }) {
   const isEdit = Boolean(workplace.id)
   const [name, setName] = useState(workplace.name ?? '')
   const [wage, setWage] = useState(workplace.wage ?? MIN_WAGE_2026)
@@ -126,8 +160,8 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
     if (!(Number(wage) > 0)) return setError('시급을 입력해 주세요.')
     if (!(Number(breakMin) >= 0 && Number(breakMin) < 240)) return setError('휴게시간은 0분 이상으로 입력해 주세요.')
     if (wageChanged && raised && !wageFrom) return setError('새 시급이 적용된 날짜를 입력해 주세요.')
-    actions.saveWorkplace({
-      id: workplace.id,
+    const saved = {
+      id: workplace.id ?? newId(),
       name: name.trim(),
       wage: Number(wage),
       // 시급이 오른 것이면 그 날짜부터만 새 시급으로, 잘못 넣은 걸 고친 것이면 전체에 적용
@@ -137,8 +171,10 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose }) {
       fivePlus,
       breakMin: Number(breakMin),
       startDate: startDate || undefined,
-    })
+    }
+    actions.saveWorkplace(saved)
     onClose()
+    if (!isEdit) onCreated?.(saved)
   }
 
   return (

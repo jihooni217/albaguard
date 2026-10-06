@@ -62,11 +62,11 @@ export function Photo({ id, alt, className }) {
   return url ? <img src={url} alt={alt} className={className} /> : <span className="photo-empty" />
 }
 
-function AddForm({ workplace, ym, actions, onClose }) {
+export function AddForm({ workplace, ym, actions, onClose, initialKind = 'schedule' }) {
   const fileInput = useRef(null)
   const today = dateKey(new Date())
   const [preview, setPreview] = useState(null)
-  const [kind, setKind] = useState('schedule')
+  const [kind, setKind] = useState(initialKind)
   const [date, setDate] = useState(today.startsWith(ym) ? today : `${ym}-01`)
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
