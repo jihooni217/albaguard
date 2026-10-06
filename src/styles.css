@@ -479,6 +479,14 @@ a.btn {
   white-space: nowrap;
 }
 
+.alert-row.warn b {
+  color: var(--red);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .alert-row.owed b {
   color: var(--red);
   font-size: 19px;

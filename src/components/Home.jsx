@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { calcMonth, mondayOf, recordPay, weekSummary } from '../lib/pay'
 import { shortfallTotal, unpaidMonths } from '../lib/request'
-import { dateKey, fmtDuration, fmtTime, minutesBetween, monthKey } from '../lib/time'
+import { dateKey, fmtDate, fmtDuration, fmtTime, fromInputValue, minutesBetween, monthKey, toInputValue } from '../lib/time'
+import Modal from './Modal.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
 
@@ -15,10 +16,14 @@ function LiveClock() {
   return <span className="clock-now">{fmtTime(now)}</span>
 }
 
+// 출근한 지 이만큼 지나면 퇴근을 잊은 것으로 본다(분)
+const OVERDUE_MIN = 12 * 60
+
 export default function Home({ data, actions, goTo, openPay, openGame }) {
   const { workplaces, selectedWorkplaceId, active, records } = data
   const [, setTick] = useState(0)
   const [form, setForm] = useState(null) // null | { record } | { add: true }
+  const [lateOut, setLateOut] = useState(false) // 퇴근을 잊었을 때 시각을 넣는 창
 
   // 근무 중일 때 경과 시간을 다시 그린다
   useEffect(() => {
@@ -63,6 +68,8 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
   const owed = shortfallTotal(data, dateKey(now))
   const pending = unpaidMonths(data, dateKey(now))
   const activeWorkplace = active && workplaces.find((w) => w.id === active.workplaceId)
+  // 출근한 지 12시간이 넘으면 퇴근 버튼을 잊은 것으로 보고, 바로 끝내지 않고 시각을 묻는다
+  const overdue = active && minutesBetween(active.start, now) >= OVERDUE_MIN
 
   // 이번 달 내역: 근무 기록과 주휴수당을 입금 내역처럼 한 줄씩, 최근 것부터
   const entries = [
@@ -115,7 +122,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
             <p className="top-status">
               <span className="dot" /> {fmtTime(active.start)} 출근 · {fmtDuration(minutesBetween(active.start, now))} 지났어요
             </p>
-            <button className="clock-btn out" onClick={actions.clockOut}>
+            <button className="clock-btn out" onClick={() => (overdue ? setLateOut(true) : actions.clockOut())}>
               <LiveClock /> 퇴근
             </button>
           </>
@@ -130,6 +137,15 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
           </div>
         )}
       </section>
+
+      {overdue && (
+        <section className="card alerts">
+          <button className="alert-row warn" onClick={() => setLateOut(true)}>
+            <span>퇴근을 안 눌렀나요? · {fmtDate(active.start)} 출근</span>
+            <b>퇴근 시각 넣기</b>
+          </button>
+        </section>
+      )}
 
       {active && (
         <section className="card alerts">
@@ -206,6 +222,18 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         )}
       </section>
 
+      {lateOut && active && (
+        <LateOutForm
+          active={active}
+          schedules={data.schedules}
+          now={now}
+          onSave={(end, reason) => {
+            actions.clockOutAt(end, reason)
+            setLateOut(false)
+          }}
+          onClose={() => setLateOut(false)}
+        />
+      )}
       {form && (
         <RecordForm
           record={form.record}
@@ -216,5 +244,61 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         />
       )}
     </>
+  )
+}
+
+// 퇴근을 잊었을 때 끝난 시각을 넣는 창. 그날 예정 스케줄이 있으면 그 끝 시각을 미리 채워 둔다
+function LateOutForm({ active, schedules, now, onSave, onClose }) {
+  const start = new Date(active.start)
+  const planned = schedules.find((s) => s.date === dateKey(start) && s.workplaceId === active.workplaceId && !s.off)
+  const guess = new Date(start)
+  if (planned) {
+    const [h, m] = planned.end.split(':').map(Number)
+    guess.setHours(h, m, 0, 0)
+    if (guess <= start) guess.setDate(guess.getDate() + 1)
+  } else {
+    guess.setHours(guess.getHours() + 4)
+  }
+  if (guess > now) guess.setTime(now.getTime())
+  const [end, setEnd] = useState(toInputValue(guess.toISOString()))
+  const [reason, setReason] = useState('퇴근 버튼을 못 눌러서 나중에 넣음')
+  const [error, setError] = useState('')
+
+  function save() {
+    if (!end) return setError('끝난 시각을 넣어 주세요.')
+    const endIso = fromInputValue(end)
+    if (new Date(endIso) <= start) return setError('끝난 시각이 출근 시각보다 늦어야 해요.')
+    if (new Date(endIso) > now) return setError('아직 오지 않은 시각이에요.')
+    if (!reason.trim()) return setError('사유를 적어 주세요.')
+    onSave(endIso, reason.trim())
+  }
+
+  return (
+    <Modal title="퇴근 시각 넣기" onClose={onClose}>
+      <p className="muted">
+        {fmtDate(start)} {fmtTime(active.start)}에 출근한 뒤 퇴근 버튼이 눌리지 않았어요. 실제로 끝난 시각을 넣으면
+        그 시각으로 기록돼요. 지금 넣었다는 것과 사유가 함께 남아요.
+      </p>
+      <label className="field">
+        끝난 시각
+        <input className="input" type="datetime-local" value={end} onChange={(e) => setEnd(e.target.value)} />
+      </label>
+      {planned && (
+        <p className="muted field-help">
+          그날 예정이 {planned.start} ~ {planned.end}이라 그 끝 시각을 미리 넣어 뒀어요.
+        </p>
+      )}
+      <label className="field">
+        사유
+        <input className="input" value={reason} onChange={(e) => setReason(e.target.value)} />
+      </label>
+      {error && <p className="error">{error}</p>}
+      <button className="btn primary block" onClick={save}>
+        이 시각으로 퇴근 기록
+      </button>
+      <button className="btn ghost block" onClick={onClose}>
+        아직 일하는 중이에요
+      </button>
+    </Modal>
   )
 }

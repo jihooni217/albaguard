@@ -88,6 +88,26 @@ export function makeActions(setData) {
       })
     },
 
+    // 퇴근 버튼을 잊었을 때: 퇴근 시각을 직접 넣어 끝낸다. "나중에 입력"으로 표시되고 입력 시점·사유가 남는다
+    clockOutAt(end, reason) {
+      const id = newId()
+      setData((d) => {
+        if (!d.active) return d
+        const record = {
+          id,
+          workplaceId: d.active.workplaceId,
+          start: d.active.start,
+          end,
+          source: 'manual',
+          addReason: reason,
+          createdAt: nowMinute(),
+          deleted: false,
+          history: [],
+        }
+        return { ...d, active: null, records: [...d.records, record] }
+      })
+    },
+
     // 버튼을 못 눌렀을 때 나중에 직접 넣는 기록. 언제·왜 넣었는지 함께 남긴다
     addManualRecord({ workplaceId, start, end, reason }) {
       const record = {
