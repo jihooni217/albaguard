@@ -2634,10 +2634,14 @@ a.btn {
   stroke: none;
 }
 
-.spot-hit.found {
-  fill: rgba(255, 255, 255, 0.18);
+.spot-mark {
+  fill: none;
+  pointer-events: none;
+  stroke-width: 2.5;
+}
+
+.spot-mark.found {
   stroke: #ff3b6b;
-  stroke-width: 3;
 }
 
 .spot-chances {
@@ -2649,10 +2653,8 @@ a.btn {
 }
 
 /* 답을 보고 넘어갈 때 못 찾은 곳 */
-.spot-hit.shown {
-  fill: rgba(255, 255, 255, 0.18);
+.spot-mark.shown {
   stroke: #ff9f1c;
-  stroke-width: 3;
   stroke-dasharray: 6 4;
 }
 

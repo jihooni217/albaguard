@@ -73,9 +73,13 @@ export default function SpotGame({ best, seen, cleared, actions, onClose }) {
 
   const left = game ? game.answers.filter((id) => !found.includes(id)) : []
   const hintOne = hintId && left.includes(hintId) ? firstHint(game, hintId) : null
+  // 찾았다는 표시는 바뀐 그림(아래) 기준으로 계산해 위아래에 같은 자리로 그린다
+  const marks = {}
+  if (game) for (const o of game.bottom) if (game.answers.includes(o.id)) marks[o.id] = markOf(o, game.clues[o.id].what)
   const scene = (objects, name) => (
     <Scene
       objects={objects}
+      marks={marks}
       found={found}
       shown={shown || failed ? left : []}
       wrong={wrong}
@@ -208,7 +212,7 @@ function Levels({ best, cleared, onPick }) {
 }
 
 // 그림 한 장. plain이면 배경 없이(휠만), 아니면 하늘·인도·도로를 깐다
-function Scene({ objects, found, shown, wrong, onTap, name, plain, sky }) {
+function Scene({ objects, marks, found, shown, wrong, onTap, name, plain, sky }) {
   const { w, h, ground, road } = SCENE
   const tone = SKIES[sky]
   const order = { cloud: 0, building: 1, bike: 2, car: 3, wheel: 4 }
@@ -254,7 +258,6 @@ function Scene({ objects, found, shown, wrong, onTap, name, plain, sky }) {
       {/* 누르는 범위와 찾았다는 표시. 그림 위에 따로 얹는다 */}
       {sorted.map((o) => {
         const box = boxOf(o)
-        const mark = found.includes(o.id) ? ' found' : shown.includes(o.id) ? ' shown' : ''
         return (
           <rect
             key={`hit-${o.id}`}
@@ -263,7 +266,7 @@ function Scene({ objects, found, shown, wrong, onTap, name, plain, sky }) {
             width={box.w}
             height={box.h}
             rx="8"
-            className={`spot-hit${mark}`}
+            className="spot-hit"
             onClick={(e) => {
               e.stopPropagation()
               onTap(o.id)
@@ -271,8 +274,58 @@ function Scene({ objects, found, shown, wrong, onTap, name, plain, sky }) {
           />
         )
       })}
+      {/* 찾은 곳(빨강)과 못 찾은 곳(주황 점선)은 달라진 부분만 작게 감싼다. 누르는 범위는 위의 넉넉한 네모 그대로 */}
+      {sorted.map((o) => {
+        const mark = found.includes(o.id) ? 'found' : shown.includes(o.id) ? 'shown' : null
+        if (!mark) return null
+        return (marks[o.id] ?? []).map((m, i) => (
+          <ellipse key={`mark-${o.id}-${i}`} cx={m.cx} cy={m.cy} rx={m.rx} ry={m.ry} className={`spot-mark ${mark}`} />
+        ))
+      })}
     </svg>
   )
+}
+
+// 달라진 부분만 감싸는 표시(타원 여러 개). what은 spot.js가 정한 "무엇이 다른지"
+function markOf(o, what) {
+  const c = (cx, cy, r, ry = r) => ({ cx, cy, rx: r, ry })
+  const { ground, road } = SCENE
+  if (o.type === 'wheel') return [c(o.cx, o.cy, o.r + 4)]
+  if (o.type === 'cloud') return [c(o.x + 2, o.y + 1, Math.max(18, 25 * o.s), Math.max(13, 15 * o.s))]
+  if (o.type === 'car') {
+    const x = o.x
+    const y = road
+    if (what === '유리 색' || what === '유리 모양') return [c(x + 47, 165 + y, 30, 12)]
+    if (what === '휠 모양') return [c(x + 22, 192 + y, 13), c(x + 72, 192 + y, 13)]
+    if (what === '전조등 색') return [c(x + 88, 178 + y, 9)]
+    return [c(x + 46, 175 + y, 50, 24)] // 차 색
+  }
+  if (o.type === 'bike') {
+    const x = o.x
+    const y = road
+    if (what === '헬멧 색') return [c(x + 38, 122 + y, 10)]
+    if (what === '옷 색') return [c(x + 32, 138 + y, 13, 15)]
+    return [c(x + 28, 158 + y, 24, 15)] // 자전거 색
+  }
+  // 건물: 그리는 식(Building)과 같게 앞면 위치를 구한다
+  const top = ground - o.h
+  const cx = o.x + o.w / 2
+  if (what === '지붕') return [c(cx, top - 4, o.w / 2 + 4, 13)]
+  if (what === '높이') return [c(cx, top, o.w / 2 + 4, 12)]
+  if (what === '창문 한 칸') {
+    const rad = (Math.abs(o.angle ?? 0) * Math.PI) / 180
+    const frontW = o.w * Math.cos(rad)
+    const sideW = o.w * 0.7 * Math.sin(rad)
+    const left = cx - (frontW + sideW) / 2
+    const fx = (o.angle ?? 0) >= 0 ? left : left + sideW
+    const gap = 5
+    const cellW = (frontW - gap * (o.cols + 1)) / o.cols
+    const cellH = Math.min(14, (o.h - 16 - gap * (o.rows + 1)) / o.rows)
+    const row = Math.floor(o.dark / o.cols)
+    const col = o.dark % o.cols
+    return [c(fx + gap + col * (cellW + gap) + cellW / 2, top + 12 + row * (cellH + gap) + cellH / 2, cellW / 2 + 6, cellH / 2 + 6)]
+  }
+  return [c(cx, top + o.h / 2, o.w / 2 + 6, o.h / 2 + 6)] // 벽 색, 창문 수, 돌아선 각도: 건물 전체
 }
 
 function Wheel({ cx, cy, r, style, rim = '#d7dbe0', hub = '#3b3f46' }) {
