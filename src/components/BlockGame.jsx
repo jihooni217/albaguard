@@ -38,12 +38,13 @@ export default function BlockGame({ game, best, actions, onClose }) {
       return
     }
     const { board, cleared, gained, lines } = placeAndClear(game.board, shape, r, c)
-    const pieces = refill(game.pieces.map((p, k) => (k === picked ? null : p)))
+    const score = game.score + gained
+    const pieces = refill(game.pieces.map((p, k) => (k === picked ? null : p)), score)
     const over = !anyFits(board, pieces)
     setFlash(cleared)
     setGain(lines > 0 ? `+${gained} · ${lines === 1 ? '한 줄!' : `${lines}줄 한 번에!`}` : null)
     setPicked(null)
-    actions.setBlock({ ...game, board, pieces, score: game.score + gained, over })
+    actions.setBlock({ ...game, board, pieces, score, over })
   }
 
   // 손에 든 블록 중 아직 쓰지 않은 것을 고른다. 고른 걸 다시 누르면 놓는다

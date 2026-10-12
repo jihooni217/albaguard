@@ -30,11 +30,31 @@ export const SHAPES = [
 
 export const KIND_LABEL = { 1: '한 칸·두 칸', 2: '막대', 3: '네모', 4: 'ㄱ자', 5: '그 밖' }
 
-const randomShape = () => Math.floor(Math.random() * SHAPES.length)
+// 블록은 무작위로 나오되, 점수가 오를수록 큰 블록(4칸 이상)이 자주 나온다
+// 0~500점: 큰 블록 30%, 500~2,000점: 50%, 2,000점 이상: 70%
+export const BIG_MIN = 4
+const BIG_RATE = [
+  [500, 0.3],
+  [2000, 0.5],
+  [Infinity, 0.7],
+]
+const SMALL = SHAPES.map((sh, i) => (sh.cells.length < BIG_MIN ? i : -1)).filter((i) => i >= 0)
+const BIG = SHAPES.map((sh, i) => (sh.cells.length >= BIG_MIN ? i : -1)).filter((i) => i >= 0)
+
+export function bigRate(score) {
+  return BIG_RATE.find(([upTo]) => score < upTo)[1]
+}
+
+function randomShape(score) {
+  const pool = Math.random() < bigRate(score) ? BIG : SMALL
+  return pool[Math.floor(Math.random() * pool.length)]
+}
+
+const threePieces = (score) => [randomShape(score), randomShape(score), randomShape(score)]
 
 // 새 판. pieces는 손에 든 블록 3개(모양 번호). 쓴 자리는 null
 export function newGame() {
-  return { board: Array(SIZE * SIZE).fill(0), pieces: [randomShape(), randomShape(), randomShape()], score: 0, over: false }
+  return { board: Array(SIZE * SIZE).fill(0), pieces: threePieces(0), score: 0, over: false }
 }
 
 // 모양의 너비·높이 (손에 든 블록을 그릴 때)
@@ -88,6 +108,7 @@ export function anyFits(board, pieces) {
   return pieces.some((p) => p !== null && fitsAnywhere(board, SHAPES[p]))
 }
 
-export function refill(pieces) {
-  return pieces.every((p) => p === null) ? [randomShape(), randomShape(), randomShape()] : pieces
+// 3개를 다 썼으면 새 3개. 그때의 점수로 큰 블록 비율을 정한다
+export function refill(pieces, score) {
+  return pieces.every((p) => p === null) ? threePieces(score) : pieces
 }
