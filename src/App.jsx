@@ -8,6 +8,7 @@ import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import Pay from './components/Pay.jsx'
 import Request from './components/Request.jsx'
+import BlockGame from './components/BlockGame.jsx'
 import SpotGame from './components/SpotGame.jsx'
 import Sudoku from './components/Sudoku.jsx'
 import Workplaces from './components/Workplaces.jsx'
@@ -35,7 +36,7 @@ export default function App() {
     window.scrollTo(0, 0)
   }
   const [requestTarget, setRequestTarget] = useState(null) // 급여 비교에서 넘어올 때 고른 달
-  const [gameOpen, setGameOpen] = useState(null) // 근무 중에만 열리는 게임: null | 'sudoku' | 'spot'
+  const [gameOpen, setGameOpen] = useState(null) // 근무 중에만 열리는 게임: null | 'sudoku' | 'spot' | 'block'
   const [evidenceTarget, setEvidenceTarget] = useState(null) // 증빙 묶음을 볼 근무지·달
   const actions = useMemo(() => makeActions(setData), [])
 
@@ -107,6 +108,9 @@ export default function App() {
         actions={actions}
         onClose={() => setGameOpen(null)}
       />
+    )}
+    {gameOpen === 'block' && data.active && (
+      <BlockGame game={data.block ?? null} best={data.blockBest ?? 0} actions={actions} onClose={() => setGameOpen(null)} />
     )}
     {evidenceTarget && <Evidence data={data} target={evidenceTarget} onClose={() => setEvidenceTarget(null)} />}
     </>

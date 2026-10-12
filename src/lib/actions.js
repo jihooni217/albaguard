@@ -171,6 +171,11 @@ export function makeActions(setData) {
       setData((d) => ({ ...d, sudoku: game }))
     },
 
+    // 블록 채우기 판을 저장한다. 점수가 최고 기록을 넘으면 바로 최고 기록이 된다
+    setBlock(game) {
+      setData((d) => ({ ...d, block: game, blockBest: Math.max(d.blockBest ?? 0, game?.score ?? 0) }))
+    },
+
     // 다 푼 판을 저장하고, 더 빨리 풀었으면 최고 기록을 바꾼다. 힌트를 쓴 판은 기록에 넣지 않는다
     finishSudoku(game) {
       setData((d) => {

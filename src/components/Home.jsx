@@ -161,6 +161,10 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
             <span>손님 없는 틈에 · 틀린 그림 찾기</span>
             <b>한 판 하기</b>
           </button>
+          <button className="alert-row ask" onClick={() => openGame('block')}>
+            <span>손님 없는 틈에 · 블록 채우기</span>
+            <b>{data.block && !data.block.over ? '이어 하기' : '한 판 하기'}</b>
+          </button>
         </section>
       )}
 
