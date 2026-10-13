@@ -3,6 +3,7 @@ import { baseText, calcMonth, paymentKey, tax33, wageText } from '../lib/pay'
 import { KINDS, attachmentsFor } from '../lib/photos'
 import { dateKey, fmtDate, fmtDateTime, fmtDuration, fmtRange, minutesBetween, monthKey } from '../lib/time'
 import { Photo } from './Attachments.jsx'
+import { VERIFY_URL, shortHash } from '../lib/stamp'
 
 const won = (n) => `${Math.round(n).toLocaleString()}원`
 const shortDate = (key) => `${Number(key.slice(5, 7))}/${Number(key.slice(8, 10))}`
@@ -55,6 +56,12 @@ export default function Evidence({ data, target, onClose }) {
         .map((stage) => ({ at: stages[stage].sentAt, stage, period: key.endsWith('|all') ? '여러 달 합계' : monthLabel(key.split('|')[1]) })),
     )
     .sort((a, b) => new Date(a.at) - new Date(b.at))
+  // 서버에 등록된 지문. 기록마다 출근 때, 퇴근 때, 고칠 때마다 한 줄씩
+  const STAGE_LABEL = { clockIn: '출근 시각 기록', record: '기록 내용' }
+  const stampRows = records
+    .flatMap((r) => ((data.stamps ?? {})[r.id] ?? []).map((s) => ({ ...s, record: r })))
+    .sort((a, b) => new Date(a.at) - new Date(b.at))
+  const pendingCount = (data.pendingStamps ?? []).filter((p) => records.some((r) => r.id === p.recordId)).length
   const period = yms.length === 1 ? monthLabel(yms[0]) : `${monthLabel(yms[0])} ~ ${monthLabel(yms.at(-1))}`
   const diffText = (expected, amount) =>
     expected - amount >= 0 ? `${won(expected - amount)} 부족` : `${won(amount - expected)} 초과`
@@ -321,13 +328,53 @@ export default function Evidence({ data, target, onClose }) {
         )}
         <p className="small">보낸 시각은 앱에서 "보냈어요"를 누른 시각입니다. 실제로 보낸 메시지 화면을 함께 첨부하면 좋습니다.</p>
 
+        <h2>7. 기록 등록 확인</h2>
+        {stampRows.length === 0 ? (
+          <p>
+            이 기간의 기록 중 서버에 등록된 지문이 없습니다.
+            {pendingCount > 0 && ` (${pendingCount}건은 아직 보내지 못했습니다. 인터넷에 연결되면 등록됩니다.)`}
+          </p>
+        ) : (
+          <>
+            <p className="small">
+              기록을 남기거나 고칠 때마다 그 내용의 지문(SHA-256)을 서버에 등록했습니다. 등록 시각은 서버가 찍은 것이며, 등록된 줄은
+              고치거나 지울 수 없습니다. 같은 기록에 줄이 여러 개면 그만큼 고쳐진 것이고, 2번 항목과 맞춰 볼 수 있습니다.
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>대상 기록</th>
+                  <th>무엇을</th>
+                  <th>서버 등록 시각</th>
+                  <th>확인 번호</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stampRows.map((s, i) => (
+                  <tr key={i}>
+                    <td>{fmtDate(s.record.start)}</td>
+                    <td>{STAGE_LABEL[s.stage] ?? s.stage}</td>
+                    <td>{fmtDateTime(s.at)}</td>
+                    <td className="mono">{shortHash(s.hash)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="small">
+              확인 방법: {VERIFY_URL} 에 확인 번호를 넣으면 서버에 등록된 시각이 나옵니다.
+              {pendingCount > 0 && ` ${pendingCount}건은 아직 보내지 못해 빠져 있습니다.`}
+            </p>
+          </>
+        )}
+
         <p className="small footer">
           이 문서는 알바가드 앱에 저장된 기록을 그대로 출력한 것입니다. 기록을 고치거나 지운 경우 그 전후 내용과 시점, 사유가
           2번 항목에 남아 있습니다.
         </p>
         <p className="small">
-          본인이 직접 남긴 기록을 정리한 참고 자료이며, 이 문서만으로 법적 효력이나 증거 인정이 보장되지는 않습니다. 통장
-          거래 내역, 주고받은 메시지 등 다른 자료와 함께 제출하시기 바랍니다. 법률 자문이 아닙니다.
+          본인이 직접 남긴 기록을 정리한 참고 자료이며, 이 문서만으로 법적 효력이나 증거 인정이 보장되지는 않습니다. 7번의
+          등록 확인은 "그 내용이 그 시각에 있었고 그 뒤 바뀌지 않았다"는 것을 보여 줄 뿐입니다. 통장 거래 내역, 주고받은
+          메시지 등 다른 자료와 함께 제출하시기 바랍니다. 법률 자문이 아닙니다.
         </p>
       </article>
     </div>

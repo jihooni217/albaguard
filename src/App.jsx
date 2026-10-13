@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadData, saveData } from './lib/storage'
 import { makeActions } from './lib/actions'
 import Evidence from './components/Evidence.jsx'
 import { syncBarColor } from './lib/theme'
 import { fmtDate } from './lib/time'
+import { fingerprint, registerStamp } from './lib/stamp'
 import Home from './components/Home.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import Pay from './components/Pay.jsx'
@@ -43,6 +44,32 @@ export default function App() {
   useEffect(() => {
     saveData(data)
   }, [data])
+
+  // 기록 등록 대기열을 서버로 보낸다. 실패하면(오프라인 등) 그대로 두었다가 30초 뒤·다시 연결될 때 또 보낸다
+  const pending = data.pendingStamps ?? []
+  const [tick, setTick] = useState(0)
+  useEffect(() => {
+    const on = () => setTick((t) => t + 1)
+    window.addEventListener('online', on)
+    return () => window.removeEventListener('online', on)
+  }, [])
+  const sending = useRef(false)
+  useEffect(() => {
+    if (sending.current || !navigator.onLine || pending.length === 0 || data.stampOff) return
+    const item = pending[0]
+    sending.current = true
+    ;(async () => {
+      try {
+        const hash = await fingerprint(item.payload)
+        const result = await registerStamp({ deviceId: data.deviceId, recordId: item.recordId, hash })
+        actions.stampDone(item, { ...result, hash })
+      } catch {
+        setTimeout(() => setTick((t) => t + 1), 30000)
+      } finally {
+        sending.current = false
+      }
+    })()
+  }, [pending, tick, data.stampOff, data.deviceId, actions])
 
   useEffect(() => {
     syncBarColor(tab === 'home' && data.workplaces.length > 0)

@@ -57,7 +57,8 @@ export default function Backup({ data, actions }) {
       {message && <p className="notice stage-notice">{message}</p>}
       {error && <p className="error stage-notice">{error}</p>}
       <p className="muted pay-note">
-        기록은 이 폰 안에만 저장돼요. 폰을 바꾸거나 브라우저 데이터를 지우면 사라지니 가끔 백업해 두세요.
+        근무 기록의 내용은 이 폰 안에만 저장돼요(서버에는 지문과 시각만). 폰을 바꾸거나 브라우저 데이터를 지우면 사라지니 가끔
+        백업해 두세요.
       </p>
     </>
   )

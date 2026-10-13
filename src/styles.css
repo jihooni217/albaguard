@@ -2326,6 +2326,12 @@ a.btn {
   text-decoration: line-through;
 }
 
+.evidence-doc .mono {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
 .evidence-doc .small {
   margin-top: 6px;
   font-size: 12px;

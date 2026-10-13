@@ -15,6 +15,8 @@ export default function Workplaces({ data, actions }) {
   const [theme, setThemeState] = useState(getTheme)
   const [proofFor, setProofFor] = useState(null) // 방금 등록한 근무지. 시급 근거 사진을 권하는 창
   const legal = minWage() // 올해 최저임금
+  const stampCount = Object.values(data.stamps ?? {}).reduce((n, list) => n + list.length, 0)
+  const pendingCount = (data.pendingStamps ?? []).length
   const [photoFor, setPhotoFor] = useState(null) // 사진 추가 창을 열 근무지
 
   return (
@@ -77,6 +79,40 @@ export default function Workplaces({ data, actions }) {
           </div>
         </div>
       </div>
+
+      <h2 className="rq-title">기록 등록</h2>
+      <div className="pay-rows">
+        <div className="rq-row">
+          <span>
+            서버에 등록된 지문
+            <small>
+              {stampCount}건 등록됨
+              {pendingCount > 0 && ` · ${pendingCount}건 보내는 중`}
+            </small>
+          </span>
+          <span className="set-value">{data.stampOff ? '꺼짐' : '켜짐'}</span>
+        </div>
+        <button
+          className="rq-row link"
+          onClick={() => {
+            if (data.stampOff) actions.setStampOff(false)
+            else if (
+              window.confirm(
+                '끄면 앞으로 남기는 기록은 서버에 등록되지 않아요. 등록되지 않은 기록은 "그때 기록했다"는 걸 제3자가 확인할 수 없어요. 끌까요?',
+              )
+            )
+              actions.setStampOff(true)
+          }}
+        >
+          <span>{data.stampOff ? '기록 등록 켜기' : '기록 등록 끄기'}</span>
+          <Icon name="chevronRight" size={18} />
+        </button>
+      </div>
+      <p className="muted pay-note">
+        기록을 남기거나 고칠 때마다 그 내용의 지문(내용을 알 수 없는 짧은 암호값)과 시각을 서버에 등록해요. 근무지 이름, 출퇴근
+        시각, 금액은 폰 밖으로 나가지 않아요. 등록된 지문은 고치거나 지울 수 없어서, 나중에 "그때 기록한 게 맞다"를 증빙 묶음에서
+        보여 줄 수 있어요. 인터넷이 없을 때 남긴 기록은 연결되면 보내요.
+      </p>
 
       <h2 className="rq-title">기록 백업</h2>
       <Backup data={data} actions={actions} />
