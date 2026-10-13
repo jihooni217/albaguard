@@ -84,7 +84,7 @@ export default function Workplaces({ data, actions }) {
       <div className="pay-rows">
         <div className="rq-row">
           <span>
-            서버에 등록된 지문
+            서버에 남긴 확인 번호
             <small>
               {stampCount}건 등록됨
               {pendingCount > 0 && ` · ${pendingCount}건 보내는 중`}
@@ -98,7 +98,7 @@ export default function Workplaces({ data, actions }) {
             if (data.stampOff) actions.setStampOff(false)
             else if (
               window.confirm(
-                '끄면 앞으로 남기는 기록은 서버에 등록되지 않아요. 등록되지 않은 기록은 "그때 기록했다"는 걸 제3자가 확인할 수 없어요. 끌까요?',
+                '끄면 앞으로 남기는 기록은 서버에 확인 번호가 남지 않아요. 그러면 "그때 기록했다"는 걸 제3자가 확인할 수 없어요. 끌까요?',
               )
             )
               actions.setStampOff(true)
@@ -109,9 +109,9 @@ export default function Workplaces({ data, actions }) {
         </button>
       </div>
       <p className="muted pay-note">
-        기록을 남기거나 고칠 때마다 그 내용의 지문(내용을 알 수 없는 짧은 암호값)과 시각을 서버에 등록해요. 근무지 이름, 출퇴근
-        시각, 금액은 폰 밖으로 나가지 않아요. 등록된 지문은 고치거나 지울 수 없어서, 나중에 "그때 기록한 게 맞다"를 증빙 묶음에서
-        보여 줄 수 있어요. 인터넷이 없을 때 남긴 기록은 연결되면 보내요.
+        기록을 남기거나 고칠 때마다 서버에 확인 번호와 등록 시각을 남겨요. 확인 번호는 기록 내용으로 만든 번호예요. 내용이
+        조금이라도 바뀌면 번호가 완전히 달라져서, 나중에 "그때 기록한 그대로다"를 보여 줄 수 있어요. 근무지 이름, 출퇴근 시각,
+        금액은 서버로 가지 않아요. 인터넷이 없을 때 남긴 기록은 연결되면 보내요.
       </p>
 
       <h2 className="rq-title">기록 백업</h2>
