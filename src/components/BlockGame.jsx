@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { KIND_LABEL, SHAPES, SIZE, anyFits, canPlace, newGame, placeAndClear, refill, shapeSize } from '../lib/block'
+import { KIND_LABEL, SHAPES, SIZE, anyFits, newGame, placeAndClear, placementFor, refill, shapeSize } from '../lib/block'
 
 // 근무 중에만 열리는 블록 채우기. 하던 판과 최고 점수는 저장되어 나중에 이어 할 수 있다
-// 아래 블록을 누르고 판의 칸을 누르면 그 칸을 왼쪽 위로 해서 놓인다. 더 놓을 곳이 없으면 끝
+// 아래 블록을 누르고 판의 칸을 누르면 그 칸이 블록 안에 들어가게 놓인다. 더 놓을 곳이 없으면 끝
 export default function BlockGame({ game, best, actions, onClose }) {
   const [picked, setPicked] = useState(null) // 손에 든 블록 중 고른 자리(0~2)
   const [flash, setFlash] = useState([]) // 방금 지워진 칸들(초록으로 잠깐)
@@ -31,13 +31,12 @@ export default function BlockGame({ game, best, actions, onClose }) {
   function tapCell(i) {
     if (!game || game.over || picked === null || game.pieces[picked] === null) return
     const shape = SHAPES[game.pieces[picked]]
-    const r = Math.floor(i / SIZE)
-    const c = i % SIZE
-    if (!canPlace(game.board, shape, r, c)) {
+    const spot = placementFor(game.board, shape, Math.floor(i / SIZE), i % SIZE)
+    if (!spot) {
       setShake(true)
       return
     }
-    const { board, cleared, gained, lines } = placeAndClear(game.board, shape, r, c)
+    const { board, cleared, gained, lines } = placeAndClear(game.board, shape, spot.r, spot.c)
     const score = game.score + gained
     const pieces = refill(game.pieces.map((p, k) => (k === picked ? null : p)), score)
     const over = !anyFits(board, pieces)
@@ -147,8 +146,8 @@ export default function BlockGame({ game, best, actions, onClose }) {
             </div>
             <p className="muted game-hint">
               {picked === null
-                ? '아래 블록을 누르고, 판에서 블록의 왼쪽 위가 올 칸을 누르세요.'
-                : '판에서 블록의 왼쪽 위가 올 칸을 누르세요. 놓을 수 없는 곳이면 판이 흔들려요.'}
+                ? '아래 블록을 누르고, 판에서 놓을 자리를 누르세요.'
+                : '놓을 자리를 누르세요. 누른 칸이 블록 안에 들어가게 놓여요. 놓을 수 없으면 판이 흔들려요.'}
             </p>
             <div className="game-actions">
               <button

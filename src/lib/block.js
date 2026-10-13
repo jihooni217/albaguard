@@ -73,6 +73,18 @@ export function canPlace(board, shape, r, c) {
   })
 }
 
+// 판의 (r, c)를 눌렀을 때 블록을 놓을 왼쪽 위 자리. 누른 칸이 블록 안에 들어가는 자리 중
+// 블록 가운데가 누른 칸에 가장 가까운 곳을 고른다. 그래서 판 끝을 눌러도 블록이 안쪽으로 맞춰 들어간다
+export function placementFor(board, shape, r, c) {
+  const { rows, cols } = shapeSize(shape)
+  const mid = [(rows - 1) / 2, (cols - 1) / 2]
+  const options = shape.cells
+    .map(([dr, dc]) => ({ r: r - dr, c: c - dc, far: Math.abs(dr - mid[0]) + Math.abs(dc - mid[1]) }))
+    .filter((o) => o.r >= 0 && o.c >= 0 && canPlace(board, shape, o.r, o.c))
+    .sort((a, b) => a.far - b.far)
+  return options[0] ?? null
+}
+
 // 판 어딘가에 놓을 수 있는지
 export function fitsAnywhere(board, shape) {
   for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (canPlace(board, shape, r, c)) return true
