@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>알바가드 설문 결과</title>
+<link rel="icon" href="./icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light; --bg:#f4f3ef; --surface:#fff; --text:#15171a; --muted:#5d636d; --faint:#8b9099; --line:#dcd9d0; --brand:#2a3193; --green:#0f7a55; --red:#c2331c; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; }
+  h1 { font-size: 24px; margin: 0; letter-spacing: -0.02em; }
+  .meta { color: var(--muted); font-size: 14px; margin: 6px 0 24px; }
+  .meta b { color: var(--text); }
+  .filters { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filters button { font: inherit; font-size: 13px; padding: 7px 12px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; }
+  .filters button.on { border-color: var(--brand); background: var(--brand); color: #fff; }
+  section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+  h2 { font-size: 15px; margin: 0 0 12px; }
+  h2 small { color: var(--faint); font-weight: 400; margin-left: 6px; }
+  .r { display: grid; grid-template-columns: minmax(120px, 42%) 1fr auto; gap: 10px; align-items: center; font-size: 14px; padding: 5px 0; }
+  .r .l { color: var(--text); }
+  .r .b { height: 10px; background: var(--line); border-radius: 5px; overflow: hidden; }
+  .r .b i { display: block; height: 100%; background: var(--brand); border-radius: 5px; }
+  .r.top .b i { background: var(--green); }
+  .r .n { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 64px; text-align: right; }
+  .free { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; }
+  .free li { margin-bottom: 6px; }
+  .empty { color: var(--faint); font-size: 14px; }
+  .note { font-size: 12.5px; color: var(--faint); line-height: 1.6; margin-top: 24px; }
+  @media print { .filters, .note { display: none; } section { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>알바가드 설문 결과</h1>
+  <p class="meta" id="meta">불러오는 중…</p>
+  <div class="filters" id="filters"></div>
+  <div id="out"></div>
+  <p class="note">주변에 링크를 돌려 받은 응답이라 정식 조사가 아니에요. 발표 자료에는 "N명 중 M명"처럼 사람 수로 적고, %는 응답이 30명을 넘을 때만 써요.</p>
+</main>
+<script>
+const URL_ = 'https://jejrynhqdvckspntpkxj.supabase.co'
+const KEY = 'sb_publishable_ZFLR4ZMjc85JAnWl7bdwCw_y5AHMJnn'
+const STATUS = { now: '지금 알바 중', past: '예전에 했음', never: '한 적 없음' }
+const FEATURES = ['출퇴근 기록 (고쳐도 이전 내용이 남음)', '받은 돈과 비교해 덜 받은 돈 알려 주기', '사장님께 보낼 정산 요청 메시지', '증빙 묶음 PDF', '기록 등록 (서버에 확인 번호·등록 시각)', '근무 중에만 열리는 미니게임']
+// 설문 페이지와 같은 순서. opts를 적어 두면 0명인 보기도 표시된다
+const Q = [
+  ['job', '어떤 알바', ['카페', '편의점', '음식점', '학원·과외', '그 밖']],
+  ['hours', '주당 근무 시간', ['15시간 미만', '15~25시간', '25시간 이상']],
+  ['holiday', '주휴수당', ['받음', '안 받음', '모름']],
+  ['contract', '근로계약서', ['썼고 사본도 있음', '썼지만 사본은 없음', '안 씀']],
+  ['check', '급여 확인 방법', ['통장에 들어온 총액만 봄', '직접 계산해 봄', '사장님이 주는 명세서', '확인 안 함']],
+  ['short', '적게 받은 것 같았던 적', ['있음', '없음', '잘 모르겠음']],
+  ['calc', '받은 돈이 맞는지 계산해 본 적', ['있음', '없음']],
+  ['reaction', '적게 받았을 때 어떻게 했나', ['사장님께 말함', '말 못 하고 넘어감', '친구·가족과 상의', '신고를 알아봄']],
+  ['ifshort', '만약 적게 들어왔다면', ['바로 사장님께 묻는다', '계산부터 해 본다', '기록이 없어서 그냥 넘어갈 것 같다', '모르겠다']],
+  ['worry', '그때 가장 걱정될 것', ['사장님과의 관계', '내 계산이 맞는지', '증거가 없는 것', '신고 절차를 몰라서']],
+  ['confidence', '주휴·야간수당 계산 자신', ['있음', '대충 안다', '없음']],
+  ['apps', '써 본 앱 (복수)', ['없음', '하우머치', '알바천국·알바몬 계산기', '기그', '그 밖']],
+  ['useful', '가장 쓸모 있어 보이는 기능', FEATURES],
+  ['useless', '안 쓸 것 같은 기능', [...FEATURES, '없음']],
+  ['input', '매달 받은 금액 직접 넣기', ['할 만하다', '귀찮지만 할 것 같다', '안 할 것 같다']],
+  ['ads', '미니게임 광고', ['괜찮다', '싫다', '상관없다']],
+  ['design', '디자인', ['예쁘다', '평범하다', '별로다']],
+  ['use', '실제로 있다면 쓸 건가', ['지금 쓴다', '알바를 시작하면 쓴다', '덜 받은 상황이 생기면 쓴다', '안 쓴다']],
+]
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+let rows = []
+let filter = 'all'
+
+function draw() {
+  const list = filter === 'all' ? rows : rows.filter((r) => r.status === filter)
+  const counts = { now: 0, past: 0, never: 0 }
+  rows.forEach((r) => counts[r.status] = (counts[r.status] ?? 0) + 1)
+  document.getElementById('meta').innerHTML = `응답 <b>${rows.length}명</b> · 지금 알바 중 ${counts.now} · 예전에 했음 ${counts.past} · 한 적 없음 ${counts.never}${rows.length ? ` · 마지막 응답 ${new Date(rows[0].created_at).toLocaleString('ko-KR')}` : ''}`
+  document.getElementById('filters').innerHTML = [['all', '전체'], ['now', STATUS.now], ['past', STATUS.past], ['never', STATUS.never]]
+    .map(([k, l]) => `<button class="${filter === k ? 'on' : ''}" data-k="${k}">${l}</button>`).join('')
+  document.querySelectorAll('.filters button').forEach((b) => b.onclick = () => { filter = b.dataset.k; draw() })
+
+  const out = []
+  for (const [id, title, opts] of Q) {
+    const answered = list.filter((r) => r.answers && r.answers[id] != null && r.answers[id] !== '')
+    if (!answered.length) continue
+    const tally = {}
+    answered.forEach((r) => (Array.isArray(r.answers[id]) ? r.answers[id] : [r.answers[id]]).forEach((v) => tally[v] = (tally[v] ?? 0) + 1))
+    const keys = [...new Set([...opts, ...Object.keys(tally)])]
+    const max = Math.max(...Object.values(tally))
+    out.push(`<section><h2>${esc(title)}<small>${answered.length}명 답함</small></h2>` + keys.map((k) => {
+      const n = tally[k] ?? 0
+      return `<div class="r${n === max && n > 0 ? ' top' : ''}"><span class="l">${esc(k)}</span><span class="b"><i style="width:${answered.length ? (n / answered.length) * 100 : 0}%"></i></span><span class="n">${n} / ${answered.length}</span></div>`
+    }).join('') + '</section>')
+  }
+  const free = list.filter((r) => r.answers?.free).map((r) => `<li>${esc(r.answers.free)} <small style="color:var(--faint)">(${STATUS[r.status] ?? r.status})</small></li>`)
+  out.push(`<section><h2>자유 의견<small>${free.length}건</small></h2>${free.length ? `<ul class="free">${free.join('')}</ul>` : '<p class="empty">아직 없어요</p>'}</section>`)
+  document.getElementById('out').innerHTML = out.join('') || '<p class="empty">아직 응답이 없어요</p>'
+}
+
+async function load() {
+  try {
+    const res = await fetch(`${URL_}/rest/v1/survey?select=status,answers,created_at&order=created_at.desc&limit=1000`, { headers: { apikey: KEY, Authorization: `Bearer ${KEY}` } })
+    if (!res.ok) throw new Error(res.status)
+    rows = await res.json()
+    draw()
+  } catch (e) {
+    document.getElementById('meta').textContent = '결과를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.'
+  }
+}
+load()
+</script>
+</body>
+</html>
