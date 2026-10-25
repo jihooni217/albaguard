@@ -112,9 +112,9 @@ pres.addSection({ title: '① 표지·팀 소개' })
   s.addText('앱 첫 화면의 알림 줄 (예시 데이터)', { x: 0.6, y: 3.98, w: 5.4, h: 0.3, fontSize: 9, color: C.background2, margin: 0, isTextBox: true })
   s.addText('SW기술창업 중간발표 · 4조 · 2026.10.27', { x: 0.6, y: 4.7, w: 6, h: 0.35, fontSize: 12, color: C.background2, margin: 0, isTextBox: true })
   // 오른쪽: 팀명 후보 · 팀원
-  s.addText('팀명 후보', { x: 6.7, y: 1.55, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
-  s.addText('기록조 · 온타임 · 페이체크 · 알바가드팀', { x: 6.7, y: 1.85, w: 2.8, h: 0.6, fontSize: 12.5, bold: true, color: C.background1, margin: 0, isTextBox: true })
-  s.addText('발표 뒤 하나로 정합니다', { x: 6.7, y: 2.45, w: 2.8, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('팀명', { x: 6.7, y: 1.55, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('알바가드', { x: 6.7, y: 1.85, w: 2.8, h: 0.6, fontSize: 24, bold: true, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
+  s.addText('4조 · 앱 이름과 같게 정했습니다', { x: 6.7, y: 2.45, w: 2.8, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
   s.addShape(S.line, { x: 6.7, y: 2.9, w: 2.8, h: 0, line: { color: 'FFFFFF', width: 0.75, transparency: 60 } })
   s.addText('팀원', { x: 6.7, y: 3.0, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
   s.addText([
@@ -125,7 +125,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
     { text: '박명진', options: { bold: true, breakLine: true } },
     { text: '컴퓨터소프트웨어 __학번', options: { fontSize: 10, color: C.background2 } },
   ], { x: 6.7, y: 3.3, w: 2.8, h: 1.9, fontSize: 12.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 2 })
-  s.addNotes('팀장이 엽니다. "알바비를 덜 받아도 모르고, 알아도 말을 못 하는 대학생을 위해, 기록 → 비교 → 요청까지 한 앱으로 잇는 알바가드입니다." 팀명은 후보 네 개를 보여 주고 발표 뒤 정한다고 말합니다.')
+  s.addNotes('팀장이 엽니다. "알바비를 덜 받아도 모르고, 알아도 말을 못 하는 대학생을 위해, 기록 → 비교 → 요청까지 한 앱으로 잇는 알바가드입니다." 팀명은 앱 이름과 같은 알바가드입니다.')
 }
 
 // ② 결론 먼저: 배포돼 있다 + QR
@@ -135,7 +135,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
   rows(s, 0.5, 1.45, 5.3, [
     { label: '계획한 기능 8개 모두 동작', sub: '10/13 MVP 기능 정의서 기준. 완성도 평균 약 80%', value: '8 / 8', color: C.text2, bold: true },
     { label: '실제 사용자 검증은 11월부터', sub: '링크 설문 30명 · 직접 인터뷰 5명', value: '시작 단계', color: C.accent5, bold: true },
-    { label: '지금까지 기획 · 개발 · 배포는 팀장이', sub: '10/27부터 시장 · 수익(손유호), 검증 · 일정(박명진)을 나눠 맡는다', value: '3명', color: C.accent5, bold: true },
+    { label: '지금까지 기획 · 개발 · 배포는 팀장이', sub: '10/27부터 시장 · 수익(손유호), 검증 · 일정(박명진)을 나눠 맡는다', value: '셋이 나눔', color: C.accent5, bold: true },
   ], { rowH: 0.72, labelSize: 13, valueSize: 13, valueW: 0.2 })
   s.addText('오늘 순서', { x: 0.5, y: 3.75, w: 5.3, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   s.addText('문제 → 솔루션 → 기술 → 시연 3분 → 시장 · 수익 → 검증 · 일정', { x: 0.5, y: 4.05, w: 5.3, h: 0.4, fontSize: 12.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
@@ -343,7 +343,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 // UI 화면
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
-  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.25 기준. 모두 배포 주소에서 지금 열린다', '통장처럼 쌓이는 기록, 질문처럼 묻는 비교')
+  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.25 기준. 모두 배포 주소에서 지금 열린다', '네 화면: 캘린더, 설정, 증빙 묶음 PDF, 확인 페이지')
   const shots = [
     ['2-calendar.jpg', '캘린더', '예정과 실제를 비교해 연장 · 대타만 글자로'],
     ['10-settings.jpg', '설정', '기록 등록 건수 · 무엇이 서버로 가는지 · 백업'],
@@ -455,7 +455,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
     { text: '타겟 규모(어림)  ', options: { bold: true, color: C.text2 } },
     { text: '재적학생 307만 명(교육부 2026, 대학원 포함) → 알바 경험 67~88%(학교 단위 조사, 대표값 아님) → 지금 알바 중 · 주 15시간 이상: 미상, 11월 설문으로. 경험 기준 상한 약 210~270만 명', options: { breakLine: true } },
     { text: '타이밍  ', options: { bold: true, color: C.text2 } },
-    { text: '2025.9 임금체불 근절 대책(대지급금 확대), 2025.10 개정 근로기준법 시행(상습 체불 제재). 근거 자료를 갖추는 일의 가치가 커지는 시점', options: {} },
+    { text: '2025.9 임금체불 근절 대책(대지급금 확대), 2025.10 개정 근로기준법 시행(상습 체불 제재). 근거를 남겨 둔 사람이 돌려받기 쉬워지는 때', options: {} },
   ], { x: 0.5, y: 4.62, w: 9, h: 0.58, fontSize: 9.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 1 })
   s.addNotes('손유호. 임금체불은 2년 연속 2조 원이고 30인 미만 사업장에 몰려 있습니다. 타겟 규모는 어림이라 "약"을 붙여 말하고, 없는 숫자(지금 알바 중, 주 15시간 이상)는 미상으로 둡니다. "이 비율의 첫 조각은 지금 답하고 계신 설문에서 나옵니다. 다음 순서에서 박명진이 말씀드립니다." 출처: 고용노동부 노동포털 임금체불 통계현황, 알바천국 설문, 교육부 교육기본통계.')
 }
