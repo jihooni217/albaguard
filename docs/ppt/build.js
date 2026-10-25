@@ -373,17 +373,10 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
   steps.forEach(([t, d], i) => {
     const y = 1.45 + i * 0.86
     circleNum(s, 0.5, y + 0.06, i + 1)
-    s.addText(t, { x: 0.98, y, w: 5.6, h: 0.42, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
-    s.addText(d, { x: 0.98, y: y + 0.4, w: 5.6, h: 0.4, fontSize: 10, color: C.accent5, margin: 0, isTextBox: true, valign: 'top' })
+    s.addText(t, { x: 0.98, y, w: 8.5, h: 0.42, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
+    s.addText(d, { x: 0.98, y: y + 0.4, w: 8.5, h: 0.4, fontSize: 10, color: C.accent5, margin: 0, isTextBox: true, valign: 'top' })
   })
-  card(s, 6.9, 1.45, 2.6, 2.1, '말로 대신 칸')
-  s.addText([
-    { text: '말로 대신하는 것', options: { bold: true, color: C.text2, breakLine: true } },
-    { text: '캘린더의 연장 · 대타 표시', options: { bullet: { indent: 10 }, breakLine: true } },
-    { text: '3단계 진정 안내: 1350 · 노동포털 연결. 진정서는 만들지 않는다', options: { bullet: { indent: 10 }, breakLine: true } },
-    { text: '영상은 다음 장. 단계마다 멈추고 설명한다', options: { bullet: { indent: 10 } } },
-  ], { x: 7.1, y: 1.55, w: 2.3, h: 1.95, fontSize: 10, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 3 })
-  s.addNotes('네 단계가 차별점과 1:1입니다. 등록 → 비교 → 요청 · 증빙 → 확인. 예시 데이터는 발표 전에 미리 넣어 둡니다(오늘 날짜는 비어 있어 출근 · 퇴근이 그대로 됩니다). 7번 표에는 시연 중 남긴 2건만 나옵니다. 예시 데이터는 진짜 시각이 아니라 등록하지 않기 때문입니다. 시연은 다음 장의 녹화 영상(1분 39초)으로 하고, 단계마다 멈춰서 설명하면 약 3분입니다. 영상은 배포된 앱을 실제로 눌러 찍은 것이라 서버 등록과 확인 번호가 진짜입니다(10/26 녹화. 화면의 시각은 녹화한 시각). 질문이 오면 실제 앱으로 1단계(출근 · 퇴근 → "2건 등록됨")만 보여 줍니다. 전날 할 일: Supabase 대시보드에서 프로젝트 상태를 확인하고(잠들어 있으면 Restore) 앱에서 출근 · 퇴근을 눌러 설정 탭에 "2건 등록됨"이 뜨는지 본다. 그다음 폰의 와이파이를 끄고 데이터로 확인 페이지(jihooni217.github.io/albaguard/verify.html?h=92f6228a4349bdc8)를 열어 등록 시각이 나오는지 본다. 당일 아침에도 한 번 더.')
+  s.addNotes('네 단계가 차별점과 1:1입니다. 영상에 안 나오는 것은 말로 짚습니다: 캘린더의 연장 · 대타 표시(9장 캡처), 3단계 진정 안내(1350 · 노동포털 연결, 진정서는 만들지 않음). 등록 → 비교 → 요청 · 증빙 → 확인. 예시 데이터는 발표 전에 미리 넣어 둡니다(오늘 날짜는 비어 있어 출근 · 퇴근이 그대로 됩니다). 7번 표에는 시연 중 남긴 2건만 나옵니다. 예시 데이터는 진짜 시각이 아니라 등록하지 않기 때문입니다. 시연은 다음 장의 녹화 영상(1분 39초)으로 하고, 단계마다 멈춰서 설명하면 약 3분입니다. 영상은 배포된 앱을 실제로 눌러 찍은 것이라 서버 등록과 확인 번호가 진짜입니다(10/26 녹화. 화면의 시각은 녹화한 시각). 질문이 오면 실제 앱으로 1단계(출근 · 퇴근 → "2건 등록됨")만 보여 줍니다. 전날 할 일: Supabase 대시보드에서 프로젝트 상태를 확인하고(잠들어 있으면 Restore) 앱에서 출근 · 퇴근을 눌러 설정 탭에 "2건 등록됨"이 뜨는지 본다. 그다음 폰의 와이파이를 끄고 데이터로 확인 페이지(jihooni217.github.io/albaguard/verify.html?h=92f6228a4349bdc8)를 열어 등록 시각이 나오는지 본다. 당일 아침에도 한 번 더.')
 }
 
 // 시연 영상 (한 장 전체)
