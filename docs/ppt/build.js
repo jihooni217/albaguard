@@ -131,11 +131,11 @@ pres.addSection({ title: '① 표지·팀 소개' })
 // ② 결론 먼저: 배포돼 있다 + QR
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '① 표지·팀 소개' })
-  head(s, '① 오늘 발표', '먼저 만들어 봤습니다. 검증은 이제부터입니다')
+  head(s, '① 오늘 발표', '지금 상태: 앱은 배포됐고, 사용자 검증은 11월부터')
   rows(s, 0.5, 1.45, 5.3, [
     { label: '계획한 기능 8개 모두 동작', sub: '10/13 MVP 기능 정의서 기준. 완성도 평균 약 80%', value: '8 / 8', color: C.text2, bold: true },
     { label: '실제 사용자 검증은 11월부터', sub: '링크 설문 30명 · 직접 인터뷰 5명', value: '시작 단계', color: C.accent5, bold: true },
-    { label: '지금까지 기획 · 개발 · 배포는 팀장이', sub: '10/27부터 시장 · 수익(손유호), 검증 · 일정(박명진)을 나눠 맡는다', value: '셋이 나눔', color: C.accent5, bold: true },
+    { label: '역할: 개발 이지훈 · 시장 손유호 · 검증 박명진', sub: '발표도 같은 순서로 나눠서 합니다', value: '3명', color: C.accent5, bold: true },
   ], { rowH: 0.72, labelSize: 13, valueSize: 13, valueW: 0.2 })
   s.addText('오늘 순서', { x: 0.5, y: 3.75, w: 5.3, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   s.addText('문제 → 솔루션 → 기술 → 시연 3분 → 시장 · 수익 → 검증 · 일정', { x: 0.5, y: 4.05, w: 5.3, h: 0.4, fontSize: 12.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
@@ -149,7 +149,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
   qr('qr_app.png', 6.2, '앱 설치', '폰 브라우저로 열고\n"홈 화면에 추가"')
   qr('qr_survey.png', 8.0, '설문 3분', '이름 · 연락처 없음\n들으시면서 답해도 됩니다')
   s.addText('jihooni217.github.io/albaguard', { x: 6.0, y: 3.95, w: 3.5, h: 0.3, fontSize: 9.5, color: C.accent5, margin: 0, isTextBox: true, align: 'center' })
-  s.addNotes('팀장. "교수님이 아직 구현 전일 거라 하셨는데, 저희는 웹앱이라 만드는 비용이 낮아서 먼저 만들어 보고 검증하는 순서를 택했습니다. 오늘 보여 드리는 건 완성품이 아니라 검증용 도구입니다." 사용자 검증은 11월에 합니다. 오른쪽 QR은 앱과 설문입니다. 설문은 이름을 받지 않고 3분이라, 들으시면서 답해 주셔도 됩니다. 역할은 솔직하게: 지금까지는 제가 만들었고, 오늘부터 팀원이 시장과 검증을 맡습니다.')
+  s.addNotes('팀장. "교수님이 아직 구현 전일 거라 하셨는데, 저희는 웹앱이라 만드는 비용이 낮아서 먼저 만들어 보고 검증하는 순서를 택했습니다. 오늘 보여 드리는 건 완성품이 아니라 검증용 도구입니다." 사용자 검증은 11월에 합니다. 오른쪽 QR은 앱과 설문입니다. 설문은 이름을 받지 않고 3분이라, 들으시면서 답해 주셔도 됩니다. 역할은 개발 이지훈, 시장 · 수익 손유호, 검증 · 일정 박명진이고 발표도 그 순서입니다.')
 }
 
 // ======================================================
@@ -185,7 +185,7 @@ pres.addSection({ title: '② 문제 정의' })
 // 기존 해결책의 한계
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '② 문제 정의' })
-  head(s, '② 문제 정의 · 기존 해결책의 한계', '"얼마 받아야 하나"까지는 있다. "어떻게 받아내나"는 없다')
+  head(s, '② 문제 정의 · 기존 해결책의 한계', '기존 서비스: 계산까지는 있지만, 비교와 대응은 없다')
   const hdr = (t, o = {}) => ({ text: t, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, fontSize: 9.5, align: 'center', ...o } })
   const name = (t) => ({ text: t, options: { fontSize: 10.5, color: HEX.dk1, bold: true } })
   const mark = (v, note) => {
@@ -240,7 +240,7 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
 // 차별화 포인트
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '③ 솔루션·핵심 가치' })
-  head(s, '③ 솔루션 · 차별화 포인트', '차별점 셋, 그리고 먼저 인정하는 약점 하나')
+  head(s, '③ 솔루션 · 차별화 포인트', '차별점 세 가지와 한계 한 가지')
   const pts = [
     { t: '사장 연동 없이 혼자 쓴다', tag: '타겟: 사장 협조 없이', d: '근무지만 직접 등록. 기그처럼 사장이 가입할 필요가 없다' },
     { t: '입금액 비교 → 차액 → 요청 · 증빙까지', tag: '문제 1 · 2의 답', d: '실제 받은 돈과 비교해 차액을 찾고, 요청 문구와 증빙 묶음까지 잇는다. 비교한 네 서비스 모두 없는 부분' },
@@ -255,7 +255,7 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
   })
   // 약점 칸
   card(s, 6.4, 1.4, 3.1, 1.75, '약점 칸')
-  s.addText('먼저 인정하는 약점', { x: 6.65, y: 1.55, w: 2.6, h: 0.35, fontSize: 11, bold: true, color: C.accent3, margin: 0, isTextBox: true })
+  s.addText('한계', { x: 6.65, y: 1.55, w: 2.6, h: 0.35, fontSize: 11, bold: true, color: C.accent3, margin: 0, isTextBox: true })
   s.addText('비교 기능은 하우머치가 "받은 금액 입력" 칸 하나로 따라올 수 있다. 그래서 다음 단계는 기록의 신뢰성, 즉 3번이다.', { x: 6.65, y: 1.95, w: 2.6, h: 1.1, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addText([
     { text: '통장 내역 · 메시지와 함께 내야 힘이 생긴다', options: { bold: true, color: C.text2, breakLine: true } },
@@ -271,7 +271,7 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
 pres.addSection({ title: '④ SW 기술 아키텍처' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '④ SW 기술 아키텍처' })
-  head(s, '④ SW 기술 아키텍처 · 기술 스택', '서버 없이 시작하고, 서버는 "확인 번호"에만 쓴다')
+  head(s, '④ SW 기술 아키텍처 · 기술 스택', '기술 스택: 앱은 폰에서, 서버는 확인 번호 등록에만')
   const hdr = (t) => ({ text: t, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, fontSize: 10.5 } })
   const cell = (t, o = {}) => ({ text: t, options: { fontSize: 10.5, color: HEX.dk1, ...o } })
   const tbl = [
@@ -362,7 +362,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 // 시연 순서
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
-  head(s, '⑤ MVP 시연', '지금 보여 드리는 것 (약 3분, 실제 배포된 앱으로)')
+  head(s, '⑤ MVP 시연', '시연 순서 (실제 배포된 앱으로, 약 3분)')
   const steps = [
     ['출근 · 퇴근 버튼 → 설정에서 "2건 등록됨"', '기록할 때마다 서버에 확인 번호가 남는다. 예시 데이터는 등록되지 않으니 오늘 남긴 2건만 보인다'],
     ['첫 화면 "9월 급여 받으셨나요?" → 받은 금액 입력', '덜 받은 돈이 빨간 숫자로 바뀐다'],
@@ -483,12 +483,12 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   chip(ox + 3.1, oy + 1.95, '기그', '사장 연동 필요, 기록 · 계약서')
   chip(ox + 3.1, oy + 0.3, '진정24 · 노동포털', '증거가 있어야 시작')
   chip(ox + 0.55, oy + 0.45, '알바가드', '혼자 기록 → 비교 → 요청 → 증빙', true)
-  s.addText('왼쪽 위가 비어 있다', { x: 6.5, y: 1.5, w: 3, h: 0.35, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true })
+  s.addText('혼자 쓰면서 대응까지 가는 서비스가 없다', { x: 6.5, y: 1.5, w: 3, h: 0.6, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'top' })
   s.addText([
-    { text: '혼자 쓰면서 대응까지 가는 서비스가 없다. 하우머치 · 계산기는 계산에서 멈추고, 기그는 사장이 있어야 하고, 진정24는 증거가 있어야 한다.', options: { breakLine: true } },
+    { text: '하우머치 · 계산기는 계산에서 멈추고, 기그는 사장이 있어야 하고, 진정24는 증거가 있어야 한다. 그래서 2×2의 왼쪽 위 칸이 비어 있다.', options: { breakLine: true } },
     { text: ' ', options: { breakLine: true, fontSize: 6 } },
     { text: '먼저 노리는 사람은 하우머치 사용자가 아니다. 카톡 · 메모에 적거나 아예 안 적고 통장 총액만 보는 학생이다. 하우머치가 비교 칸을 넣으면 따라올 수 있으니, 따라 하기 어려운 쪽(기록 등록)을 키운다.', options: {} },
-  ], { x: 6.5, y: 1.9, w: 3, h: 2.8, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
+  ], { x: 6.5, y: 2.15, w: 3, h: 2.6, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addNotes('손유호. 2×2에서 알바가드는 "혼자 쓴다 × 대응까지"에 있습니다. 경쟁 서비스 정보는 2026년 9월 각 앱의 공식 소개와 리뷰 기준입니다.')
 }
 
@@ -516,7 +516,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
 pres.addSection({ title: '⑦ 초기 시장 검증' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑦ 초기 시장 검증' })
-  head(s, '⑦ 초기 시장 검증 성과와 계획', '확인할 가설 하나, 11월에 재는 법 다섯')
+  head(s, '⑦ 초기 시장 검증 성과와 계획', '검증 계획: 가설 하나를 11월에 다섯 가지로 잰다')
   s.addText([
     { text: '가설  ', options: { bold: true, color: C.text2 } },
     { text: '알바생은 자신의 근무 기록을 근거로 한 정산 요청 문구가 있으면, 사장에게 말을 꺼낼 수 있다고 느끼고 쓸 것이다', options: {} },
@@ -548,7 +548,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
   const weeks = ['10/27', '11/3', '11/10', '11/17', '11/24', '12/1', '12/8']
   const tasks = [
     ['설문 30명 수집 · 집계', '손유호', 0, 2],
-    ['직접 인터뷰 5명', '박명진', 1, 1],
+    ['직접 인터뷰 5명', '손유호 3 · 박명진 2', 1, 1],
     ['피드백 반영 1차', '이지훈', 2, 3],
     ['실제 폰 검증 (아이폰 · 갤럭시)', '이지훈 · 박명진', 2, 4],
     ['기록 등록 보강', '이지훈', 3, 5],
@@ -578,7 +578,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
     line(s, lx, y + rh, 9)
   })
   s.addText('중간 발표 10/27 (화) → 기말 발표 12/15 (화) 예정', { x: 0.5, y: 4.98, w: 9, h: 0.24, fontSize: 9.5, color: C.accent5, margin: 0, isTextBox: true })
-  s.addNotes('박명진. 7주 일정이고 빨간 마름모가 마일스톤입니다. 설문은 오늘 이 자리에서 시작해 11/16까지 손유호가 30명을 모으고, 인터뷰 5명은 제가 11/3~11/9에 합니다. 폰 검증은 아이폰은 팀장, 갤럭시는 제가 주관합니다. 광고 승인 신청은 손유호, 코드는 팀장입니다. 마일스톤: 11/9 설문 1차 집계 · 인터뷰 마감, 11/23 피드백 반영 배포와 광고 결정, 11/30 폰 검증 끝, 12/7 기록 등록 보강 배포와 기능 동결, 12/15 기말. 11/23에 설문의 광고 문항 결과로 광고 실험과 새 게임 중 하나를 정합니다. 12/7 이후에는 코드를 바꾸지 않고 보고서와 발표를 준비합니다. 위험과 대안은 보고서 5.4에 적었습니다.')
+  s.addNotes('박명진. 7주 일정이고 빨간 마름모가 마일스톤입니다. 설문은 오늘 이 자리에서 시작해 11/16까지 손유호가 30명을 모으고, 인터뷰 5명은 11/3~11/9에 손유호 3명, 제가 2명을 합니다. 폰 검증은 아이폰은 팀장, 갤럭시는 제가 주관합니다. 광고 승인 신청은 손유호, 코드는 팀장입니다. 마일스톤: 11/9 설문 1차 집계 · 인터뷰 마감, 11/23 피드백 반영 배포와 광고 결정, 11/30 폰 검증 끝, 12/7 기록 등록 보강 배포와 기능 동결, 12/15 기말. 11/23에 설문의 광고 문항 결과로 광고 실험과 새 게임 중 하나를 정합니다. 12/7 이후에는 코드를 바꾸지 않고 보고서와 발표를 준비합니다. 위험과 대안은 보고서 5.4에 적었습니다.')
 }
 
 // R&R + 마무리
@@ -586,9 +586,9 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
   const s = pres.addSlide({ masterName: 'DARK', sectionTitle: '⑧ 향후 계획·팀 역량' })
   s.addText('⑧ 팀원별 R&R', { placeholder: 'title' })
   const rr = [
-    ['이지훈', '팀장 · 개발', ['기획 · 개발 · 배포 (지금까지)', '기록 등록 보강, 실제 폰 검증 (앞으로)', '기술 · 차별점 · 법적 효력 질의응답']],
-    ['손유호', '시장 · 수익', ['설문 30명 모으기 · 집계', '비즈니스 모델, 광고 승인 신청', '시장 · 경쟁사 조사']],
-    ['박명진', '검증 · 운영', ['사용자 인터뷰 5명 · 검증', '실제 폰 검증 주관 (갤럭시)', '일정 관리, 보고서 편집']],
+    ['이지훈', '팀장 · 개발', ['기획 · 개발 · 배포', '기록 등록 보강, 아이폰 검증', '기술 · 법적 효력 질의응답']],
+    ['손유호', '시장 · 검증', ['설문 30명 · 집계, 인터뷰 3명', '비즈니스 모델, 광고 승인 신청', '시장 · 경쟁사 조사']],
+    ['박명진', '운영 · 검증', ['인터뷰 2명, 갤럭시 설치 · 테스트', '일정 관리, 마일스톤 점검', '보고서 편집']],
   ]
   rr.forEach(([n, r, jobs], i) => {
     const x = 0.6 + i * 3.0
@@ -596,8 +596,8 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
     s.addText([{ text: n, options: { bold: true, fontSize: 18 } }, { text: `  ${r}`, options: { fontSize: 10, color: C.background2 } }], { x, y: 1.5, w: 2.6, h: 0.45, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
     s.addText(jobs.map((j, k) => ({ text: j, options: { bullet: { indent: 12 }, breakLine: k < jobs.length - 1 } })), { x, y: 2.05, w: 2.6, h: 1.7, fontSize: 11.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 4 })
   })
-  s.addText('지금까지는 팀장이 만들었고, 오늘부터 셋이 나눠 맡습니다', { x: 0.6, y: 4.3, w: 8.8, h: 0.4, fontSize: 12, color: C.background2, margin: 0, isTextBox: true })
-  s.addNotes('박명진. 역할은 앞으로 맡는 일과 오늘 발표한 장이 같습니다. 솔직하게: 지금까지는 팀장이 만들었고, 오늘부터 셋이 나눠 맡습니다. 다음 장으로 넘겨 팀장이 마무리합니다.')
+  s.addText('각자 맡은 일이 오늘 발표한 장과 같습니다', { x: 0.6, y: 4.3, w: 8.8, h: 0.4, fontSize: 12, color: C.background2, margin: 0, isTextBox: true })
+  s.addNotes('박명진. 역할은 앞으로 맡는 일과 오늘 발표한 장이 같습니다. 개발은 팀장, 시장과 설문 · 인터뷰 3명은 손유호, 인터뷰 2명과 갤럭시 테스트 · 일정 · 보고서는 저입니다. 다음 장으로 넘겨 팀장이 마무리합니다.')
 }
 
 // 18장: 질의응답 대기 화면
@@ -641,7 +641,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
     '· 같은 과 학생 설문이 무슨 의미? 편향 아닌가? → 맞다. "정식 조사 아님"을 적고 사람 수로만 말한다. 중복 응답도 막지 않았다(이름 · 기기 정보를 안 받는 대가). 11월 30명은 과 밖에서, 인터뷰 5명으로 이유를 듣는다.',
     '· 법률 서비스 아닌가? → 무료, 본인 기록을 정해진 양식에 채울 뿐, 개별 사안 검토 · 대행 없음, 진정은 1350 · 노동포털로 연결만.',
     '· 수익은? → 게임 화면 광고(가설). 운영 비용은 0원. 문서 유료화는 안 한다.',
-    '· 팀원은 뭘 했나? → 지금까지는 이지훈이 개발. 오늘부터 시장 · 설문(손유호), 인터뷰 · 검증 · 일정(박명진).',
+    '· 팀원은 뭘 했나? → 개발은 이지훈. 시장 · 설문 · 인터뷰 3명은 손유호, 인터뷰 2명 · 갤럭시 테스트 · 일정 · 보고서는 박명진.',
   ].join('\n'))
 }
 
