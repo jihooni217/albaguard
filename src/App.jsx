@@ -124,10 +124,10 @@ export default function App() {
         ))}
       </nav>
     </div>
-    {gameOpen === 'sudoku' && data.active && (
+    {gameOpen === 'sudoku' && (
       <Sudoku game={data.sudoku} best={data.sudokuBest ?? {}} actions={actions} onClose={() => setGameOpen(null)} />
     )}
-    {gameOpen === 'spot' && data.active && (
+    {gameOpen === 'spot' && (
       <SpotGame
         best={data.spotBest ?? {}}
         seen={data.spotSeen ?? {}}
@@ -136,7 +136,7 @@ export default function App() {
         onClose={() => setGameOpen(null)}
       />
     )}
-    {gameOpen === 'block' && data.active && (
+    {gameOpen === 'block' && (
       <BlockGame game={data.block ?? null} best={data.blockBest ?? 0} actions={actions} onClose={() => setGameOpen(null)} />
     )}
     {evidenceTarget && <Evidence data={data} target={evidenceTarget} onClose={() => setEvidenceTarget(null)} />}

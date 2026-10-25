@@ -20,6 +20,7 @@ export const emptyData = {
   lastBackupAt: null, // 마지막으로 백업 파일을 만든 때
   deviceId: null, // 이 폰을 구분하는 무작위 번호 (기록 등록에만 씀. 처음 등록할 때 만든다)
   stampOff: false, // true면 기록 지문을 서버에 등록하지 않는다 (설정 탭)
+  gamesHidden: false, // true면 첫 화면에 "쉬는 틈에" 게임 줄을 숨긴다 (설정 탭)
   stamps: {}, // 기록id → [{ hash, at, serverId, stage }] 서버에 등록된 지문과 서버가 찍은 시각
   pendingStamps: [], // 아직 서버에 못 보낸 지문 [{ recordId, stage, payload }] (오프라인이면 여기 쌓였다가 나중에 보낸다)
   requests: {}, // '근무지id|2026-10' → { 1: { text, source }, 2: { text, source } } 만든 정산 요청 문구

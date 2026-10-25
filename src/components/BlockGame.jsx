@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { KIND_LABEL, SHAPES, SIZE, anyFits, newGame, placeAndClear, placementFor, refill, shapeSize } from '../lib/block'
 
-// 근무 중에만 열리는 블록 채우기. 하던 판과 최고 점수는 저장되어 나중에 이어 할 수 있다
+// 쉬는 틈에 여는 블록 채우기. 하던 판과 최고 점수는 저장되어 나중에 이어 할 수 있다
 // 아래 블록을 누르고 판의 칸을 누르면 그 칸이 블록 안에 들어가게 놓인다. 더 놓을 곳이 없으면 끝
 export default function BlockGame({ game, best, actions, onClose }) {
   const [picked, setPicked] = useState(null) // 손에 든 블록 중 고른 자리(0~2)
@@ -63,7 +63,7 @@ export default function BlockGame({ game, best, actions, onClose }) {
           <span className="game-time" />
         </div>
         <div className="game-body">
-          <p className="game-lead">손님 없는 틈에 한 판 어때요?</p>
+          <p className="game-lead">쉬는 틈에 한 판 어때요?</p>
           <p className="muted">
             블록을 놓아 가로나 세로 한 줄을 채우면 사라져요. 시간 제한은 없고, 하다가 닫아도 그대로 남아요.
           </p>

@@ -177,6 +177,9 @@ export function makeActions(setData) {
     },
 
     // 설정 탭: 기록 등록 켜기/끄기
+    setGamesHidden(hidden) {
+      setData((d) => ({ ...d, gamesHidden: hidden }))
+    },
     setStampOff(off) {
       setData((d) => ({ ...d, stampOff: off }))
     },

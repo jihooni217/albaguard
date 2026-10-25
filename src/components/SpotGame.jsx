@@ -12,7 +12,7 @@ import {
 } from '../lib/spot'
 import { fmtClock } from '../lib/sudoku'
 
-// 근무 중에만 열리는 틀린 그림 찾기. 위아래 두 그림에서 서로 다른 곳을 찾는다
+// 쉬는 틈에 여는 틀린 그림 찾기. 위아래 두 그림에서 서로 다른 곳을 찾는다
 // seen: 난이도별로 지금까지 연 그림 수, cleared: 답을 보지 않고 다 찾은 그림 수
 export default function SpotGame({ best, seen, cleared, actions, onClose }) {
   const [game, setGame] = useState(null)

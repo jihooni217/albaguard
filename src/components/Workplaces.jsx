@@ -80,6 +80,18 @@ export default function Workplaces({ data, actions }) {
         </div>
       </div>
 
+      <h2 className="rq-title">쉬는 틈 게임</h2>
+      <div className="pay-rows">
+        <button className="rq-row link" onClick={() => actions.setGamesHidden(!(data.gamesHidden ?? false))}>
+          <span>
+            첫 화면에 게임 줄 보이기
+            <small>스도쿠 · 틀린 그림 찾기 · 블록 채우기</small>
+          </span>
+          <span className="set-value">{data.gamesHidden ? '숨김' : '보임'}</span>
+        </button>
+      </div>
+      <p className="muted pay-note">게임 기록은 증빙 묶음이나 정산 요청 문서에 들어가지 않아요.</p>
+
       <h2 className="rq-title">기록 등록</h2>
       <div className="pay-rows">
         <div className="rq-row">

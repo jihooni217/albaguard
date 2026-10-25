@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { LEVELS, MAX_HINTS, PEERS, conflicts, fmtClock, generate, isSolved } from '../lib/sudoku'
 
-// 근무 중에만 열리는 스도쿠. 하던 판과 걸린 시간은 저장되어 나중에 이어 할 수 있다
+// 쉬는 틈에 여는 스도쿠. 하던 판과 걸린 시간은 저장되어 나중에 이어 할 수 있다
 export default function Sudoku({ game, best, actions, onClose }) {
   const [selected, setSelected] = useState(null)
   const [memo, setMemo] = useState(false) // 켜면 숫자가 답 대신 작은 메모로 들어간다
@@ -94,7 +94,7 @@ export default function Sudoku({ game, best, actions, onClose }) {
           <span className="game-time" />
         </div>
         <div className="game-body">
-          <p className="game-lead">손님 없는 틈에 한 판 어때요?</p>
+          <p className="game-lead">쉬는 틈에 한 판 어때요?</p>
           <p className="muted">하다가 닫아도 그대로 남아 있어서 나중에 이어 할 수 있어요.</p>
           <LevelButtons best={best} onPick={start} />
         </div>

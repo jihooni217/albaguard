@@ -151,23 +151,6 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
         </section>
       )}
 
-      {active && (
-        <section className="card alerts">
-          <button className="alert-row ask" onClick={() => openGame('sudoku')}>
-            <span>손님 없는 틈에 · 스도쿠</span>
-            <b>{data.sudoku && !data.sudoku.done ? '이어 하기' : '한 판 하기'}</b>
-          </button>
-          <button className="alert-row ask" onClick={() => openGame('spot')}>
-            <span>손님 없는 틈에 · 틀린 그림 찾기</span>
-            <b>한 판 하기</b>
-          </button>
-          <button className="alert-row ask" onClick={() => openGame('block')}>
-            <span>손님 없는 틈에 · 블록 채우기</span>
-            <b>{data.block && !data.block.over ? '이어 하기' : '한 판 하기'}</b>
-          </button>
-        </section>
-      )}
-
       {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0 || severance.length > 0) && (
         <section className="card alerts">
           {severance.map(({ workplace, info }) => (
@@ -206,6 +189,23 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
               <b>+{thisWeek.pay.toLocaleString()}원</b>
             </button>
           )}
+        </section>
+      )}
+
+      {!(data.gamesHidden ?? false) && (
+        <section className="card alerts">
+          <button className="alert-row ask" onClick={() => openGame('sudoku')}>
+            <span>쉬는 틈에 · 스도쿠</span>
+            <b>{data.sudoku && !data.sudoku.done ? '이어 하기' : '한 판 하기'}</b>
+          </button>
+          <button className="alert-row ask" onClick={() => openGame('spot')}>
+            <span>쉬는 틈에 · 틀린 그림 찾기</span>
+            <b>한 판 하기</b>
+          </button>
+          <button className="alert-row ask" onClick={() => openGame('block')}>
+            <span>쉬는 틈에 · 블록 채우기</span>
+            <b>{data.block && !data.block.over ? '이어 하기' : '한 판 하기'}</b>
+          </button>
         </section>
       )}
 
