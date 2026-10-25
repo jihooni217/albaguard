@@ -134,7 +134,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '① 표지·팀 소개' })
   head(s, '① 오늘 발표', '지금 상태: 앱은 배포됐고, 사용자 검증은 11월부터')
   rows(s, 0.5, 1.45, 5.3, [
-    { label: '계획한 기능 8개 모두 동작', sub: '10/13 MVP 기능 정의서 기준. 완성도 평균 약 80%', value: '8 / 8', color: C.text2, bold: true },
+    { label: '계획한 기능 8개 모두 동작', sub: '9월 기획서 4개 → 10/13 정의서 8개로 고정. 완성도 평균 약 80%', value: '8 / 8', color: C.text2, bold: true },
     { label: '실제 사용자 검증은 11월부터', sub: '링크 설문 30명 · 직접 인터뷰 5명', value: '시작 단계', color: C.accent5, bold: true },
     { label: '역할: 개발 이지훈 · 시장 손유호 · 검증 박명진', sub: '발표도 같은 순서로 나눠서 합니다', value: '3명', color: C.accent5, bold: true },
   ], { rowH: 0.72, labelSize: 13, valueSize: 13, valueW: 0.2 })
@@ -277,9 +277,9 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
   const cell = (t, o = {}) => ({ text: t, options: { fontSize: 10.5, color: HEX.dk1, ...o } })
   const tbl = [
     [hdr('구분'), hdr('선택'), hdr('이유')],
-    [cell('프론트엔드', { bold: true }), cell('React + Vite, PWA (홈 화면에 추가, 오프라인 실행)'), cell('스토어 없이 링크로 배포. 의견을 듣고 바로 고쳐 다시 배포')],
+    [cell('프론트엔드', { bold: true }), cell('React + Vite, PWA (홈 화면에 추가, 오프라인 실행)'), cell('스토어 없이 링크로 배포. 의견을 듣고 바로 고친다')],
     [cell('백엔드', { bold: true }), cell('별도 서버 없음 + Supabase REST'), cell('근무 내용은 폰 밖으로 안 나감. 서버는 확인 번호 등록 · 설문 수집에만')],
-    [cell('데이터베이스', { bold: true }), cell('폰: localStorage(기록) · IndexedDB(사진)\n서버: Supabase PostgreSQL (stamps · survey)'), cell('기록 소유권은 사용자에게. 공개 키로는 넣기 · 읽기만(RLS), 시각은 서버가 찍음. 운영자 조작까지 막는 건 아님(외부 시점확인은 계획)')],
+    [cell('데이터베이스', { bold: true }), cell('폰: localStorage(기록) · IndexedDB(사진)\n서버: Supabase PostgreSQL (stamps · survey)'), cell('기록은 사용자 폰에. 공개 키로는 넣기 · 읽기만(RLS), 시각은 서버가 찍음. 운영자 조작은 못 막음')],
     [cell('클라우드 · 인프라', { bold: true }), cell('GitHub Pages + GitHub Actions'), cell('main에 올리면 자동 빌드 · 배포')],
     [cell('AI', { bold: true }), cell('Claude API (선택, 개발 환경에서만)'), cell('배포 앱은 API 키 없이 정해진 문구로 동작. 기록을 밖으로 안 보내려고 기본은 끔')],
     [cell('SaaS · 분석', { bold: true }), cell('설문 페이지 + 자동 집계 페이지, 직접 인터뷰'), cell('로그인이 없어 사용 로그 대신 설문 · 인터뷰로 측정')],
@@ -328,7 +328,7 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
   ], { x: 5.68, y: 4.05, w: 1.9, h: 0.78, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   // 데이터 흐름
   s.addText('기록 하나가 남을 때', { x: 7.9, y: 1.4, w: 1.7, h: 0.3, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
-  const flow = ['출근 · 퇴근 버튼마다 확인 번호를 등록', '고치면 새 내용으로 다시 등록 (줄이 늘어남)', '인터넷이 없으면 대기열, 연결되면 전송']
+  const flow = ['출근 · 퇴근 버튼마다 확인 번호를 등록', '고치면 새 내용으로 다시 등록', '인터넷이 없으면 대기열, 연결되면 전송']
   flow.forEach((f, i) => {
     circleNum(s, 7.9, 1.82 + i * 0.95, i + 1, { size: 0.26, fontSize: 9 })
     s.addText(f, { x: 8.22, y: 1.76 + i * 0.95, w: 1.35, h: 0.85, fontSize: 10, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
@@ -460,7 +460,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   })
   s.addText([
     { text: '타겟 규모(어림)  ', options: { bold: true, color: C.text2 } },
-    { text: '재적학생 307만 명 → 알바 경험 67~89% → 지금 알바 중 · 주 15시간 이상: 미상 (경험 기준 상한 약 210~270만 명. 11월 설문은 참고값)', options: { breakLine: true } },
+    { text: '재적학생 307만 명 → 알바 경험 67~89% → 지금 알바 중 · 주 15시간 이상: 미상 (경험 기준 상한 약 210~270만 명)', options: { breakLine: true } },
     { text: '타이밍  ', options: { bold: true, color: C.text2 } },
     { text: '2025.9 임금체불 근절 대책 · 2025.10.23 개정 근로기준법 시행. 근거를 남겨 둔 사람이 돌려받기 쉬워지는 때', options: {} },
   ], { x: 0.5, y: 4.62, w: 9, h: 0.58, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 1 })
@@ -476,7 +476,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   s.addShape(S.line, { x: ox + W / 2, y: oy, w: 0, h: H, line: { color: HEX.accent6, width: 1 } })
   s.addShape(S.line, { x: ox, y: oy + H / 2, w: W, h: 0, line: { color: HEX.accent6, width: 1 } })
   s.addText('혼자 쓴다', { x: ox + 0.1, y: oy + H / 2 - 0.3, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
-  s.addText('사장 가입 · 증거가 먼저', { x: ox + W - 1.3, y: oy + H / 2 - 0.3, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'right' })
+  s.addText('사장 가입 · 증거가 먼저', { x: ox + W - 2.0, y: oy + H / 2 - 0.3, w: 1.9, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'right' })
   s.addText('대응까지', { x: ox + W / 2 + 0.08, y: oy + 0.05, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   s.addText('계산까지', { x: ox + W / 2 + 0.08, y: oy + H - 0.35, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   const chip = (x, y, t, sub, main, w = 1.75) => {
@@ -491,9 +491,9 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   chip(ox + 3.1, oy + 1.95, '기그', '사장 연동 필요, 기록 · 계약서')
   chip(ox + 3.1, oy + 0.3, '진정24 · 노동포털', '증거가 있어야 시작')
   chip(ox + 0.55, oy + 0.45, '알바가드', '혼자 기록 → 비교 → 요청 → 증빙', true)
-  s.addText('혼자 쓰면서 대응까지 가는 서비스가 없다', { x: 6.5, y: 1.5, w: 3, h: 0.6, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'top' })
+  s.addText('혼자 쓰고 대응까지: 알바가드뿐', { x: 6.5, y: 1.5, w: 3, h: 0.6, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'top' })
   s.addText([
-    { text: '하우머치 · 계산기는 계산에서 멈추고, 기그는 사장이 있어야 하고, 진정24는 증거가 있어야 한다. 그래서 2×2의 왼쪽 위 칸에는 알바가드뿐이다.', options: { breakLine: true } },
+    { text: '하우머치 · 계산기는 계산에서 멈추고, 기그는 사장이 있어야 하고, 진정24는 증거가 있어야 한다. 그래서 왼쪽 위 칸은 알바가드뿐이다.', options: { breakLine: true } },
     { text: ' ', options: { breakLine: true, fontSize: 6 } },
     { text: '먼저 노리는 사람은 하우머치 사용자가 아니다. 카톡 · 메모에 적거나 아예 안 적고 통장 총액만 보는 학생이다. 하우머치가 비교 칸을 넣으면 따라올 수 있으니, 따라 하기 어려운 쪽(기록 등록)을 키운다.', options: {} },
   ], { x: 6.5, y: 2.15, w: 3, h: 2.6, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
@@ -536,7 +536,7 @@ pres.addSection({ title: '⑦ 초기 시장 검증' })
     [td('매달 받은 금액을 직접 넣는다', { bold: true }), td('인터뷰 5명 + 설문 · 5명 중 3명 "넣겠다"'), td('입금 문자 자동 인식을 앞당긴다')],
     [td('요청 문구를 실제로 보낼 수 있다', { bold: true }), td('인터뷰(문구를 보여 주고) · 5명 중 3명'), td('문구 톤 · 단계를 다시 짠다')],
     [td('확인 번호 설명이 이해된다', { bold: true }), td('인터뷰 · 5명 중 4명'), td('설정 · 증빙 문구를 고친다')],
-    [td('타겟 중 주 15시간 이상이 다수다', { bold: true }), td('설문 · 응답 30명 넘을 때, 알바 중인 응답자의 반 이상'), td('주휴수당 중심 메시지를 바꾼다')],
+    [td('타겟 중 주 15시간 이상이 다수다', { bold: true }), td('설문 · 30명 넘으면, 알바 중 반 이상'), td('주휴수당 중심 메시지를 바꾼다')],
     [td('게임 화면 광고를 받아들인다', { bold: true }), td('설문 + 인터뷰 · "싫다"가 반 미만'), td('11/23 광고 대신 새 게임으로')],
   ], { x: 0.5, y: 1.72, w: 9, colW: [3.0, 3.4, 2.6], rowH: [0.32, 0.38, 0.38, 0.38, 0.38, 0.38], border: { type: 'solid', pt: 0.5, color: HEX.accent6 }, valign: 'middle', margin: [0.02, 0.08, 0.02, 0.08], objectName: '검증 계획 표' })
   rows(s, 0.5, 4.05, 9, [
