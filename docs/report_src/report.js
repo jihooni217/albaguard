@@ -50,8 +50,8 @@ function Tbl(widths, headers, rows, opts = {}) {
   const sum = widths.reduce((a, b) => a + b, 0)
   const ws = widths.map((w) => Math.round((w / sum) * CONTENT_W))
   const trs = []
-  if (headers) trs.push(new TableRow({ tableHeader: true, children: headers.map((h, i) => cell(h, ws[i], { head: true })) }))
-  rows.forEach((r) => trs.push(new TableRow({ children: r.map((c, i) => cell(c, ws[i], { bold: i === 0 && opts.boldFirst, color: opts.colors && opts.colors[i] })) })))
+  if (headers) trs.push(new TableRow({ tableHeader: true, cantSplit: true, children: headers.map((h, i) => cell(h, ws[i], { head: true })) }))
+  rows.forEach((r) => trs.push(new TableRow({ cantSplit: true, children: r.map((c, i) => cell(c, ws[i], { bold: i === 0 && opts.boldFirst, color: opts.colors && opts.colors[i] })) })))
   return [new Table({ rows: trs, width: { size: CONTENT_W, type: WidthType.DXA }, columnWidths: ws, borders, layout: TableLayoutType.FIXED }), new Paragraph({ spacing: { after: 120 } })]
 }
 function Img(file, widthPx, type) {
@@ -87,6 +87,29 @@ function Phones(items, widthPx = 150) {
   return [new Table({ rows: [row], width: { size: CONTENT_W, type: WidthType.DXA }, columnWidths: items.map(() => w), borders: noBorders, layout: TableLayoutType.FIXED }), new Paragraph({ spacing: { after: 120 } })]
 }
 const Gap = (after = 200) => new Paragraph({ spacing: { after } })
+function GanttTable() {
+  const weeks = ['10/27', '11/3', '11/10', '11/17', '11/24', '12/1', '12/8']
+  const tasks = [
+    ['설문 30명 수집·집계', '손유호', 0, 2],
+    ['직접 인터뷰 5명', '박명진', 1, 1],
+    ['피드백 반영 1차', '이지훈', 2, 3],
+    ['실제 폰 검증', '이지훈·박명진', 2, 4],
+    ['기록 등록 보강', '이지훈', 3, 5],
+    ['광고 실험 또는 새 게임', '손유호·이지훈', 4, 5],
+    ['최종 보고서·발표 준비', '전원', 5, 6],
+  ]
+  const ms = { 1: '◆ 11/9', 3: '◆ 11/23', 4: '◆ 11/30', 5: '◆ 12/7', 6: '◆ 12/15' }
+  const ws = [2000, 1300, 818, 818, 818, 818, 818, 818, 818]
+  const blank = (w, fill) => new TableCell({
+    children: [new Paragraph({ children: [run(' ', { size: 14 })], spacing: { after: 0 } })],
+    width: { size: w, type: WidthType.DXA }, shading: fill ? { type: ShadingType.CLEAR, fill, color: 'auto' } : undefined,
+    margins: { top: 40, bottom: 40, left: 40, right: 40 },
+  })
+  const rows = [new TableRow({ tableHeader: true, children: ['작업', '담당', ...weeks].map((h, i) => cell(h, ws[i], { head: true, align: i >= 2 ? AlignmentType.CENTER : undefined })) })]
+  tasks.forEach(([t, who, a, b], ti) => rows.push(new TableRow({ cantSplit: true, children: [cell(t, ws[0], { bold: true }), cell(who, ws[1]), ...weeks.map((w, k) => blank(ws[k + 2], k >= a && k <= b ? (ti === 6 ? GREEN : NAVY) : null))] })))
+  rows.push(new TableRow({ children: [cell('마일스톤', ws[0], { bold: true, color: RED }), cell('', ws[1]), ...weeks.map((w, k) => cell(ms[k] || '', ws[k + 2], { bold: true, color: RED, align: AlignmentType.CENTER }))] }))
+  return [new Table({ rows, width: { size: CONTENT_W, type: WidthType.DXA }, columnWidths: ws, borders, layout: TableLayoutType.FIXED }), new Paragraph({ spacing: { after: 120 } })]
+}
 const GREEN = '0F7A55'
 function markCell(v, w, note, ours = false) {
   const m = { O: ['O', GREEN], X: ['X', RED], D: ['△', GRAY], '-': ['해당 없음', GRAY] }[v]
@@ -170,7 +193,7 @@ children.push(H1('2. 창업 아이템 정의 및 필요성'))
 children.push(H2('2.1 배경 및 문제점'))
 children.push(H3('문제 1. 얼마를 받아야 하는지 계산하기 어렵다'))
 children.push(Bul('주휴수당(주 15시간 이상 일하고 개근한 주)과 야간수당(22시~06시, 5인 이상 사업장)은 조건이 있어 알바생이 스스로 판단하기 어렵다.'))
-children.push(Bul('노동절에 근무한 알바생 중 수당을 받는다는 응답은 38.5%였고, "안내받지 못해 모르겠다"가 33.2%였다 (알바천국, 749명, 2026.4). 수당 자체가 안내되지 않는다는 뜻이고, 주휴·야간 계산 기준을 아는지는 우리 설문 문항으로 직접 묻는다.'))
+children.push(Bul('노동절에 근무한 알바생 중 수당을 받는다는 응답은 38.5%였고, "안내받지 못해 모르겠다"가 33.2%였다 (알바천국, 749명, 2026.4). 주휴·야간 계산 기준을 아는지는 우리 설문으로 직접 묻는다.'))
 children.push(Bul('급여 계산기는 여러 곳에 있지만, 넣을 근무 기록이 없으면 계산기도 쓸 수 없다.'))
 children.push(H3('문제 2. 덜 받아도 알아채기 어렵고, 증명할 수단이 없다'))
 children.push(Bul('급여가 들어오면 통장 총액만 보고 넘어간다.'))
@@ -183,11 +206,11 @@ children.push(Bul('관계가 불편해질 걱정, 금액이 작다는 생각, �
 children.push(H2('2.2 해결 방안 (SW 솔루션)'))
 children.push(P('기록, 비교, 요청의 세 단계를 앱 하나로 잇는다. 신고 창구를 새로 만드는 것이 아니라 신고 이전 단계를 채운다.'))
 newList()
-children.push(Num([run('수정 이력이 남는 근무 기록. ', { bold: true }), run('출근·퇴근 버튼 하나로 기록한다. 기록을 고치면 수정 전후 시각, 수정 시점, 사유가 함께 남고, 삭제도 "삭제됨"으로 표시만 한다. 캘린더에서 예정 스케줄과 실제 근무를 비교해 연장, 대타, 단축을 표시한다.')]))
-children.push(Num([run('입금액 비교와 차액 표시. ', { bold: true }), run('기본급, 주휴수당, 야간수당을 더해 "받았어야 할 돈"을 계산하고, 사용자가 넣은 "실제 받은 돈"과 비교해 차액을 보여 준다. 연도별 최저임금 표로 시급이 최저임금에 못 미치면 경고한다. 받은 금액을 아직 넣지 않은 달이 있으면 첫 화면에서 물어본다.')]))
+children.push(Num([run('수정 이력이 남는 근무 기록. ', { bold: true }), run('출근·퇴근 버튼 하나로 기록한다. 기록을 고치면 수정 전후 시각, 수정 시점, 사유가 함께 남고, 삭제도 "삭제됨"으로 표시만 한다. 캘린더에서 예정과 실제를 비교해 연장·대타·단축을 표시한다.')]))
+children.push(Num([run('입금액 비교와 차액 표시. ', { bold: true }), run('기본급, 주휴수당, 야간수당을 더해 "받았어야 할 돈"을 계산하고, 사용자가 넣은 "실제 받은 돈"과 비교해 차액을 보여 준다. 연도별 최저임금 표로 시급이 최저임금에 못 미치면 경고한다.')]))
 children.push(Num([run('단계별 정산 요청. ', { bold: true }), run('1단계는 사장님께 보낼 정중한 메시지(날짜별 기록과 계산 근거 포함), 2단계는 내용증명 초안, 3단계는 진정 절차 안내(고용노동부 1350 전화, 노동포털 연결)이다. 바로 신고로 가지 않고 대화로 먼저 풀도록 설계했다.')]))
-children.push(Num([run('증빙 묶음 PDF. ', { bold: true }), run('근무 기록, 수정 이력, 계산 근거, 입금 내역, 첨부 사진(근무표·시급 근거·입금 내역), 정산 요청 이력, 기록 등록 확인의 7개 항목을 한 문서로 정리한다.')]))
-children.push(Num([run('기록 등록(서버 타임스탬프). ', { bold: true }), run('기록을 남기거나 고칠 때마다 기록 내용으로 만든 확인 번호와 서버 등록 시각이 남는다. 근무지, 시각, 금액은 서버로 가지 않는다. 누구나 확인 페이지에서 그 번호가 서버에 등록된 시각을 볼 수 있다. 기록 내용에서 번호를 다시 계산해 "그 내용이 그 시각에 있었고 그 뒤 바뀌지 않았다"를 맞춰 보는 방법은 기말까지 만든다. 지금은 앱과 백업 파일을 함께 봐야 하고, "그날 실제로 일했다"까지는 증명하지 못한다.')]))
+children.push(Num([run('증빙 묶음 PDF. ', { bold: true }), run('근무 기록, 수정 이력, 계산 근거, 입금 내역, 첨부 사진, 정산 요청 이력, 기록 등록 확인의 7개 항목을 한 문서로 정리한다.')]))
+children.push(Num([run('기록 등록(서버 타임스탬프). ', { bold: true }), run('기록을 남기거나 고칠 때마다 기록 내용으로 만든 확인 번호와 서버 등록 시각이 남는다. 근무지, 시각, 금액은 서버로 가지 않는다. 누구나 확인 페이지에서 등록 시각을 볼 수 있다. 내용에서 번호를 다시 계산해 맞춰 보는 방법은 기말까지 만들며, "그날 실제로 일했다"까지는 증명하지 못한다.')]))
 children.push(H3('설계 원칙'))
 children.push(Bul('사장 연동 없음, 로그인 없음. 근무 내용은 폰 안에만 둔다.'))
 children.push(Bul('법적 효력을 보장한다고 말하지 않는다. 근로감독관과 법원이 판단할 자료를 정리해 준다(앱 안의 문서에도 적음).'))
@@ -220,12 +243,15 @@ children.push(Num('퇴근 버튼: 완성된 기록의 확인 번호를 서버에
 children.push(Num('수정·삭제: 수정 이력이 붙은 새 내용의 확인 번호를 다시 등록한다. 같은 기록에 줄이 여러 개면 그만큼 고쳐진 것이다.'))
 children.push(Num('인터넷이 없으면 대기열에 두었다가 연결되면 보낸다.'))
 children.push(Num('증빙 묶음 PDF 7번 표에 기록별 확인 번호와 등록 시각이 들어간다.'))
-children.push(P('확인 번호의 재료는 기록 번호, 근무지 번호(이름 아님), 출근·퇴근 시각, 입력 방식(버튼/나중에 입력), 추가 사유, 만든 시각, 삭제 여부, 수정 이력이다. 이것을 SHA-256으로 돌린 64자 중 앞 16자가 확인 번호이고, 번호에서 재료를 되돌릴 수 없다. 전송은 한 번에 하나씩이고, 실패하면 30초 뒤와 인터넷이 돌아올 때 다시 보낸다. 설문 응답은 같은 서버의 survey 표에 저장되고(알바 여부, 답 묶음, 서버 시각), 결과 페이지가 읽어 "몇 명 중 몇 명"으로 집계한다.'))
+children.push(Bul('확인 번호의 재료: 기록 번호, 근무지 번호(이름 아님), 출근·퇴근 시각, 입력 방식, 추가 사유, 만든 시각, 삭제 여부, 수정 이력. 이것을 SHA-256으로 돌린 64자 중 앞 16자가 확인 번호다. 번호에서 재료를 되돌릴 수 없다.'))
+children.push(Bul('전송은 한 번에 하나씩. 실패하면 30초 뒤와 인터넷이 돌아올 때 다시 보낸다.'))
+children.push(Bul('설문 응답은 같은 서버의 survey 표에 저장되고(알바 여부, 답 묶음, 서버 시각), 결과 페이지가 읽어 "몇 명 중 몇 명"으로 집계한다.'))
 children.push(H3('보안과 개인정보'))
 children.push(Bul('서버에는 이름, 근무지, 시각, 금액이 가지 않는다. 기기 번호는 처음 기록을 등록할 때 앱이 만든 난수라 휴대전화 번호가 아니다. 확인 번호만으로는 내용을 되돌릴 수 없다.'))
 children.push(Bul('코드에는 공개 키만 둔다. 공개 키로는 stamps와 survey 두 표 모두 넣기와 읽기만 되고 고치기·지우기는 거부된다(RLS, curl로 401 확인). 2000년 시각을 보내도 서버 시각으로 저장되는 것을 확인했다. 관리자 키는 받지도 쓰지도 않는다.'))
 children.push(Bul('기록 등록은 설정에서 끌 수 있고, 무엇이 서버로 가는지 설정 탭에 적어 두었다.'))
 children.push(H3('알고 있는 한계'))
+newList()
 children.push(Num('기록이 폰에만 있어 폰을 바꾸거나 브라우저 데이터를 지우면 사라진다. 지금은 백업 파일이 유일한 보호 수단이고, 2차 수익 모델(동기화·자동 백업 구독)이 이 자리에 있다.'))
 children.push(Num('확인 번호만으로는 제3자가 내용을 되돌려 볼 수 없다. 11월 17일부터 증빙 PDF의 기록 내용으로 번호를 다시 계산해 서버 시각과 맞춰 보는 확인 방식을 만든다(계획).'))
 children.push(Num('프로젝트 운영자 권한으로는 서버 표를 고칠 수 있다. 그래서 지금 보여 주는 것은 "사용자가 나중에 고칠 수 없다"까지이고, 운영자와 무관한 외부 기관의 시점확인(공인 타임스탬프 등)은 비용이 들어 향후 계획으로 둔다.'))
@@ -234,7 +260,7 @@ children.push(Num('무료 요금제 서버는 일주일 요청이 없으면 멈�
 
 children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [run('3.2 주요 구현 기능', { bold: true, size: 25, color: NAVY })], spacing: { before: 0, after: 140 }, pageBreakBefore: true, keepNext: true }))
 children.push(P('기능마다 [완료] / [진행 중 N%] / [설계]로 적었다. 100%는 쓰지 않고 남은 일을 같이 적었다. 계획 기준은 10월 13일 MVP 기능 정의서의 포함 기능 8개와 제외 기능 6개(금액 자동 인식, 푸시 알림, AI 문구, 미니게임 광고·랭킹, 로그인·사장 연동, 진정서·유료화)이다. %는 구현, 실제 폰 확인, 사용자 검증을 100으로 보고 남은 일만큼 뺀 자체 평가다. 동작은 모두 컴퓨터의 폰 크기 화면에서 확인했고, 실제 폰은 설치까지 확인했다.'))
-children.push(...Tbl([3300, 1300, 4426], ['기능', '상태', '설명과 남은 일'], [
+children.push(...Tbl([3100, 1500, 4426], ['기능', '상태', '설명과 남은 일'], [
   ['근무 기록 (출퇴근, 수정 이력, 직접 추가, 퇴근 누락 보호)', '진행 중 90%', '동작한다. 실제 폰에서 몇 주 이상 써 본 검증이 남았다.'],
   ['캘린더 (예정 vs 실제, 연장·대타·단축·합의 휴무)', '진행 중 85%', '동작한다. 반복 스케줄 입력 편의 기능이 없다.'],
   ['급여 계산 (기본급·주휴·야간, 휴게시간, 시급 변경 이력, 연도별 최저임금)', '진행 중 85%', '동작한다. 연장근로 가산은 반영하지 않았다(화면에 표시).'],
@@ -248,14 +274,12 @@ children.push(...Tbl([3300, 1300, 4426], ['기능', '상태', '설명과 남은 
   ['푸시 알림', '설계 제외', '서버가 입금을 알 수 없어 "앱을 열면 알려 준다"로 대체했다.'],
 ]))
 children.push(P([run('계획 대비 구현 비율: ', { bold: true }), run('MVP 기능 정의서의 포함 기능 8개가 모두 동작하는 수준으로 배포되었다. 세부 완성도 평균 약 80%. 실제 사용자 검증은 시작 단계이다.')]))
-children.push(Img(FIG('fig_progress.png'), 600, 'png'))
-children.push(Caption('그림 2. 기능별 완성도'))
 children.push(H3('만든 경과'))
 children.push(Bul('9월: 기획서와 경쟁 앱 네 개의 공식 소개·리뷰 조사 → 10월 5일 첫 커밋(근무 기록) → 10월 7일 아이폰 설치 확인, 앱 아이콘 → 10월 13일 기록 등록(서버 등록)과 MVP 기능 정의서 → 10월 23일 링크 설문 페이지 → 10월 25일 현재.'))
 children.push(Bul('10월 5일부터 25일까지 저장소 커밋 138회, 모두 팀장. main에 올리면 자동 배포되므로 배포 횟수는 커밋 횟수와 같다.'))
 children.push(H3('검증 현황 (2026.10.25 기준)'))
-children.push(...Tbl([3000, 1600, 1600, 1400, 1426], ['확인 항목', '컴퓨터 Chrome', '아이폰 Safari', '갤럭시', '비고'], [
-  ['홈 화면에 추가(설치)', '해당 없음', '확인 (10/7, 캡처)', '미확인', '삼성 인터넷·Chrome 메뉴 이름 미확인'],
+children.push(...Tbl([2700, 1500, 1500, 1100, 2226], ['확인 항목', '컴퓨터 Chrome', '아이폰 Safari', '갤럭시', '비고'], [
+  ['홈 화면에 추가(설치)', '해당 없음', '확인 (10/7, 캡처)', '미확인', '갤럭시 메뉴 이름 미확인'],
   ['출근·퇴근·수정 기록 등록', '확인 (3건 모두 서버 등록)', '미확인', '미확인', ''],
   ['오프라인 실행·PDF 저장·백업 파일 저장·사진 첨부', '확인', '미확인', '미확인', ''],
   ['화면 너비 320·375·430 넘침 없음', '확인', '미확인', '미확인', ''],
@@ -291,7 +315,10 @@ children.push(...Tbl([2400, 2700, 3926], ['항목', '수치', '출처·설명'],
   ['최저시급 미달 경험', '31.9%', '알바천국, 1,804명, 2026.6'],
   ['고등교육기관 재적학생', '3,072,261명', '2026년 교육기본통계(교육부, 2026.8.26 발표). 대학원 포함'],
 ], { boldFirst: true }))
-children.push(P([run('타겟 규모(어림): ', { bold: true }), run('재적학생 약 307만 명(대학원 포함) → 알바 경험 67~88% → 지금 알바 중: 미상 → 주 15시간 이상: 미상. 알바 경험률은 학교 단위 조사(동의대 316명 중 88%, 동국대 200명 중 67.5%)에서 나온 값이라 전국 대표값은 아니고, 경험 기준 상한을 어림하면 약 210만~270만 명이다. 뒤 두 칸은 11월 설문(주당 근무 시간 문항)으로 채운다. 알바천국 설문은 플랫폼 이용자 대상이라 임금 문제를 겪은 쪽으로 치우쳤을 수 있어, 전국 통계(고용노동부 체불액)와 우리 설문을 함께 본다.')]))
+children.push(P([run('타겟 규모(어림)', { bold: true })]))
+children.push(Bul('재적학생 약 307만 명(대학원 포함) → 알바 경험 67~88% → 지금 알바 중: 미상 → 주 15시간 이상: 미상. 경험 기준 상한은 약 210만~270만 명이다.'))
+children.push(Bul('알바 경험률은 학교 단위 조사(동의대 316명 중 88%, 동국대 200명 중 67.5%)에서 나온 값이라 전국 대표값이 아니다. 뒤 두 칸은 11월 설문의 "주당 근무 시간" 문항으로 채운다.'))
+children.push(Bul('알바천국 설문은 플랫폼 이용자 대상이라 임금 문제를 겪은 쪽으로 치우쳤을 수 있다. 그래서 전국 통계(고용노동부 체불액)와 우리 설문을 함께 본다.'))
 children.push(P([run('타이밍: ', { bold: true }), run('2025년 9월 관계부처 합동 임금체불 근절 대책(대지급금 3개월분 → 6개월분), 2025년 10월 개정 근로기준법 시행(상습 체불 사업주 신용 제재·명단 공개 등)으로 체불 제재와 대지급금이 넓어졌다. 근거를 남겨 둔 사람이 돌려받기 쉬워지는 때다. 최저임금은 2026년 10,320원, 2027년 10,700원으로 해마다 바뀌어 연도가 바뀌는 달은 계산 기준이 달라진다. 앱은 연도별 표로 그 달에 맞는 값을 쓴다.')]))
 
 children.push(H2('4.2 수익 창출 구조'))
@@ -327,8 +354,8 @@ children.push(H3('같은 기준으로 놓고 본 기능 비교'))
   children.push(new Table({ rows: trs, width: { size: CONTENT_W, type: WidthType.DXA }, columnWidths: ws, borders, layout: TableLayoutType.FIXED }), new Paragraph({ spacing: { after: 120 } }))
 }
 children.push(Note('무료 앱의 진짜 경쟁자는 다른 앱이 아니라 메모장과 통장 확인이라 첫 열에 넣었다. 마지막 줄 진정 접수는 알바가드가 일부러 비운 칸이다. 1350과 노동포털로 연결만 한다.'))
-children.push(Img(FIG('fig_position.png'), 420, 'png'))
-children.push(Caption('그림 3. 경쟁 서비스 포지션. 혼자 쓰면서 대응까지 가는 자리가 비어 있다'))
+children.push(Img(FIG('fig_position.png'), 520, 'png'))
+children.push(Caption('그림 2. 경쟁 서비스 포지션. 혼자 쓰면서 대응까지 가는 자리가 비어 있다'))
 children.push(H3('알바가드의 차별점'))
 newList()
 children.push(Num('사장 연동 없이 혼자 쓴다.'))
@@ -364,15 +391,15 @@ children.push(...Tbl([2500, 2400, 1900, 2226], ['재는 것', '방법', '기준 
   ['타겟 중 주 15시간 이상이 다수다', '링크 설문 "주당 근무 시간"', '응답 30명을 넘을 때 비율로', '주휴수당 중심 메시지를 바꾼다'],
   ['게임 화면 광고를 받아들인다', '링크 설문 "게임 화면 광고" + 인터뷰(23·24번)', '"싫다"가 반을 넘지 않는다', '11/23 광고 실험 대신 새 게임으로'],
 ], { boldFirst: true }))
-children.push(Bul([run('링크 설문 (https://jihooni217.github.io/albaguard/survey.html): ', { bold: true }), run('지금 알바 중, 예전에 함, 한 적 없음으로 갈라 20문항 안팎. 11월 16일까지 30명 목표. 이름과 연락처는 받지 않고, 결과는 자동 집계 페이지에서 "N명 중 M명"으로 본다. 모집은 학과·동아리 단톡, 에브리타임, 그리고 중간 발표 당일 수업 참석자에게 QR로 자유 참여를 요청한다(교수님 허락 뒤).')]))
+children.push(Bul([run('링크 설문 (https://jihooni217.github.io/albaguard/survey.html): ', { bold: true }), run('지금 알바 중, 예전에 함, 한 적 없음으로 갈라 20문항 안팎. 11월 16일까지 30명 목표. 이름과 연락처는 받지 않는다. 모집은 학과·동아리 단톡, 에브리타임, 그리고 중간 발표 당일 참석자에게 QR로 자유 참여를 요청한다(교수님 허락 뒤).')]))
 children.push(Bul([run('직접 인터뷰 5명: ', { bold: true }), run('팀원 셋의 지인 중 지금 알바 중인 사람. 11월 3일~9일, 1명당 20분. 앱을 써 보게 하고 위 표의 문항을 묻는다.')]))
 children.push(Bul([run('해석 원칙: ', { bold: true }), run('같은 사람이 여러 번 답하는 것을 막지 않는다(이름·기기 정보를 받지 않는 대신). 그래서 사람 수로만 적고, %는 응답이 30명을 넘을 때만 쓴다. 한 강의실의 답으로 결론을 크게 내리지 않는다.')]))
-children.push(Bul([run('지금까지(정식 조사 아님): ', { bold: true }), run('타겟 사용자 1명이 디자인 시안 12장 중 통장 구성을 골랐고("알바비는 직관적인 게 중요"), 팀원 의견으로 게임의 "근무 중에만" 조건을 풀었다(10월 25일). 링크 설문은 10월 23일에 공개했고, 10월 27일 오전 기준 응답 __명이다(발표 당일 결과 페이지에서 확인해 적는다. 0명이면 0명으로).')]))
+children.push(Bul([run('지금까지(정식 조사 아님): ', { bold: true }), run('타겟 사용자 1명이 디자인 시안 12장 중 통장 구성을 골랐다("알바비는 직관적인 게 중요"). 팀원 의견으로 게임의 "근무 중에만" 조건을 풀었다(10월 25일). 링크 설문은 10월 23일에 공개했고, 10월 27일 오전 기준 응답 __명이다.')]))
 children.push(Bul([run('왜 검증보다 개발이 먼저였나: ', { bold: true }), run('링크로 배포되는 웹앱이라 만들어 보여 주는 것이 가장 싼 검증이었다. 9월에 경쟁 앱 네 개의 리뷰까지 읽고 빈자리를 확인한 뒤 10월 13일 정의서로 범위를 8개로 잘랐다. 설문에도 앱 캡처 3장을 넣고 "실제로 있다면 쓰겠나"를 묻는다.')]))
 
-children.push(H2('5.3 개발 일정 간트 차트'))
-children.push(Img(FIG('fig_gantt.png'), 600, 'png'))
-children.push(Caption('그림 4. 10월 27일부터 12월 15일(화)까지 주 단위 일정. 빨간 마름모가 마일스톤'))
+children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [run('5.3 개발 일정 간트 차트', { bold: true, size: 25, color: NAVY })], spacing: { before: 0, after: 140 }, pageBreakBefore: true, keepNext: true }))
+children.push(...GanttTable())
+children.push(Caption('그림 3. 10월 27일부터 12월 15일(화)까지 주 단위 일정. 칠한 칸이 작업 기간, ◆가 마일스톤'))
 children.push(...Tbl([3300, 1700, 2300, 1726], ['작업', '기간', '담당', '마일스톤'], [
   ['1. 설문 30명 수집·집계', '10/27 ~ 11/16', '손유호', '11/9 설문 1차 집계'],
   ['2. 직접 인터뷰 5명', '11/3 ~ 11/9', '박명진', '11/9 인터뷰 기록 5건'],
@@ -382,7 +409,7 @@ children.push(...Tbl([3300, 1700, 2300, 1726], ['작업', '기간', '담당', '�
   ['6. 광고 실험 또는 새 게임', '11/24 ~ 12/7', '손유호(승인 신청) · 이지훈(코드)', '11/23 설문 결과로 결정'],
   ['7. 최종 보고서·발표 준비', '12/1 ~ 12/15', '전원 (편집 박명진, 시장·수익 손유호)', '12/15 기말 발표'],
 ]))
-children.push(P('중간 발표 10월 27일(화) → 기말 발표 12월 15일(화) 예정. 12월 7일 이후에는 코드를 바꾸지 않고 보고서와 발표를 준비한다.'))
+children.push(P('12월 7일 이후에는 코드를 바꾸지 않고 보고서와 발표를 준비한다.'))
 
 children.push(H2('5.4 위험과 대안'))
 children.push(...Tbl([4000, 5026], ['위험', '대안'], [
