@@ -1,6 +1,7 @@
 // 알바가드 중간 발표 PPT 생성 (pptxgenjs)
 const pptxgen = require('pptxgenjs')
 const path = require('path')
+const fs = require('fs')
 const { applyTheme } = require('C:/Users/user/AppData/Local/Claude-Data/claude_pzs8sxrjxfjjc/local-agent-mode-sessions/skills-plugin/ae12fec3-4bb9-4b95-b7db-f99845d7bf92/63c7127e-611b-410e-85f2-7bc1ca801d1e/skills/pptx/scripts/apply_theme.js')
 
 const PROJ = 'C:/Users/user/Desktop/albaguard기술창업'
@@ -262,7 +263,7 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
     { text: '앱의 증빙 문서 맨 아래에 그렇게 적어 두었다', options: { fontSize: 9.5, color: C.accent5 } },
   ], { x: 6.4, y: 3.35, w: 3.1, h: 0.7, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addText('법적 효력을 보장한다고 말하지 않는다. 근로감독관 · 법원이 판단할 자료를 정리해 준다.', { x: 0.5, y: 4.8, w: 9, h: 0.35, fontSize: 10.5, italic: true, color: C.accent5, margin: 0, isTextBox: true })
-  s.addNotes('세 번째가 따라 하기 어려운 차별점입니다. 지금 확인 페이지는 번호의 서버 등록 시각까지 보여 주고, 기록 내용에서 번호를 다시 계산해 맞춰 보는 방법은 기말까지 만듭니다(그래서 9장에 70%). 근무지 · 시각 · 금액은 서버로 가지 않고, "그날 실제로 일했다"까지는 증명하지 못합니다. 약점은 먼저 말합니다. "법적 효력" 질문이 오면 보장하지 않는다고 답하고, 판단할 자료를 정리해 준다고 말합니다.')
+  s.addNotes('세 번째가 따라 하기 어려운 차별점입니다. 지금 확인 페이지는 번호의 서버 등록 시각까지 보여 주고, 기록 내용에서 번호를 다시 계산해 맞춰 보는 방법은 기말까지 만듭니다(그래서 현황 장에 70%). 근무지 · 시각 · 금액은 서버로 가지 않고, "그날 실제로 일했다"까지는 증명하지 못합니다. 약점은 먼저 말합니다. "법적 효력" 질문이 오면 보장하지 않는다고 답하고, 판단할 자료를 정리해 준다고 말합니다.')
 }
 
 // ======================================================
@@ -362,7 +363,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 // 시연 순서
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
-  head(s, '⑤ MVP 시연', '시연 순서 (실제 배포된 앱으로, 약 3분)')
+  head(s, '⑤ MVP 시연', '시연 순서 (배포된 앱을 녹화한 영상, 약 3분)')
   const steps = [
     ['출근 · 퇴근 버튼 → 설정에서 "2건 등록됨"', '기록할 때마다 서버에 확인 번호가 남는다. 예시 데이터는 등록되지 않으니 오늘 남긴 2건만 보인다'],
     ['첫 화면 "9월 급여 받으셨나요?" → 받은 금액 입력', '덜 받은 돈이 빨간 숫자로 바뀐다'],
@@ -380,9 +381,17 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
     { text: '말로 대신하는 것', options: { bold: true, color: C.text2, breakLine: true } },
     { text: '캘린더의 연장 · 대타 표시', options: { bullet: { indent: 10 }, breakLine: true } },
     { text: '3단계 진정 안내: 1350 · 노동포털 연결. 진정서는 만들지 않는다', options: { bullet: { indent: 10 }, breakLine: true } },
-    { text: '예시 데이터는 발표 전에 넣어 둔다', options: { bullet: { indent: 10 } } },
+    { text: '영상은 다음 장. 단계마다 멈추고 설명한다', options: { bullet: { indent: 10 }, breakLine: true } },
+    { text: '인터넷이 되면 같은 순서를 실제 앱으로도 보여 줄 수 있다', options: { bullet: { indent: 10 } } },
   ], { x: 7.1, y: 1.55, w: 2.3, h: 1.95, fontSize: 10, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 3 })
-  s.addNotes('네 단계가 차별점과 1:1입니다. 등록 → 비교 → 요청 · 증빙 → 확인. 예시 데이터는 발표 전에 미리 넣어 둡니다(오늘 날짜는 비어 있어 출근 · 퇴근이 그대로 됩니다). 7번 표에는 시연 중 남긴 2건만 나옵니다. 예시 데이터는 진짜 시각이 아니라 등록하지 않기 때문입니다. 전날 할 일: Supabase 대시보드에서 프로젝트 상태를 확인하고(잠들어 있으면 Restore. 무료 요금제는 일주일 요청이 없으면 멈추고 앱 요청으로는 깨어나지 않음) 앱에서 출근 · 퇴근을 눌러 설정 탭에 "2건 등록됨"이 뜨는지, 확인 페이지가 열리는지 끝까지 본다. 인터넷이 안 되면 캡처 · 짧은 녹화로 대신한다.')
+  s.addNotes('네 단계가 차별점과 1:1입니다. 등록 → 비교 → 요청 · 증빙 → 확인. 예시 데이터는 발표 전에 미리 넣어 둡니다(오늘 날짜는 비어 있어 출근 · 퇴근이 그대로 됩니다). 7번 표에는 시연 중 남긴 2건만 나옵니다. 예시 데이터는 진짜 시각이 아니라 등록하지 않기 때문입니다. 시연은 다음 장의 녹화 영상(1분 39초)으로 하고, 단계마다 멈춰서 설명하면 약 3분입니다. 영상은 배포된 앱을 실제로 눌러 찍은 것이라 서버 등록과 확인 번호가 진짜입니다(10/26 녹화. 화면의 시각은 녹화한 시각). 인터넷이 되고 시간이 남으면 같은 순서를 실제 앱으로 한 번 더 보여 줘도 됩니다. 전날 할 일: Supabase 대시보드에서 프로젝트 상태를 확인하고(잠들어 있으면 Restore) 앱에서 출근 · 퇴근을 눌러 설정 탭에 "2건 등록됨"이 뜨는지 본다.')
+}
+
+// 시연 영상 (한 장 전체)
+{
+  const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
+  s.addMedia({ type: 'video', path: path.join(PROJ, 'docs/08_시연_영상.mp4'), cover: 'image/png;base64,' + fs.readFileSync(path.join(PROJ, 'docs/report_src/demo_cover.png')).toString('base64'), x: 0, y: 0, w: 10, h: 5.625, objectName: '시연 영상' })
+  s.addNotes('영상을 누르면 재생됩니다. 왼쪽이 폰 화면, 오른쪽이 단계 자막입니다. 1 출근 · 퇴근 → 설정 "2건 등록됨"(약 0:08~0:27), 2 받은 금액 입력 → 빨간 차액(0:27~0:47), 3 메시지 생성 → 증빙 묶음 PDF 7번 표(0:47~1:25), 4 확인 페이지 → 서버 등록 시각(1:25~1:39). 단계가 바뀔 때 멈추고 한두 문장씩 설명합니다. 영상이 안 열리면 docs/08_시연_영상.mp4를 따로 틀어도 됩니다.')
 }
 
 {
