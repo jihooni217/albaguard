@@ -72,7 +72,7 @@ function rows(slide, x, y, w, items, { rowH = 0.5, labelSize = 12.5, valueSize =
 }
 function phone(slide, img, x, y, h, name) {
   const w = h * (750 / 1624)
-  slide.addShape(S.roundRect, { x: x - 0.05, y: y - 0.05, w: w + 0.1, h: h + 0.1, fill: { color: HEX.dk1 }, line: { color: HEX.dk1, width: 0 }, rectRadius: 0.16, shadow: { type: 'outer', color: '000000', blur: 6, offset: 2, angle: 90, opacity: 0.22 }, objectName: `${name} 틀` })
+  slide.addShape(S.roundRect, { x: x - 0.05, y: y - 0.05, w: w + 0.1, h: h + 0.1, fill: { color: HEX.dk1 }, line: { color: HEX.dk1, width: 0 }, rectRadius: 0.16, objectName: `${name} 틀` })
   slide.addImage({ path: img, x, y, w, h, objectName: name })
   return w
 }
@@ -100,16 +100,23 @@ function arrow(slide, x1, y1, x2, y2, color = HEX.accent1, width = 1.5) {
 pres.addSection({ title: '① 표지·팀 소개' })
 {
   const s = pres.addSlide({ masterName: 'DARK', sectionTitle: '① 표지·팀 소개' })
-  s.addImage({ path: path.join(PROJ, 'public/icon-512.png'), x: 0.6, y: 0.75, w: 0.95, h: 0.95, objectName: '앱 아이콘' })
-  s.addText('알바가드', { x: 0.6, y: 1.9, w: 6, h: 1.0, fontSize: 48, bold: true, color: C.background1, margin: 0, isTextBox: true })
-  s.addText('못 받은 알바비, 기록으로 찾는 앱', { x: 0.6, y: 2.9, w: 6, h: 0.5, fontSize: 20, color: C.background2, margin: 0, isTextBox: true })
-  s.addText('SW기술창업 중간발표 · 4조 · 2026.10.27', { x: 0.6, y: 3.5, w: 6, h: 0.4, fontSize: 13, color: C.background2, margin: 0, isTextBox: true })
-  // 오른쪽 팀 칸
-  s.addShape(S.roundRect, { x: 6.5, y: 0.75, w: 3.0, h: 4.15, fill: { color: HEX.lt1, transparency: 90 }, line: { color: HEX.lt1, transparency: 70, width: 0.75 }, rectRadius: 0.12, objectName: '팀 칸' })
-  s.addText('팀명 (후보)', { x: 6.8, y: 0.95, w: 2.5, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
-  s.addText('기록조 · 온타임 · 페이체크 · 알바가드팀', { x: 6.8, y: 1.25, w: 2.5, h: 0.6, fontSize: 12.5, bold: true, color: C.background1, margin: 0, isTextBox: true })
-  s.addText('발표 뒤 하나로 정합니다', { x: 6.8, y: 1.85, w: 2.5, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
-  s.addText('팀원', { x: 6.8, y: 2.4, w: 2.5, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
+  s.addImage({ path: path.join(PROJ, 'public/icon-512.png'), x: 0.6, y: 0.6, w: 0.8, h: 0.8, objectName: '앱 아이콘' })
+  s.addText('알바가드', { x: 0.6, y: 1.5, w: 6, h: 1.0, fontSize: 54, bold: true, color: C.background1, margin: 0, isTextBox: true })
+  s.addText('못 받은 알바비, 기록으로 찾는 앱', { x: 0.6, y: 2.55, w: 6, h: 0.45, fontSize: 20, color: C.background2, margin: 0, isTextBox: true })
+  // 서명: 앱 첫 화면의 알림 줄 하나
+  const wline = (y) => s.addShape(S.line, { x: 0.6, y, w: 5.4, h: 0.0, line: { color: 'FFFFFF', width: 0.75, transparency: 60 } })
+  wline(3.4)
+  s.addText('덜 받은 급여 · 2개월', { x: 0.6, y: 3.42, w: 3.4, h: 0.5, fontSize: 14, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
+  s.addText('269,352원', { x: 4.0, y: 3.42, w: 2.0, h: 0.5, fontSize: 20, bold: true, color: 'F5A08F', margin: 0, isTextBox: true, valign: 'middle', align: 'right' })
+  wline(3.94)
+  s.addText('앱 첫 화면의 알림 줄 (예시 데이터)', { x: 0.6, y: 3.98, w: 5.4, h: 0.3, fontSize: 9, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('SW기술창업 중간발표 · 4조 · 2026.10.27', { x: 0.6, y: 4.7, w: 6, h: 0.35, fontSize: 12, color: C.background2, margin: 0, isTextBox: true })
+  // 오른쪽: 팀명 후보 · 팀원
+  s.addText('팀명 후보', { x: 6.7, y: 1.55, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('기록조 · 온타임 · 페이체크 · 알바가드팀', { x: 6.7, y: 1.85, w: 2.8, h: 0.6, fontSize: 12.5, bold: true, color: C.background1, margin: 0, isTextBox: true })
+  s.addText('발표 뒤 하나로 정합니다', { x: 6.7, y: 2.45, w: 2.8, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
+  s.addShape(S.line, { x: 6.7, y: 2.9, w: 2.8, h: 0, line: { color: 'FFFFFF', width: 0.75, transparency: 60 } })
+  s.addText('팀원', { x: 6.7, y: 3.0, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
   s.addText([
     { text: '팀장 이지훈', options: { bold: true, breakLine: true } },
     { text: '컴퓨터소프트웨어 22학번', options: { fontSize: 10, color: C.background2, breakLine: true } },
@@ -117,7 +124,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
     { text: '컴퓨터소프트웨어 __학번', options: { fontSize: 10, color: C.background2, breakLine: true } },
     { text: '박명진', options: { bold: true, breakLine: true } },
     { text: '컴퓨터소프트웨어 __학번', options: { fontSize: 10, color: C.background2 } },
-  ], { x: 6.8, y: 2.7, w: 2.5, h: 2.1, fontSize: 12.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 2 })
+  ], { x: 6.7, y: 3.3, w: 2.8, h: 1.9, fontSize: 12.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 2 })
   s.addNotes('팀장이 엽니다. "알바비를 덜 받아도 모르고, 알아도 말을 못 하는 대학생을 위해, 기록 → 비교 → 요청까지 한 앱으로 잇는 알바가드입니다." 팀명은 후보 네 개를 보여 주고 발표 뒤 정한다고 말합니다.')
 }
 
@@ -127,18 +134,19 @@ pres.addSection({ title: '① 표지·팀 소개' })
   head(s, '① 팀 소개', '역할 분담: 맡는 일과 발표 파트를 같게')
   body(s, '알바생 혼자 출퇴근을 기록하고, 받은 돈과 비교해 덜 받은 돈을 찾고, 사장님께 보낼 요청 문구와 증빙 자료까지 만들어 주는 모바일 웹앱', 0.5, 1.3, 9, 0.5)
   const members = [
-    { name: '이지훈', role: '팀장', jobs: ['기획 · 개발 · 배포 · 문서 (지금까지)', '기록 등록 보강, 기술 검증 (앞으로)'], talk: '발표 ① ~ ⑤ + 앱 시연' },
-    { name: '손유호', role: '팀원', jobs: ['시장 · 경쟁사 조사', '비즈니스 모델, 설문 집계'], talk: '발표 ⑥ 시장 분석 · 비즈니스 모델' },
-    { name: '박명진', role: '팀원', jobs: ['사용자 인터뷰 · 검증', '일정 관리, 보고서 편집, 갤럭시 테스트'], talk: '발표 ⑦ 초기 검증 · ⑧ 향후 계획' },
+    ['이지훈', '팀장', ['기획 · 개발 · 배포 · 문서 (지금까지)', '기록 등록 보강, 기술 검증 (앞으로)'], '① ~ ⑤ + 앱 시연'],
+    ['손유호', '팀원', ['시장 · 경쟁사 조사', '비즈니스 모델, 설문 집계'], '⑥ 시장 분석 · 비즈니스 모델'],
+    ['박명진', '팀원', ['사용자 인터뷰 · 검증', '일정 관리, 보고서 편집, 갤럭시 테스트'], '⑦ 초기 검증 · ⑧ 향후 계획'],
   ]
-  members.forEach((m, i) => {
-    const x = 0.5 + i * 3.05
-    card(s, x, 2.0, 2.9, 2.9, `${m.name} 카드`)
-    s.addText([{ text: m.name, options: { bold: true, fontSize: 18, color: C.text2 } }, { text: `  ${m.role}`, options: { fontSize: 10.5, color: C.accent5 } }], { x: x + 0.25, y: 2.2, w: 2.5, h: 0.45, margin: 0, isTextBox: true, valign: 'middle' })
-    s.addText('맡는 일', { x: x + 0.25, y: 2.75, w: 2.4, h: 0.25, fontSize: 9.5, bold: true, color: C.accent5, margin: 0, isTextBox: true })
-    s.addText(m.jobs.map((j, k) => ({ text: j, options: { bullet: { indent: 12 }, breakLine: k < m.jobs.length - 1 } })), { x: x + 0.25, y: 3.0, w: 2.45, h: 0.9, fontSize: 11.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 3 })
-    s.addText('발표', { x: x + 0.25, y: 3.95, w: 2.4, h: 0.25, fontSize: 9.5, bold: true, color: C.accent5, margin: 0, isTextBox: true })
-    s.addText(m.talk, { x: x + 0.25, y: 4.2, w: 2.45, h: 0.5, fontSize: 11.5, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'top' })
+  const hy = 1.85
+  ;[['이름', 0.5, 1.7], ['맡는 일', 2.2, 4.4], ['발표', 6.8, 2.7]].forEach(([t, x, w]) => s.addText(t, { x, y: hy, w, h: 0.3, fontSize: 9.5, bold: true, color: C.accent5, margin: 0, isTextBox: true }))
+  line(s, 0.5, hy + 0.32, 9)
+  members.forEach(([n, r, jobs, talk], i) => {
+    const y = hy + 0.4 + i * 0.95
+    s.addText([{ text: n, options: { bold: true, fontSize: 17, color: C.text2, breakLine: true } }, { text: r, options: { fontSize: 10, color: C.accent5 } }], { x: 0.5, y, w: 1.7, h: 0.85, margin: 0, isTextBox: true, valign: 'middle' })
+    s.addText(jobs.map((j, k) => ({ text: j, options: { breakLine: k < jobs.length - 1 } })), { x: 2.2, y, w: 4.4, h: 0.85, fontSize: 11.5, color: C.text1, margin: 0, isTextBox: true, valign: 'middle', paraSpaceAfter: 3 })
+    s.addText(talk, { x: 6.8, y, w: 2.7, h: 0.85, fontSize: 11.5, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
+    line(s, 0.5, y + 0.9, 9)
   })
   s.addNotes('지금까지는 팀장이 기획·개발을 맡았고, 10/27부터 팀원이 시장·검증·일정을 맡습니다. 각자 발표하는 장이 앞으로 맡는 일과 같습니다. 솔직하게 말합니다.')
 }
@@ -421,7 +429,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   ]
   stats.forEach(([n, d, col], i) => {
     const y = 1.35 + i * 1.08
-    s.addText(n, { x: 5.1, y, w: 4.4, h: 0.5, fontSize: 24, bold: true, color: col, margin: 0, isTextBox: true, valign: 'bottom' })
+    s.addText(n, { x: 5.1, y, w: 4.4, h: 0.5, fontSize: 20, bold: true, color: col, margin: 0, isTextBox: true, valign: 'bottom' })
     s.addText(d, { x: 5.1, y: y + 0.5, w: 4.4, h: 0.45, fontSize: 10, color: C.accent5, margin: 0, isTextBox: true, valign: 'top' })
     line(s, 5.1, y + 1.0, 4.4)
   })
@@ -448,7 +456,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   s.addText('계산까지', { x: ox + W / 2 + 0.08, y: oy + H - 0.35, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   const chip = (x, y, t, sub, main, w = 1.75) => {
     const h = sub ? 0.62 : 0.42
-    s.addShape(S.roundRect, { x, y, w, h, fill: { color: main ? C.accent1 : C.background1 }, line: { color: main ? C.accent1 : HEX.accent6, width: 1 }, rectRadius: 0.08, shadow: main ? { type: 'outer', color: '000000', blur: 4, offset: 1, angle: 90, opacity: 0.2 } : undefined, objectName: `${t} 칩` })
+    s.addShape(S.roundRect, { x, y, w, h, fill: { color: main ? C.accent1 : C.background1 }, line: { color: main ? C.accent1 : HEX.accent6, width: 1 }, rectRadius: 0.08, objectName: `${t} 칩` })
     const runs = [{ text: t, options: { bold: true, breakLine: !!sub } }]
     if (sub) runs.push({ text: sub, options: { fontSize: 8.5, color: main ? C.background2 : C.accent5 } })
     s.addText(runs, { x: x + 0.08, y, w: w - 0.16, h, fontSize: 10.5, color: main ? C.background1 : C.text1, margin: 0, isTextBox: true, valign: 'middle', align: 'center' })
@@ -473,33 +481,16 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑥ 시장 분석·비즈니스 모델' })
   head(s, '⑥ 비즈니스 모델 · 유저 확보 전략', '핵심 화면은 무료, 수익은 게임 화면에서')
-  const cols = [
-    { t: '핵심 화면', s: '무료 · 광고 없음', d: '기록 · 비교 · 요청 · 증빙. 신뢰가 핵심인 화면에 광고를 섞지 않는다', tone: C.accent2 },
-    { t: '1차 (가설)', s: '쉬는 틈 게임 화면 광고', d: '스도쿠 · 틀린 그림 찾기 · 블록 채우기 화면에만. 웹앱에서도 Google H5 Games Ads로 배너 · 보상형이 가능 (승인 심사 필요, 미신청)', tone: C.accent1 },
-    { t: '2차 (후보)', s: '편의 기능 구독', d: '여러 폰 동기화, 자동 백업처럼 문서 · 법률과 무관한 기능만', tone: C.accent4 },
-  ]
-  cols.forEach((c, i) => {
-    const x = 0.5 + i * 3.05, w = 2.9
-    card(s, x, 1.35, w, 1.95, `${c.t} 칸`)
-    s.addText(c.t, { x: x + 0.2, y: 1.45, w: w - 0.4, h: 0.3, fontSize: 10, bold: true, color: c.tone, margin: 0, isTextBox: true })
-    s.addText(c.s, { x: x + 0.2, y: 1.75, w: w - 0.4, h: 0.4, fontSize: 14, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
-    s.addText(c.d, { x: x + 0.2, y: 2.18, w: w - 0.4, h: 1.05, fontSize: 10, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
-  })
-  s.addText([
-    { text: '하지 않는 것  ', options: { bold: true, color: C.accent3 } },
-    { text: '정산 요청 문구 · 내용증명 · 증빙 묶음의 유료화. 돈을 받고 문서를 만들어 주면 변호사법 · 공인노무사법 문제에 가까워진다 (웹 조사 기준, 전문가 검토 아님)', options: {} },
-  ], { x: 0.5, y: 3.4, w: 9, h: 0.48, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
-  line(s, 0.5, 3.93, 9)
-  s.addText('유저 확보', { x: 0.5, y: 4.0, w: 1.2, h: 0.3, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
-  s.addText('링크 하나로 설치되니 에브리타임 · 학과 · 동아리 단톡 · 알바 커뮤니티에 링크로 전파. "주휴수당 계산법" 같은 짧은 영상으로 유입', { x: 1.7, y: 4.0, w: 7.8, h: 0.4, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
-  s.addText('지표 (앞으로)', { x: 0.5, y: 4.5, w: 1.2, h: 0.3, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
-  const funnel = ['홈 화면 추가', '첫 기록', '받은 금액 입력', '차액 발견', '요청 보냄', '실제로 받음 (인터뷰)']
-  funnel.forEach((f, i) => {
-    const x = 1.7 + i * 1.32
-    s.addShape(S.roundRect, { x, y: 4.5, w: 1.2, h: 0.36, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, rectRadius: 0.06, objectName: `지표 ${i + 1}` })
-    s.addText(f, { x, y: 4.5, w: 1.2, h: 0.36, fontSize: 8.5, color: C.text1, margin: 0, isTextBox: true, valign: 'middle', align: 'center' })
-    if (i < funnel.length - 1) arrow(s, x + 1.2, 4.68, x + 1.32, 4.68, HEX.accent5, 0.75)
-  })
+  rows(s, 0.5, 1.4, 9, [
+    { label: '핵심 화면: 기록 · 비교 · 요청 · 증빙', sub: '신뢰가 핵심인 화면에는 광고를 섞지 않는다', value: '무료 · 광고 없음', color: C.accent2, bold: true },
+    { label: '1차 (가설): 쉬는 틈 게임 화면 광고', sub: '스도쿠 · 틀린 그림 찾기 · 블록 채우기 화면에만. 웹에서도 Google H5 Games Ads로 보상형 광고 가능 (승인 필요, 미신청)', value: '게임 화면만', color: C.text2, bold: true },
+    { label: '2차 (후보): 편의 기능 구독', sub: '여러 폰 동기화, 자동 백업처럼 문서 · 법률과 무관한 기능만', value: '구독', color: C.text2, bold: true },
+    { label: '하지 않는 것: 정산 문구 · 내용증명 · 증빙 묶음 유료화', sub: '돈을 받고 문서를 만들어 주면 변호사법 · 공인노무사법 문제에 가까워진다 (웹 조사 기준)', value: '유료화 안 함', color: C.accent3, labelColor: C.accent3, bold: true },
+  ], { rowH: 0.66, labelSize: 12, valueSize: 12, valueW: 0.22, subSize: 9.5 })
+  s.addText('유저 확보', { x: 0.5, y: 4.25, w: 1.3, h: 0.35, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
+  s.addText('링크 하나로 설치되니 에브리타임 · 학과 · 동아리 단톡 · 알바 커뮤니티에 링크로 전파. "주휴수당 계산법" 같은 짧은 영상으로 유입', { x: 1.8, y: 4.25, w: 7.7, h: 0.4, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
+  s.addText('지표 (앞으로)', { x: 0.5, y: 4.72, w: 1.3, h: 0.35, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
+  s.addText('홈 화면 추가 → 첫 기록 → 받은 금액 입력 → 차액 발견 → 요청 보냄 → 실제로 받음 (인터뷰)', { x: 1.8, y: 4.72, w: 7.7, h: 0.35, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'top' })
   s.addNotes('손유호. 광고는 게임 화면에만 붙이는 가설이고, 문서를 돈 받고 만들어 주는 건 법적 이유로 하지 않습니다. 지표는 서버가 없어 지금은 못 재고, 설문 · 인터뷰로 대신합니다.')
 }
 
@@ -575,9 +566,9 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
   ]
   rr.forEach(([n, r, jobs], i) => {
     const x = 0.6 + i * 3.0
-    s.addShape(S.roundRect, { x, y: 1.5, w: 2.8, h: 2.4, fill: { color: HEX.lt1, transparency: 90 }, line: { color: HEX.lt1, transparency: 70, width: 0.75 }, rectRadius: 0.12, objectName: `${n} R&R` })
-    s.addText([{ text: n, options: { bold: true, fontSize: 18 } }, { text: `  ${r}`, options: { fontSize: 10, color: C.background2 } }], { x: x + 0.25, y: 1.65, w: 2.4, h: 0.45, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
-    s.addText(jobs.map((j, k) => ({ text: j, options: { bullet: { indent: 12 }, breakLine: k < jobs.length - 1 } })), { x: x + 0.25, y: 2.2, w: 2.4, h: 1.5, fontSize: 11.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 4 })
+    if (i > 0) s.addShape(S.line, { x: x - 0.2, y: 1.55, w: 0, h: 1.9, line: { color: 'FFFFFF', width: 0.75, transparency: 60 } })
+    s.addText([{ text: n, options: { bold: true, fontSize: 18 } }, { text: `  ${r}`, options: { fontSize: 10, color: C.background2 } }], { x, y: 1.5, w: 2.6, h: 0.45, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
+    s.addText(jobs.map((j, k) => ({ text: j, options: { bullet: { indent: 12 }, breakLine: k < jobs.length - 1 } })), { x, y: 2.05, w: 2.6, h: 1.7, fontSize: 11.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 4 })
   })
   s.addText('법적 효력을 보장한다고 말하지 않습니다. 근로감독관 · 법원이 판단할 자료를 정리합니다.', { x: 0.6, y: 4.2, w: 8.8, h: 0.4, fontSize: 12, italic: true, color: C.background2, margin: 0, isTextBox: true })
   s.addText('감사합니다 · jihooni217.github.io/albaguard', { x: 0.6, y: 4.65, w: 8.8, h: 0.4, fontSize: 14, bold: true, color: C.background1, margin: 0, isTextBox: true })
