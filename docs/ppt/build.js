@@ -525,7 +525,7 @@ pres.addSection({ title: '⑦ 초기 시장 검증' })
   const th = (t) => ({ text: t, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, fontSize: 10 } })
   const td = (t, o = {}) => ({ text: t, options: { fontSize: 10.5, color: HEX.dk1, ...o } })
   s.addTable([
-    [th('재는 것'), th('어떻게 · 기준 (팀이 정함)'), th('못 미치면')],
+    [th('확인할 것'), th('어떻게 · 기준 (팀이 정함)'), th('못 미치면')],
     [td('매달 받은 금액을 직접 넣는다', { bold: true }), td('인터뷰 5명 + 설문 · 5명 중 3명 "넣겠다"'), td('입금 문자 자동 인식을 앞당긴다')],
     [td('요청 문구를 실제로 보낼 수 있다', { bold: true }), td('인터뷰(문구를 보여 주고) · 5명 중 3명'), td('문구 톤 · 단계를 다시 짠다')],
     [td('확인 번호 설명이 이해된다', { bold: true }), td('인터뷰 · 5명 중 4명'), td('설정 · 증빙 문구를 고친다')],
