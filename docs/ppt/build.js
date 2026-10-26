@@ -115,7 +115,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
   // 오른쪽: 팀명 후보 · 팀원
   s.addText('팀명', { x: 6.7, y: 1.55, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
   s.addText('알바가드', { x: 6.7, y: 1.85, w: 2.8, h: 0.6, fontSize: 24, bold: true, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
-  s.addText('4조 · 앱 이름과 같게 정했습니다', { x: 6.7, y: 2.45, w: 2.8, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('4조 · 앱 이름과 같게 정함', { x: 6.7, y: 2.45, w: 2.8, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
   s.addShape(S.line, { x: 6.7, y: 2.9, w: 2.8, h: 0, line: { color: 'FFFFFF', width: 0.75, transparency: 60 } })
   s.addText('팀원', { x: 6.7, y: 3.0, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
   s.addText([
@@ -136,11 +136,11 @@ pres.addSection({ title: '① 표지·팀 소개' })
   rows(s, 0.5, 1.45, 5.3, [
     { label: '계획한 기능 8개 모두 동작', sub: '9월 기획서 4개 → 10/13 정의서 8개로 고정. 완성도 평균 약 80%', value: '8 / 8', color: C.text2, bold: true },
     { label: '사용자 검증', sub: '링크 설문 30명 · 직접 인터뷰 5명', value: '설문 열림', color: C.accent5, bold: true },
-    { label: '역할: 개발 이지훈 · 시장 손유호 · 검증 박명진', sub: '발표도 같은 순서로 나눠서 합니다', value: '3명', color: C.accent5, bold: true },
+    { label: '역할: 개발 이지훈 · 시장 손유호 · 검증 박명진', sub: '발표도 같은 순서로 나눠서 함', value: '3명', color: C.accent5, bold: true },
   ], { rowH: 0.72, labelSize: 13, valueSize: 13, valueW: 0.2 })
   s.addText('오늘 순서', { x: 0.5, y: 3.75, w: 5.3, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   s.addText('문제 → 솔루션 → 기술 → 시연 3분 → 시장 · 수익 → 검증 · 일정', { x: 0.5, y: 4.05, w: 5.3, h: 0.4, fontSize: 12.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
-  s.addText('질문은 끝나고 한 번에 받겠습니다', { x: 0.5, y: 4.5, w: 5.3, h: 0.3, fontSize: 10, color: C.accent5, margin: 0, isTextBox: true })
+  s.addText('질문은 발표 뒤 한 번에', { x: 0.5, y: 4.5, w: 5.3, h: 0.3, fontSize: 10, color: C.accent5, margin: 0, isTextBox: true })
   // QR 두 개
   const qr = (file, x, label, sub) => {
     s.addImage({ path: path.join(PROJ, 'docs/report_src', file), x, y: 1.45, w: 1.55, h: 1.55, objectName: label })
@@ -148,7 +148,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
     s.addText(sub, { x: x - 0.25, y: 3.35, w: 2.05, h: 0.5, fontSize: 9, color: C.accent5, margin: 0, isTextBox: true, align: 'center', valign: 'top' })
   }
   qr('qr_app.png', 6.2, '앱 설치', '폰 브라우저로 열고\n"홈 화면에 추가"')
-  qr('qr_survey.png', 8.0, '설문 3분', '이름 · 연락처 없음\n들으시면서 답해도 됩니다')
+  qr('qr_survey.png', 8.0, '설문 3분', '이름 · 연락처 없음\n들으면서 답해도 됨')
   s.addText('jihooni217.github.io/albaguard', { x: 6.0, y: 3.95, w: 3.5, h: 0.3, fontSize: 9.5, color: C.accent5, margin: 0, isTextBox: true, align: 'center' })
   s.addNotes('팀장. "교수님이 아직 구현 전일 거라 하셨는데, 저희는 웹앱이라 빨리 만들 수 있어서, 화면을 먼저 만들고 그걸 보여 주며 묻는 순서를 택했습니다. 오늘 보여 드리는 건 완성품이 아니라 검증용 도구입니다." 사용자 검증은 11월에 합니다. 오른쪽 QR은 앱과 설문입니다. 설문은 이름을 받지 않고 3분이라, 들으시면서 답해 주셔도 됩니다. 역할은 개발 이지훈, 시장 · 수익 손유호, 검증 · 일정 박명진이고 발표도 그 순서입니다.')
 }
@@ -159,16 +159,16 @@ pres.addSection({ title: '① 표지·팀 소개' })
 pres.addSection({ title: '② 문제 정의' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '② 문제 정의' })
-  head(s, '② 문제 정의 · 페인 포인트', '덜 받아도 모르고, 알아도 말하지 못한다')
+  head(s, '② 문제 정의 · 페인 포인트', '덜 받아도 모르고, 알아도 말하지 못함')
   card(s, 0.5, 1.3, 9, 0.62, '타깃 칸')
   s.addText([
     { text: '타깃  ', options: { bold: true, color: C.text2 } },
     { text: '주 15시간 이상 일하는 만 19~26세 시급제 알바 대학생 · 계약서 없음 · 통장 총액만 확인 · 말 꺼내기 부담', options: {} },
   ], { x: 0.7, y: 1.3, w: 8.6, h: 0.62, fontSize: 11.5, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   const probs = [
-    { n: 1, pct: '33.2%', what: '노동절에 일하고도 수당을 받는지 "안내받지 못해 모르겠다"', src: '노동절 근무 알바생 749명, 알바천국 2026.4', title: '얼마를 받아야 하는지\n계산하기 어렵다', desc: '수당 안내를 못 받는 경우가 많고, 주휴 · 야간 계산 기준은 알기 어렵다. 계산기는 있어도 넣을 기록이 없다' },
-    { n: 2, pct: '48.0%', what: '임금 관련 문제를 겪었다 (수당 미지급 · 지연 37.3%)', src: '알바생 2,457명, 알바천국 2025.1', title: '덜 받아도\n알아채기 어렵다', desc: '통장에 들어온 총액만 보고 넘어간다. 계약서가 없어 시급도 증명하기 어렵다' },
-    { n: 3, pct: '49.3%', what: '최저시급 미달인데 아무 대응도 하지 않았다', src: '최저시급 미달 경험자 기준 · 알바천국 2026.6 (응답 1,804명)', title: '알아도\n말을 꺼내기 어렵다', desc: '관계 걱정, 작은 금액, 근거 없음. 메모장 기록은 "나중에 지어낸 것 아니냐?" 한마디에 무너진다' },
+    { n: 1, pct: '33.2%', what: '노동절에 일하고도 수당을 받는지 "안내받지 못해 모르겠다"', src: '노동절 근무 알바생 749명, 알바천국 2026.4', title: '얼마를 받아야 하는지\n계산하기 어려움', desc: '수당 안내를 못 받는 경우가 많고, 주휴 · 야간 계산 기준은 알기 어려움. 계산기는 있어도 넣을 기록이 없음' },
+    { n: 2, pct: '48.0%', what: '임금 관련 문제를 겪음 (수당 미지급 · 지연 37.3%)', src: '알바생 2,457명, 알바천국 2025.1', title: '덜 받아도\n알아채기 어려움', desc: '통장에 들어온 총액만 보고 넘어감. 계약서가 없어 시급도 증명하기 어려움' },
+    { n: 3, pct: '49.3%', what: '최저시급 미달인데 아무 대응도 안 함', src: '최저시급 미달 경험자 기준 · 알바천국 2026.6 (응답 1,804명)', title: '알아도\n말을 꺼내기 어려움', desc: '관계 걱정, 작은 금액, 근거 없음. 메모장 기록은 "나중에 지어낸 것 아니냐?" 한마디에 무너짐' },
   ]
   probs.forEach((p, i) => {
     const x = 0.5 + i * 3.05, w = 2.9
@@ -185,7 +185,7 @@ pres.addSection({ title: '② 문제 정의' })
 // 기존 해결책의 한계
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '② 문제 정의' })
-  head(s, '② 문제 정의 · 기존 해결책의 한계', '기존 서비스: 계산까지는 있지만, 비교와 대응은 없다')
+  head(s, '② 문제 정의 · 기존 해결책의 한계', '기존 서비스: 계산까지는 있지만, 비교와 대응은 없음')
   const hdr = (t, o = {}) => ({ text: t, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, fontSize: 9.5, align: 'center', ...o } })
   const name = (t) => ({ text: t, options: { fontSize: 10.5, color: HEX.dk1, bold: true } })
   const mark = (v, note) => {
@@ -208,7 +208,7 @@ pres.addSection({ title: '② 문제 정의' })
   card(s, 0.5, 4.38, 9, 0.6, '결론 칸')
   s.addText([
     { text: '알바가드만 O  ', options: { bold: true, color: C.text2 } },
-    { text: '가운데 세 줄(비교 · 요청 · 등록 시각)은 알바가드에만 있다. 진정 접수는 일부러 연결만 한다', options: {} },
+    { text: '가운데 세 줄(비교 · 요청 · 등록 시각)은 알바가드에만 있음. 진정 접수는 일부러 연결만', options: {} },
   ], { x: 0.7, y: 4.38, w: 8.6, h: 0.6, fontSize: 11.5, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   s.addNotes('무료 앱이 실제로 겨루는 상대는 다른 앱이 아니라 메모장과 통장 확인입니다. 그래서 첫 열에 넣었습니다. 하우머치는 혼자 쓸 수 있지만 예상 급여에서 멈추고, 기그는 사장 연동이 필요하고, 계산기는 기록이 없고, 진정24는 증거가 있어야 시작합니다. 가운데 세 줄은 알바가드에만 있습니다. 카톡은 보낸 시각이 남지만 무엇을 왜 고쳤는지는 남지 않아 △입니다. 그 세 줄이 저희가 채우는 부분입니다. 마지막 줄 진정 접수는 저희가 일부러 안 합니다. 1350과 노동포털로 연결만 합니다.')
 }
@@ -219,11 +219,11 @@ pres.addSection({ title: '② 문제 정의' })
 pres.addSection({ title: '③ 솔루션·핵심 가치' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '③ 솔루션·핵심 가치' })
-  head(s, '③ 솔루션 · 서비스 개요   ·   문제 1 · 2는 비교로, 문제 3은 요청으로 푼다. 기록이 그 바탕', '기록 → 비교 → 요청, 신고 이전 단계를 채운다')
+  head(s, '③ 솔루션 · 서비스 개요   ·   문제 1 · 2는 비교로, 문제 3은 요청으로. 기록이 그 바탕', '기록 → 비교 → 요청, 신고 이전 단계를 채움')
   const steps = [
-    { n: 1, t: '기록', d: '출근 · 퇴근 버튼 하나. 고치면 수정 전후와 사유가 남고, 삭제도 흔적이 남는다', img: '1-home.jpg' },
-    { n: 2, t: '비교', d: '기본급 + 주휴 + 야간수당으로 "받았어야 할 돈"을 계산하고, 실제 받은 돈과의 차액을 보여 준다', img: '3-pay.jpg' },
-    { n: 3, t: '요청', d: '정중한 메시지 → 내용증명 초안 → 진정 절차 안내(1350 · 노동포털). 대화로 먼저 푼다', img: '4-request.jpg' },
+    { n: 1, t: '기록', d: '출근 · 퇴근 버튼 하나. 고치면 수정 전후와 사유가 남고, 삭제도 흔적이 남음', img: '1-home.jpg' },
+    { n: 2, t: '비교', d: '기본급 + 주휴 + 야간수당으로 "받았어야 할 돈"을 계산하고, 실제 받은 돈과의 차액 표시', img: '3-pay.jpg' },
+    { n: 3, t: '요청', d: '정중한 메시지 → 내용증명 초안 → 진정 절차 안내(1350 · 노동포털). 대화로 먼저 해결', img: '4-request.jpg' },
   ]
   const ph = 2.55, pw = ph * 750 / 1624
   steps.forEach((st, i) => {
@@ -242,9 +242,9 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '③ 솔루션·핵심 가치' })
   head(s, '③ 솔루션 · 차별화 포인트', '차별점과 한계')
   const pts = [
-    { t: '사장 연동 없이 혼자 쓴다', tag: '사장 협조가 없어도', d: '근무지만 직접 등록한다. 사장 가입이 필요 없다' },
+    { t: '사장 연동 없이 혼자 씀', tag: '사장 협조가 없어도', d: '근무지만 직접 등록. 사장 가입 필요 없음' },
     { t: '입금액 비교 → 차액 → 요청 · 증빙까지', tag: '문제 1 · 2 · 3의 답', d: '실제 받은 돈과 비교해 요청 문구 · 증빙까지. 네 서비스 모두 없음' },
-    { t: '기록 등록: 확인 번호 + 등록 시각', tag: '문제 3의 근거', d: '기록할 때마다 확인 번호와 서버 등록 시각이 남는다' },
+    { t: '기록 등록: 확인 번호 + 등록 시각', tag: '문제 3의 근거', d: '기록할 때마다 확인 번호와 서버 등록 시각이 남음' },
   ]
   pts.forEach((p, i) => {
     const y = 1.4 + i * 1.12
@@ -256,9 +256,9 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
   // 약점 칸
   card(s, 6.4, 1.4, 3.1, 1.3, '약점 칸')
   s.addText('한계', { x: 6.65, y: 1.55, w: 2.6, h: 0.35, fontSize: 11, bold: true, color: C.accent3, margin: 0, isTextBox: true })
-  s.addText('비교 기능은 하우머치가 칸 하나로 따라올 수 있다. 3번은 기록 구조 자체라 따라오기 어렵다.', { x: 6.65, y: 1.95, w: 2.6, h: 1.1, fontSize: 12, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
+  s.addText('비교 기능은 하우머치가 칸 하나로 따라올 수 있음. 3번은 기록 구조 자체라 따라오기 어려움', { x: 6.65, y: 1.95, w: 2.6, h: 1.1, fontSize: 12, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addText([
-    { text: '통장 내역 · 메시지와 함께 내야 힘이 생긴다', options: { bold: true, color: C.text2 } },
+    { text: '통장 내역 · 메시지와 함께 내야 힘이 생김', options: { bold: true, color: C.text2 } },
   ], { x: 6.4, y: 2.9, w: 3.1, h: 0.7, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addNotes('1번은 기그와 달리 사장이 가입하지 않아도 된다는 뜻입니다. 2번은 실제 받은 돈과 비교해 차액을 찾고 요청 문구와 증빙 묶음까지 잇는 것으로, 비교한 네 서비스 모두 없습니다. 3번이 따라 하기 어려운 차별점입니다. 기능 하나가 아니라 기록 구조라서, 사유 없이는 못 고치고 삭제해도 흔적이 남고 고치면 다시 등록됩니다. 기존 급여 앱이 넣으려면 사용자가 기록을 마음대로 고치던 방식을 포기해야 합니다. 지금 확인 페이지는 번호의 서버 등록 시각까지 보여 주고, 기록 내용에서 번호를 다시 계산해 맞춰 보는 방법은 기말까지 만듭니다(그래서 12장에서 70%). 근무지 · 시각 · 금액은 서버로 가지 않고, "그날 실제로 일했다"까지는 증명하지 못합니다. 한계는 먼저 말합니다. 통장 내역 · 메시지와 함께 내야 힘이 생긴다는 말은 앱의 증빙 문서 맨 아래에도 적혀 있습니다. "법적 효력" 질문이 오면 보장하지 않는다고 답하고, 근로감독관 · 법원이 판단할 자료를 정리해 준다고 말합니다.')
 }
@@ -340,12 +340,12 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 // UI 화면
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
-  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.25 기준. 모두 배포 주소에서 지금 열린다', '네 화면: 캘린더, 설정, 증빙 묶음 PDF, 확인 페이지')
+  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.25 기준. 모두 배포 주소에서 바로 열림', '네 화면: 캘린더, 설정, 증빙 묶음 PDF, 확인 페이지')
   const shots = [
     ['2-calendar.jpg', '캘린더', '예정과 다른 날만 글자로 (연장 · 대타 · 단축)'],
     ['10-settings.jpg', '설정', '기록 등록 건수 · 무엇이 서버로 가는지 · 백업'],
     ['8-evidence.jpg', '증빙 묶음 PDF', '근무 기록 · 수정 이력 · 계산 · 입금 · 사진 · 등록 확인'],
-    ['9-verify.jpg', '확인 페이지', '확인 번호를 넣으면 서버 등록 시각이 나온다'],
+    ['9-verify.jpg', '확인 페이지', '확인 번호를 넣으면 서버 등록 시각이 나옴'],
   ]
   const ph = 3.0, pw = ph * 750 / 1624, gap = (9 - 4 * pw) / 3
   shots.forEach(([img, t, d], i) => {
@@ -362,10 +362,10 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
   head(s, '⑤ MVP 시연', '시연 순서 (녹화 영상 1분 46초, 멈춰 설명하며 약 3분)')
   const steps = [
-    ['출근 · 퇴근 버튼 → 설정에서 "2건 등록됨"', '기록할 때마다 서버에 확인 번호가 남는다. 예시 데이터는 등록되지 않으니 시연 중 남긴 2건만 보인다'],
-    ['첫 화면 "9월 급여 받으셨나요?" → 받은 금액 입력', '덜 받은 돈이 빨간 숫자로 바뀐다'],
+    ['출근 · 퇴근 버튼 → 설정에서 "2건 등록됨"', '기록할 때마다 서버에 확인 번호가 남음. 예시 데이터는 등록되지 않아 시연 중 남긴 2건만 보임'],
+    ['첫 화면 "9월 급여 받으셨나요?" → 받은 금액 입력', '덜 받은 돈이 빨간 숫자로 바뀜'],
     ['요청 메시지 생성 (3개월 합계) → 증빙 묶음 PDF', '날짜별 기록과 계산 근거가 들어간 정중한 문구. PDF 7번 표에 확인 번호'],
-    ['확인 페이지에 확인 번호 → 서버 등록 시각', '앱 밖의 별도 페이지. 제3자도 열 수 있다'],
+    ['확인 페이지에 확인 번호 → 서버 등록 시각', '앱 밖의 별도 페이지. 제3자도 열 수 있음'],
   ]
   steps.forEach(([t, d], i) => {
     const y = 1.45 + i * 0.86
@@ -439,7 +439,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   })
   const stats = [
     ['26만 2,304명', '2025년 체불 피해 노동자', C.text2],
-    ['67.8%', '2025년 체불액 중 30인 미만 사업장 (1조 4,012억 원). 카페 · 편의점 · 음식점은 대개 여기 속한다. 알바생 몫은 따로 알 수 없다', C.accent3],
+    ['67.8%', '2025년 체불액 중 30인 미만 사업장 (1조 4,012억 원). 카페 · 편의점 · 음식점은 대개 여기 속함. 알바생 몫은 따로 알 수 없음', C.accent3],
     ['31.9%', '알바 경험자 중 최저시급 미달 경험 (알바천국, 1,804명, 2026.6)', C.accent3],
   ]
   stats.forEach(([n, d, col], i) => {
@@ -465,7 +465,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   s.addShape(S.rect, { x: ox, y: oy, w: W, h: H, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, objectName: '포지션 바탕' })
   s.addShape(S.line, { x: ox + W / 2, y: oy, w: 0, h: H, line: { color: HEX.accent6, width: 1 } })
   s.addShape(S.line, { x: ox, y: oy + H / 2, w: W, h: 0, line: { color: HEX.accent6, width: 1 } })
-  s.addText('혼자 쓴다', { x: ox + 0.1, y: oy + H / 2 - 0.3, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
+  s.addText('혼자 씀', { x: ox + 0.1, y: oy + H / 2 - 0.3, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   s.addText('사장 가입 · 증거가 먼저', { x: ox + W - 2.0, y: oy + H / 2 - 0.3, w: 1.9, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'right' })
   s.addText('대응까지', { x: ox + W / 2 + 0.08, y: oy + 0.05, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   s.addText('계산까지', { x: ox + W / 2 + 0.08, y: oy + H - 0.35, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
@@ -483,7 +483,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   chip(ox + 0.55, oy + 0.45, '알바가드', '혼자 기록 → 비교 → 요청 → 증빙', true)
   s.addText('혼자 대응까지 가는 건 알바가드뿐', { x: 6.5, y: 1.5, w: 3, h: 0.6, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'top' })
   s.addText([
-    { text: '계산기는 계산에서 멈추고, 기그는 사장이 가입해야, 진정24는 증거가 있어야 시작한다.', options: {} },
+    { text: '계산기는 계산에서 멈추고, 기그는 사장이 가입해야, 진정24는 증거가 있어야 시작함', options: {} },
   ], { x: 6.5, y: 2.15, w: 3, h: 1.4, fontSize: 12, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addNotes('손유호. 첫 사용자로 보는 사람은 하우머치 사용자가 아니라, 카톡 · 메모에 적거나 아예 안 적고 통장 총액만 보는 학생입니다. 하우머치가 비교 칸을 넣으면 따라올 수 있으니, 따라 하기 어려운 쪽(기록 등록)을 키웁니다. 2×2에서 알바가드는 "혼자 쓴다 × 대응까지"에 있습니다. 오른쪽 열은 혼자서는 시작할 수 없는 서비스입니다. 기그는 사장이 가입해야 하고, 진정24는 증거가 먼저 있어야 합니다. 경쟁 서비스 정보는 2026년 9월 각 앱의 공식 소개와 리뷰 기준입니다.')
 }
@@ -492,7 +492,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑥ 시장 분석·비즈니스 모델' })
   head(s, '⑥ 비즈니스 모델 · 유저 확보 전략', '핵심 화면은 무료, 수익은 게임 화면에서')
-  s.addText('출퇴근은 일하는 날마다 누르지만, 돈을 확인하는 건 급여일에 한 번. 그 사이 앱을 열 이유로 게임을 넣었고, 그 화면이 광고 자리다.', { x: 0.5, y: 1.28, w: 9, h: 0.32, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
+  s.addText('출퇴근은 일하는 날마다 누르지만, 돈을 확인하는 건 급여일에 한 번. 그 사이 앱을 열 이유로 게임을 넣었고, 그 화면이 광고 자리', { x: 0.5, y: 1.28, w: 9, h: 0.32, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   rows(s, 0.5, 1.65, 9, [
     { label: '핵심 화면: 기록 · 비교 · 요청 · 증빙', value: '무료 · 광고 없음', color: C.accent2, bold: true },
     { label: '1차 (가설): 쉬는 틈 게임 화면 광고', value: '게임 화면만', color: C.text2, bold: true },
@@ -512,7 +512,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
 pres.addSection({ title: '⑦ 초기 시장 검증' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑦ 초기 시장 검증' })
-  head(s, '⑦ 초기 시장 검증 성과와 계획', '검증 계획: 11월에 설문 · 인터뷰로 다섯 가지를 확인한다')
+  head(s, '⑦ 초기 시장 검증 성과와 계획', '검증 계획: 11월 설문 · 인터뷰로 다섯 가지 확인')
   s.addText([
     { text: '가설  ', options: { bold: true, color: C.text2 } },
     { text: '알바생은 자신의 근무 기록을 근거로 한 정산 요청 문구가 있으면, 사장에게 말을 꺼낼 수 있다고 느끼고 쓸 것이다', options: {} },
@@ -521,11 +521,11 @@ pres.addSection({ title: '⑦ 초기 시장 검증' })
   const td = (t, o = {}) => ({ text: t, options: { fontSize: 12, color: HEX.dk1, ...o } })
   s.addTable([
     [th('확인할 것'), th('어떻게 · 기준 (팀이 정함)'), th('못 미치면')],
-    [td('매달 받은 금액을 직접 넣는다', { bold: true }), td('인터뷰 5명 + 설문 · 5명 중 3명 "넣겠다"'), td('입금 문자 자동 인식을 앞당긴다')],
-    [td('요청 문구를 실제로 보낼 수 있다', { bold: true }), td('인터뷰(문구를 보여 주고) · 5명 중 3명'), td('문구 톤 · 단계를 다시 짠다')],
-    [td('확인 번호 설명이 이해된다', { bold: true }), td('인터뷰 · 5명 중 4명'), td('설정 · 증빙 문구를 고친다')],
-    [td('타깃 중 주 15시간 이상이 다수다', { bold: true }), td('설문 30명 이상 · 알바 중 반 이상'), td('주휴수당 중심 메시지를 바꾼다')],
-    [td('게임 화면 광고를 받아들인다', { bold: true }), td('설문 + 인터뷰 · "싫다"가 반 미만'), td('11/23 광고 대신 새 게임으로')],
+    [td('매달 받은 금액을 직접 넣음', { bold: true }), td('인터뷰 5명 + 설문 · 5명 중 3명 "넣겠다"'), td('입금 문자 자동 인식을 앞당김')],
+    [td('요청 문구를 실제로 보낼 수 있음', { bold: true }), td('인터뷰(문구를 보여 주고) · 5명 중 3명'), td('문구 톤 · 단계를 다시 짬')],
+    [td('확인 번호 설명이 이해됨', { bold: true }), td('인터뷰 · 5명 중 4명'), td('설정 · 증빙 문구 수정')],
+    [td('타깃 중 주 15시간 이상이 다수', { bold: true }), td('설문 30명 이상 · 알바 중 반 이상'), td('주휴수당 중심 메시지 변경')],
+    [td('게임 화면 광고를 받아들임', { bold: true }), td('설문 + 인터뷰 · "싫다"가 반 미만'), td('11/23 광고 대신 새 게임으로')],
   ], { x: 0.5, y: 1.85, w: 9, colW: [3.0, 3.4, 2.6], rowH: [0.42, 0.52, 0.52, 0.52, 0.52, 0.52], border: { type: 'solid', pt: 0.5, color: HEX.accent6 }, valign: 'middle', margin: [0.02, 0.08, 0.02, 0.08], objectName: '검증 계획 표' })
   s.addNotes('박명진. 모집은 학과 · 동아리 단톡, 에브리타임, 그리고 오늘 이 자리(QR)입니다. 인터뷰 5명은 지인 중 지금 알바 중인 사람으로 11/3~11/9에 합니다. 왜 먼저 만들었나: 웹앱이라 빨리 만들 수 있고, 화면을 보여 주며 물어야 답이 정확하다고 봤습니다. 가설은 9월 기획서 문장 그대로입니다. 표의 기준은 팀이 정한 목표이지 데이터가 아닙니다. 인터뷰 문항은 설문지 20~24번입니다. 지금까지 들은 것은 정식 조사가 아닙니다: 타깃 사용자 1명이 디자인 시안 12장 중 통장 구성을 골랐고, 링크 설문은 10/23에 공개했습니다. 기말 발표에서 이 표에 결과를 더해 보고합니다. 응답 수는 슬라이드에 적지 않고 당일 아침 결과 페이지에서 읽습니다. 0명이면 0명이라고 말합니다. 다만 당일 아침 응답이 10명 이상이고, 강의실 인터넷이 되고, 교수님 양해를 받았으면 결과 페이지(survey-results.html)를 60초만 띄워 세 문항(주당 근무 시간 · 적게 받은 것 같았던 적 · 매달 받은 금액 직접 넣기)만 읽습니다. 자유 의견은 띄우지 않습니다. 아니면 당일 아침 캡처로 대신합니다. 테스트 응답 2건(10/23)은 미리 지워 둡니다. 결과는 사람 수로만 말하고 %는 30명을 넘을 때만 씁니다. 1행은 의향을 묻는 것이라 한계가 있습니다. 인터뷰 때 앱을 설치하게 하고, 실제로 넣는지는 급여일이 지난 뒤 따로 봅니다(기말 이후까지 걸릴 수 있음). 지인은 호의적으로 답하기 쉬워서 "넣겠다"를 그대로 믿지 않습니다.')
 }
@@ -588,7 +588,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
     s.addText([{ text: n, options: { bold: true, fontSize: 18 } }, { text: `  ${r}`, options: { fontSize: 10, color: C.background2 } }], { x, y: 1.5, w: 2.6, h: 0.45, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
     s.addText(jobs.map((j, k) => ({ text: j, options: { bullet: { indent: 12 }, breakLine: k < jobs.length - 1 } })), { x, y: 2.05, w: 2.6, h: 1.7, fontSize: 11.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 4 })
   })
-  s.addText('각자 맡은 일이 오늘 발표한 장과 같습니다', { x: 0.6, y: 4.3, w: 8.8, h: 0.4, fontSize: 12, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('각자 맡은 일은 오늘 발표한 장과 같음', { x: 0.6, y: 4.3, w: 8.8, h: 0.4, fontSize: 12, color: C.background2, margin: 0, isTextBox: true })
   s.addNotes('박명진. 앞으로 맡는 일은 오늘 각자 발표한 장과 같습니다. 개발은 팀장, 시장과 설문 · 인터뷰 3명은 손유호, 인터뷰 2명과 갤럭시 테스트 · 일정 · 보고서는 저입니다. 다음 장으로 넘겨 팀장이 마무리합니다.')
 }
 
@@ -615,7 +615,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
   }
   qrd('qr_app.png', 6.3, '앱 설치', '홈 화면에 추가')
   qrd('qr_survey.png', 8.05, '설문 3분', '이름 · 연락처 없음')
-  s.addText('지금 답해 주시면 기말 발표 때 결과로 보여 드립니다', { x: 0.6, y: 4.35, w: 8.8, h: 0.4, fontSize: 13, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('지금 답하면 기말 발표 때 결과로 공개', { x: 0.6, y: 4.35, w: 8.8, h: 0.4, fontSize: 13, color: C.background2, margin: 0, isTextBox: true })
   s.addText('감사합니다', { x: 0.6, y: 4.75, w: 8.8, h: 0.4, fontSize: 14, bold: true, color: C.background1, margin: 0, isTextBox: true })
   s.addNotes([
     '팀장 마무리(20초): "저희가 여쭙고 싶은 것 두 가지입니다. 문서 유료화를 피하면서 가능한 수익 모델이 더 있을지, 그리고 설문 30명 · 인터뷰 5명이면 충분한지입니다. 질문받겠습니다." 이 장은 질의응답 내내 띄워 둔다.',
