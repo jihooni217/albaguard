@@ -124,7 +124,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
     { text: '손유호', options: { bold: true, breakLine: true } },
     { text: '컴퓨터소프트웨어 __학번', options: { fontSize: 10, color: C.background2, breakLine: true } },
     { text: '박명진', options: { bold: true, breakLine: true } },
-    { text: '컴퓨터소프트웨어 __학번', options: { fontSize: 10, color: C.background2 } },
+    { text: '컴퓨터소프트웨어 18학번', options: { fontSize: 10, color: C.background2 } },
   ], { x: 6.7, y: 3.3, w: 2.8, h: 1.9, fontSize: 12.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 2 })
   s.addNotes('팀장이 엽니다. "알바비를 덜 받아도 모르고, 알아도 말을 못 하는 대학생을 위해, 기록 → 비교 → 요청까지 한 앱으로 잇는 알바가드입니다." 팀명은 앱 이름과 같은 알바가드입니다.')
 }
