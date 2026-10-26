@@ -55,13 +55,13 @@ with sync_playwright() as p:
     page.locator('.clock-btn.out').click()
     page.wait_for_selector('.clock-btn.in')
     hold(4)
+    mark('step1_done')  # 설정 탭으로 넘어가는 순간부터 다음 자막
     page.get_by_role('button', name='설정', exact=True).click()
     page.wait_for_timeout(600)
     page.get_by_text('서버에 남긴 확인 번호').scroll_into_view_if_needed()
     hold(0.5)
     # 서버 등록이 끝나 "2건 등록됨"이 될 때까지 (최대 25초)
     page.wait_for_function("() => document.body.innerText.includes('2건 등록됨') && !document.body.innerText.includes('보내는 중')", timeout=25000)
-    mark('step1_done')
     hold(7)
 
     # ── 2단계: 첫 화면 "N월 급여 받으셨나요?" → 받은 금액 입력 → 차액
@@ -102,6 +102,7 @@ with sync_playwright() as p:
     wheel(page, 220, 4, 0.9)
     mark('step3_msg')
     hold(6)
+    mark('step3_pdf')  # 화면이 급여 비교로 넘어가는 순간부터 PDF 자막
     # 증빙 묶음은 이번 달 것으로 연다 (방금 남긴 2건의 확인 번호가 7번 표에 나오게)
     page.get_by_role('button', name='급여 비교', exact=True).click()
     page.wait_for_timeout(800)
@@ -115,7 +116,6 @@ with sync_playwright() as p:
     h7.scroll_into_view_if_needed()
     page.evaluate('window.scrollBy(0, -40)')
     page.wait_for_timeout(300)
-    mark('step3_pdf')
     hold(9)
     short = page.locator('.evidence-doc td.mono').last.inner_text().strip()
     print('확인 번호', short)
