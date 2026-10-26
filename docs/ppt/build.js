@@ -115,7 +115,7 @@ pres.addSection({ title: '① 표지·팀 소개' })
   // 오른쪽: 팀명 후보 · 팀원
   s.addText('팀명', { x: 6.7, y: 1.55, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
   s.addText('알바가드', { x: 6.7, y: 1.85, w: 2.8, h: 0.6, fontSize: 24, bold: true, color: C.background1, margin: 0, isTextBox: true, valign: 'middle' })
-  s.addText('4조 · 앱 이름과 같게 정함', { x: 6.7, y: 2.45, w: 2.8, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('4조', { x: 6.7, y: 2.45, w: 2.8, h: 0.3, fontSize: 9.5, color: C.background2, margin: 0, isTextBox: true })
   s.addShape(S.line, { x: 6.7, y: 2.9, w: 2.8, h: 0, line: { color: 'FFFFFF', width: 0.75, transparency: 60 } })
   s.addText('팀원', { x: 6.7, y: 3.0, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.background2, margin: 0, isTextBox: true })
   s.addText([
