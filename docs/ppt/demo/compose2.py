@@ -46,11 +46,13 @@ CAPS = [
     ('step3_msg', 'step3_pdf', 3, '날짜별 기록과 계산 근거가 들어간 메시지', '내 말투로 고친 뒤 복사해서 보냄'),
     ('step3_pdf', 'step4', 3, '증빙 묶음 PDF · 7번 기록 등록 확인', '방금 남긴 기록의 확인 번호와 서버 등록 시각이 들어 있음'),
     ('step4', 'step4_done', 4, '확인 페이지에 확인 번호 입력', '앱 밖의 별도 페이지라 누구나 열 수 있음'),
-    ('step4_done', 'end', 4, '서버가 찍은 등록 시각', '그 내용이 그 시각에 있었고 그 뒤 바뀌지 않았음을 보여 줌'),
+    ('step4_done', 'end', 4, '서버가 찍은 등록 시각', '늦어도 이 시각에는 이 확인 번호가 서버에 있었음\n기록 내용과 맞춰 보기는 기말까지'),
 ]
 
 
 def wrap(draw, text, font, width):
+    if '\n' in text:  # 직접 나눈 줄은 그대로 두고 줄마다 접는다
+        return [l for part in text.split('\n') for l in wrap(draw, part, font, width)]
     lines, cur = [], ''
     for ch in text:
         if draw.textlength(cur + ch, font=font) > width and cur:
