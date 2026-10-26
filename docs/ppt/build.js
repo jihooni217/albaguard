@@ -354,7 +354,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
     s.addText(t, { x: x - 0.2, y: 4.5, w: pw + 0.4, h: 0.3, fontSize: 11.5, bold: true, color: C.text2, margin: 0, isTextBox: true, align: 'center' })
     s.addText(d, { x: x - 0.25, y: 4.78, w: pw + 0.5, h: 0.42, fontSize: 9, color: C.accent5, margin: 0, isTextBox: true, align: 'center', valign: 'top' })
   })
-  s.addNotes('실제 앱 화면입니다. 이 중 캘린더는 영상에 나오지 않아서 먼저 말씀드리면, 예정과 다르게 일한 날, 예를 들어 연장이나 대타를 글자로 따로 표시합니다. 나머지 설정, 증빙 묶음 PDF, 확인 페이지는 바로 다음 영상에서 실제로 쓰는 모습으로 보여 드리겠습니다.')
+  s.addNotes('실제 앱 화면입니다. 이 중 캘린더는 영상에 나오지 않아서 먼저 말씀드리면, 예정과 다르게 일한 날, 예를 들어 연장이나 대타를 글자로 따로 표시합니다. 나머지 설정, 증빙 묶음 PDF, 확인 페이지는 잠시 뒤 영상에서 실제로 쓰는 모습으로 보여 드리겠습니다.')
 }
 
 // 시연 순서
@@ -373,7 +373,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
     s.addText(t, { x: 0.98, y, w: 8.5, h: 0.42, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
     s.addText(d, { x: 0.98, y: y + 0.4, w: 8.5, h: 0.4, fontSize: 10, color: C.accent5, margin: 0, isTextBox: true, valign: 'top' })
   })
-  s.addNotes('지금부터 보실 영상은 배포된 앱을 직접 눌러 보면서 녹화한 것입니다. 출근과 퇴근, 받은 금액 입력, 요청 메시지와 증빙 PDF, 마지막으로 확인 페이지 순서로 보시겠습니다.')
+  s.addNotes('이어서 보실 영상은 배포된 앱을 직접 눌러 보면서 녹화한 것입니다. 순서는 화면의 네 단계 그대로이고, 단계마다 잠깐씩 멈추면서 설명드리겠습니다.')
 }
 
 // 시연 영상 (한 장 전체)
