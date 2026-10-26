@@ -163,7 +163,7 @@ pres.addSection({ title: '② 문제 정의' })
   card(s, 0.5, 1.3, 9, 0.62, '타깃 칸')
   s.addText([
     { text: '타깃  ', options: { bold: true, color: C.text2 } },
-    { text: '주 15시간 이상 일하는 만 19~26세 시급제 알바 대학생 · 계약서 없음 · 통장 총액만 확인 · 말 꺼내기 부담', options: {} },
+    { text: '주 15시간 이상 · 만 19~26세 시급제 알바 대학생 · 계약서 없음 · 통장 총액만 확인', options: {} },
   ], { x: 0.7, y: 1.3, w: 8.6, h: 0.62, fontSize: 11.5, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   const probs = [
     { n: 1, pct: '33.2%', what: '노동절에 일하고도 수당을 받는지 "안내받지 못해 모르겠다"', src: '노동절 근무 알바생 749명, 알바천국 2026.4', title: '얼마를 받아야 하는지\n계산하기 어려움', desc: '수당 안내를 못 받는 경우가 많고, 주휴 · 야간 계산 기준은 알기 어려움. 계산기는 있어도 넣을 기록이 없음' },
@@ -492,7 +492,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑥ 시장 분석·비즈니스 모델' })
   head(s, '⑥ 비즈니스 모델 · 유저 확보 전략', '핵심 화면은 무료, 수익은 게임 화면에서')
-  s.addText('출퇴근은 일하는 날마다 누르지만, 돈을 확인하는 건 급여일에 한 번. 그 사이 앱을 열 이유로 게임을 넣었고, 그 화면이 광고 자리', { x: 0.5, y: 1.28, w: 9, h: 0.32, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
+  s.addText('출퇴근은 일하는 날마다, 돈 확인은 급여일에 한 번. 그 사이 열 이유로 게임 = 광고 자리', { x: 0.5, y: 1.28, w: 9, h: 0.32, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   rows(s, 0.5, 1.65, 9, [
     { label: '핵심 화면: 기록 · 비교 · 요청 · 증빙', value: '무료 · 광고 없음', color: C.accent2, bold: true },
     { label: '1차 (가설): 쉬는 틈 게임 화면 광고', value: '게임 화면만', color: C.text2, bold: true },
