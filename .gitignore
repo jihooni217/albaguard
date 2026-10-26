@@ -11,3 +11,4 @@ build/
 # 시스템
 .DS_Store
 Thumbs.db
+__pycache__/
