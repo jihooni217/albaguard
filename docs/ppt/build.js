@@ -277,7 +277,7 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
   const cell = (t, o = {}) => ({ text: t, options: { fontSize: 10.5, color: HEX.dk1, ...o } })
   const tbl = [
     [hdr('구분'), hdr('선택'), hdr('이유')],
-    [cell('프론트엔드', { bold: true }), cell('React + Vite, PWA (홈 화면에 추가, 오프라인 실행)'), cell('스토어 없이 링크로 배포. 의견을 듣고 바로 고친다')],
+    [cell('프런트엔드', { bold: true }), cell('React + Vite, PWA (홈 화면에 추가, 오프라인 실행)'), cell('스토어 없이 링크로 배포. 의견을 듣고 바로 고친다')],
     [cell('백엔드', { bold: true }), cell('별도 서버 없음 + Supabase REST'), cell('근무 내용은 폰 밖으로 안 나감. 서버는 확인 번호 등록 · 설문 수집에만')],
     [cell('데이터베이스', { bold: true }), cell('폰: localStorage(기록) · IndexedDB(사진)\n서버: Supabase PostgreSQL (stamps · survey)'), cell('기록은 사용자 폰에. 공개키로는 넣기 · 읽기만(RLS), 시각은 서버가 찍음. 운영자 조작은 못 막음')],
     [cell('클라우드 · 인프라', { bold: true }), cell('GitHub Pages + GitHub Actions'), cell('main에 올리면 자동 빌드 · 배포')],
