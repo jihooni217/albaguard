@@ -632,7 +632,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
   }
   qrd('qr_app.png', 6.3, '앱 설치', '홈 화면에 추가')
   qrd('qr_survey.png', 8.05, '설문 3분', '이름 · 연락처 없음')
-  s.addText('지금 답하면 기말 발표 때 결과로 공개', { x: 0.6, y: 4.35, w: 8.8, h: 0.4, fontSize: 13, color: C.background2, margin: 0, isTextBox: true })
+  s.addText('설문에 답해 주시면 기말 발표에 큰 도움이 됩니다', { x: 0.6, y: 4.35, w: 8.8, h: 0.4, fontSize: 13, color: C.background2, margin: 0, isTextBox: true })
   s.addText('감사합니다', { x: 0.6, y: 4.75, w: 8.8, h: 0.4, fontSize: 14, bold: true, color: C.background1, margin: 0, isTextBox: true })
   s.addNotes([
     '팀장 마무리: (멈춤) 다시 한번 말씀드리면, 다른 앱은 \'얼마 받아야 하나\'에서 멈추지만, 알바가드는 \'덜 받았으면 어떻게 받아내나\'까지 갑니다. 처음에 보여 드린 금액처럼, 통장만 봐서는 보이지 않던 돈을 기록으로 찾아 주려고 만든 앱입니다. 화면의 QR로 설문에 답해 주시면, 기말 발표 결과에 큰 도움이 될 것 같습니다. 이상으로 4조 발표를 마치겠습니다. 들어 주셔서 감사합니다. 질문 받겠습니다.',
