@@ -123,7 +123,8 @@ export default function Workplaces({ data, actions }) {
       <p className="muted pay-note">
         기록을 남기거나 고칠 때마다 서버에 확인 번호와 등록 시각을 남겨요. 확인 번호는 기록 내용으로 만든 번호예요. 내용이
         조금이라도 바뀌면 번호가 완전히 달라져서, 나중에 "그때 기록한 그대로다"를 보여 줄 수 있어요. 근무지 이름, 출퇴근 시각,
-        금액은 서버로 가지 않아요. 인터넷이 없을 때 남긴 기록은 연결되면 보내요.
+        금액은 서버로 가지 않아요. 인터넷이 없을 때 남긴 기록은 연결되면 보내요.{' '}
+        <a href="./privacy.html" target="_blank" rel="noreferrer">개인정보 처리방침</a>
       </p>
 
       <h2 className="rq-title">기록 백업</h2>

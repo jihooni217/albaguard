@@ -120,7 +120,7 @@ function render() {
   }
   app.innerHTML = `<div class="top"><b>알바가드 설문</b><span>${q.intro ? '' : `${n} / ${total}`}</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>${body}
-    ${i === 0 ? '<p class="note">수업 과제(SW기술창업)로 만드는 앱의 설문이에요. 이름·연락처는 받지 않고, 답은 "N명 중 M명"처럼 묶어서만 써요. 3분이면 끝나요.</p>' : ''}`
+    ${i === 0 ? '<p class="note">수업 과제(SW기술창업)로 만드는 앱의 설문이에요. 이름·연락처는 받지 않고, 답은 "N명 중 M명"처럼 묶어서만 써요. 3분이면 끝나요. <a href="./privacy.html" target="_blank">개인정보 처리방침</a></p>' : ''}`
 
   app.querySelectorAll('.opt').forEach((b) => b.onclick = () => {
     const v = b.dataset.v
