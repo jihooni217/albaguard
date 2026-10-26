@@ -270,19 +270,19 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '④ SW 기술 아키텍처' })
   head(s, '④ SW 기술 아키텍처 · 기술 스택', '기술 스택: 앱은 폰에서, 서버는 확인 번호 등록에만')
-  const hdr = (t) => ({ text: t, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, fontSize: 10.5 } })
-  const cell = (t, o = {}) => ({ text: t, options: { fontSize: 10.5, color: HEX.dk1, ...o } })
+  const hdr = (t) => ({ text: t, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, fontSize: 11 } })
+  const cell = (t, o = {}) => ({ text: t, options: { fontSize: 11.5, color: HEX.dk1, ...o } })
   const tbl = [
     [hdr('구분'), hdr('선택'), hdr('이유')],
-    [cell('프런트엔드', { bold: true }), cell('React + Vite, PWA (홈 화면에 추가, 오프라인 실행)'), cell('스토어 없이 링크로 배포. 의견을 듣고 바로 고친다')],
-    [cell('백엔드', { bold: true }), cell('별도 서버 없음 + Supabase REST'), cell('근무 내용은 폰 밖으로 안 나감. 서버는 확인 번호 등록 · 설문 수집에만')],
-    [cell('데이터베이스', { bold: true }), cell('폰: localStorage(기록) · IndexedDB(사진)\n서버: Supabase PostgreSQL (stamps · survey)'), cell('기록은 사용자 폰에. 공개키로는 넣기 · 읽기만(RLS), 시각은 서버가 찍음. 운영자 조작은 못 막음')],
-    [cell('클라우드 · 인프라', { bold: true }), cell('GitHub Pages + GitHub Actions'), cell('main에 올리면 자동 빌드 · 배포')],
-    [cell('AI', { bold: true }), cell('Claude API (선택, 개발 환경에서만)'), cell('배포 앱은 API 키 없이 정해진 문구로 동작. 기록을 밖으로 안 보내려고 기본은 끔')],
-    [cell('SaaS · 분석', { bold: true }), cell('설문 페이지 + 자동 집계 페이지, 직접 인터뷰'), cell('로그인이 없어 사용 로그 대신 설문 · 인터뷰로 측정')],
+    [cell('프런트엔드', { bold: true }), cell('React + Vite, PWA (홈 화면에 추가, 오프라인 실행)'), cell('스토어 없이 링크로 바로 배포')],
+    [cell('백엔드', { bold: true }), cell('별도 서버 없음 + Supabase REST'), cell('근무 내용은 폰 안에만')],
+    [cell('데이터베이스', { bold: true }), cell('폰: localStorage(기록) · IndexedDB(사진)\n서버: Supabase PostgreSQL (stamps · survey)'), cell('공개키로는 넣기 · 읽기만\n시각은 서버가 찍음')],
+    [cell('클라우드 · 인프라', { bold: true }), cell('GitHub Pages + GitHub Actions'), cell('올리면 자동 배포')],
+    [cell('AI', { bold: true }), cell('Claude API (선택, 개발 환경에서만)'), cell('기록을 밖으로 안 보내려고 기본은 끔')],
+    [cell('SaaS · 분석', { bold: true }), cell('설문 페이지 + 자동 집계 페이지, 직접 인터뷰'), cell('로그인이 없어 설문 · 인터뷰로 측정')],
   ]
-  s.addTable(tbl, { x: 0.5, y: 1.35, w: 9, colW: [1.4, 3.6, 4.0], rowH: [0.36, 0.5, 0.5, 0.8, 0.42, 0.52, 0.5], border: { type: 'solid', pt: 0.5, color: HEX.accent6 }, valign: 'middle', margin: [0.04, 0.1, 0.04, 0.1], objectName: '기술 스택 표' })
-  s.addNotes('한 학기 안에 혼자 만들 수 있는 구성입니다. 서버를 최소로 둔 이유는 개인정보와 비용 둘 다입니다. 배포는 링크 하나라 사용자 의견을 듣고 바로 고칠 수 있습니다.')
+  s.addTable(tbl, { x: 0.5, y: 1.35, w: 9, colW: [1.75, 4.05, 3.2], rowH: [0.4, 0.52, 0.52, 0.8, 0.52, 0.52, 0.52], border: { type: 'solid', pt: 0.5, color: HEX.accent6 }, valign: 'middle', margin: [0.04, 0.1, 0.04, 0.1], objectName: '기술 스택 표' })
+  s.addNotes('표의 이유를 풀면: 스토어 심사 없이 링크로 배포해 의견을 듣고 바로 고칩니다. 서버는 확인 번호 등록과 설문 수집에만 씁니다. 공개키로는 넣기 · 읽기만 되고(RLS) 시각은 서버가 찍지만, 운영자 조작까지 막지는 못합니다. main에 올리면 GitHub Actions가 자동으로 빌드 · 배포합니다. 배포 앱은 API 키 없이 정해진 문구로 동작합니다. 한 학기 안에 혼자 만들 수 있는 구성입니다. 서버를 최소로 둔 이유는 개인정보와 비용 둘 다입니다. 배포는 링크 하나라 사용자 의견을 듣고 바로 고칠 수 있습니다.')
 }
 
 // 시스템 구성도
@@ -296,11 +296,11 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
     s.addShape(S.roundRect, { x, y, w, h, fill: { color: C.background1 }, line: { color: HEX.accent6, width: 0.75 }, rectRadius: 0.06, objectName: name })
     s.addText(t, { x: x + 0.1, y, w: w - 0.2, h, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle', align: 'center' })
   }
-  box(0.7, 1.9, 3.0, 0.6, [{ text: '화면 (React)', options: { bold: true, breakLine: true } }, { text: '근무 기록 · 캘린더 · 급여 비교 · 정산 요청 · 설정', options: { fontSize: 10, color: C.accent5 } }], '화면 상자')
+  box(0.7, 1.9, 3.0, 0.6, [{ text: '화면 (React)', options: { bold: true, breakLine: true } }, { text: '기록 · 캘린더 · 비교 · 요청', options: { fontSize: 10, color: C.accent5 } }], '화면 상자')
   arrow(s, 2.2, 2.5, 2.2, 2.72, HEX.accent5, 1)
-  box(0.7, 2.72, 3.0, 0.7, [{ text: '계산 모듈', options: { bold: true, breakLine: true } }, { text: '급여(주휴 · 야간) · 예정 vs 실제 · 요청 문구 · PDF · 확인 번호', options: { fontSize: 10, color: C.accent5 } }], '계산 상자')
+  box(0.7, 2.72, 3.0, 0.7, [{ text: '계산 모듈', options: { bold: true, breakLine: true } }, { text: '급여 · 요청 문구 · PDF · 확인 번호', options: { fontSize: 10, color: C.accent5 } }], '계산 상자')
   arrow(s, 2.2, 3.42, 2.2, 3.64, HEX.accent5, 1)
-  box(0.7, 3.64, 3.0, 0.6, [{ text: '저장', options: { bold: true, breakLine: true } }, { text: 'localStorage(기록 · 수정 이력) · IndexedDB(사진)', options: { fontSize: 10, color: C.accent5 } }], '저장 상자')
+  box(0.7, 3.64, 3.0, 0.6, [{ text: '저장', options: { bold: true, breakLine: true } }, { text: 'localStorage · IndexedDB', options: { fontSize: 10, color: C.accent5 } }], '저장 상자')
   s.addText('로그인 없음 · 근무 내용은 여기에만', { x: 0.7, y: 4.35, w: 3.0, h: 0.35, fontSize: 9.5, bold: true, color: C.accent2, margin: 0, isTextBox: true, align: 'center' })
   // 폰 → Supabase
   arrow(s, 3.95, 2.55, 5.55, 2.55, HEX.accent1, 1.75)
@@ -311,26 +311,26 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
   s.addText([
     { text: 'Supabase', options: { bold: true, color: C.text2, breakLine: true } },
     { text: 'stamps 표', options: { bold: true, breakLine: true } },
-    { text: '확인 번호 · 기록 번호 · 기기 번호 · 등록 시각', options: { fontSize: 10, color: C.accent5, breakLine: true } },
-    { text: '공개키로는 넣기 · 읽기만(RLS). 시각은 서버가 찍음', options: { fontSize: 10, color: C.accent5, breakLine: true } },
-    { text: '확인함: 수정 · 삭제 요청은 401로 거부, 2000년 시각을 보내도 서버 시각', options: { fontSize: 9.5, color: C.accent2, bold: true } },
-  ], { x: 5.68, y: 1.5, w: 1.9, h: 2.25, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 2 })
+    { text: '확인 번호 · 등록 시각', options: { fontSize: 11.5, color: C.accent5, breakLine: true } },
+    { text: '시각은 서버가 찍음', options: { fontSize: 11.5, color: C.accent5, breakLine: true } },
+    { text: '수정 · 삭제 안 됨', options: { fontSize: 11.5, color: C.accent2, bold: true } },
+  ], { x: 5.68, y: 1.5, w: 1.9, h: 2.25, fontSize: 12.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 2 })
   // 확인 페이지
   arrow(s, 6.62, 4.0, 6.62, 3.82, HEX.accent1, 1.25)
   s.addText('등록 시각 조회', { x: 6.72, y: 3.75, w: 1.0, h: 0.3, fontSize: 8.5, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
   s.addShape(S.roundRect, { x: 5.55, y: 4.0, w: 2.15, h: 0.85, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, rectRadius: 0.1, objectName: '확인 페이지 상자' })
   s.addText([
     { text: '확인 페이지 (verify.html)', options: { bold: true, color: C.text2, breakLine: true } },
-    { text: '누구나 확인 번호 → 등록 시각. 앱 데이터 없이 동작', options: { fontSize: 10, color: C.accent5 } },
+    { text: '누구나 번호로 등록 시각 확인', options: { fontSize: 10, color: C.accent5 } },
   ], { x: 5.68, y: 4.05, w: 1.9, h: 0.78, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   // 데이터 흐름
   s.addText('기록 하나가 남을 때', { x: 7.9, y: 1.4, w: 1.7, h: 0.3, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
-  const flow = ['출근 · 퇴근 버튼마다 확인 번호를 등록', '고치면 새 내용으로 다시 등록', '인터넷이 없으면 대기열, 연결되면 전송']
+  const flow = ['출근 · 퇴근마다 등록', '고치면 다시 등록', '인터넷이 없으면 나중에 전송']
   flow.forEach((f, i) => {
     circleNum(s, 7.9, 1.82 + i * 0.95, i + 1, { size: 0.26, fontSize: 9 })
     s.addText(f, { x: 8.22, y: 1.76 + i * 0.95, w: 1.35, h: 0.85, fontSize: 10, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   })
-  s.addNotes('왼쪽 폰 안에서 모든 계산이 끝나고, 서버로 가는 건 확인 번호뿐입니다. 기기 번호는 처음 기록을 등록할 때 앱이 만든 난수라 휴대전화 번호가 아닙니다. 앱이 쓰는 공개키로는 넣기와 읽기만 되고, 직접 요청을 보내 확인했습니다. 2000년 시각을 보내도 서버 시각으로 들어가고, 수정 · 삭제는 401로 거부됩니다. 다만 운영자 권한으로는 고칠 수 있어서, 지금 막는 건 "사용자가 나중에 고쳐 쓰기"까지입니다. 운영자까지 못 고치게 하는 외부 시점 확인은 비용 때문에 계획입니다. 오른쪽은 기록 하나가 남을 때의 흐름입니다. 증빙 묶음 PDF 7번 표에 기록별 확인 번호와 등록 시각이 들어갑니다. 배포는 GitHub main에 올리면 Actions가 Pages로 자동 배포합니다. 지금 답하고 계신 설문도 같은 서버의 survey 표로 가고, 권한 원칙이 같습니다.')
+  s.addNotes('상자를 풀면: 화면은 근무 기록 · 캘린더 · 급여 비교 · 정산 요청 · 설정, 계산 모듈은 급여(주휴 · 야간) · 예정 vs 실제 · 요청 문구 · PDF · 확인 번호, 저장은 localStorage(기록 · 수정 이력)와 IndexedDB(사진)입니다. stamps 표에는 확인 번호 · 기록 번호 · 무작위 기기 번호 · 등록 시각이 들어갑니다. 확인함: 공개키로 수정 · 삭제 요청을 보내면 401로 거부되고, 2000년 시각을 보내도 서버 시각으로 저장됩니다. 확인 페이지는 앱 데이터 없이 동작합니다. 왼쪽 폰 안에서 모든 계산이 끝나고, 서버로 가는 건 확인 번호뿐입니다. 기기 번호는 처음 기록을 등록할 때 앱이 만든 난수라 휴대전화 번호가 아닙니다. 앱이 쓰는 공개키로는 넣기와 읽기만 되고, 직접 요청을 보내 확인했습니다. 2000년 시각을 보내도 서버 시각으로 들어가고, 수정 · 삭제는 401로 거부됩니다. 다만 운영자 권한으로는 고칠 수 있어서, 지금 막는 건 "사용자가 나중에 고쳐 쓰기"까지입니다. 운영자까지 못 고치게 하는 외부 시점 확인은 비용 때문에 계획입니다. 오른쪽은 기록 하나가 남을 때의 흐름입니다. 증빙 묶음 PDF 7번 표에 기록별 확인 번호와 등록 시각이 들어갑니다. 배포는 GitHub main에 올리면 Actions가 Pages로 자동 배포합니다. 지금 답하고 계신 설문도 같은 서버의 survey 표로 가고, 권한 원칙이 같습니다.')
 }
 
 // ======================================================
@@ -415,9 +415,9 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
   })
   s.addText([
     { text: '계획 기준  ', options: { bold: true, color: C.text2 } },
-    { text: '9월 기획서 4개 → 10/13 포함 8 · 제외 6으로 고정      ', options: {} },
+    { text: '정의서 기능 8개      ', options: {} },
     { text: '% 기준  ', options: { bold: true, color: C.text2 } },
-    { text: '구현 · 폰 확인 · 사용자 검증 중 남은 일만큼 뺀 자체 평가', options: {} },
+    { text: '남은 일만큼 뺀 자체 평가', options: {} },
   ], { x: 0.5, y: 4.85, w: 9, h: 0.32, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   s.addNotes('시연 직후에 보여 줍니다. "방금 보신 것이 8개 중 이만큼"입니다. 100%는 쓰지 않았습니다. 계획 기준은 9월 기획서의 기능 4개에서 출발해, 10/13 MVP 기능 정의서에서 포함 8개 · 제외 6개(금액 자동 인식 · 푸시 알림 · AI 문구 · 광고 · 로그인 · 진정서)로 고정한 것입니다. %는 구현 + 실제 폰 확인 + 사용자 검증을 100으로 보고 남은 일만큼 뺀 자체 평가이고, 동작은 컴퓨터의 폰 크기 화면에서, 실제 폰은 설치까지 확인했습니다. 동그라미 세 칸은 컴퓨터 동작 · 실제 폰 · 사용자 검증이고, 지금은 모두 첫 칸만 찼습니다. 뒤 두 칸이 11월 일정입니다. 세 칸 중 첫 칸만 찼는데 왜 80~90%냐고 물으시면, %는 칸수가 아니라 남은 일의 크기로 어림한 것이고 11월 검증에서 큰 수정이 나오면 내려갈 수 있다고 답합니다. 이 장이 끝나면 손유호에게 넘깁니다.')
 }
@@ -450,11 +450,11 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
   })
   s.addText([
     { text: '타깃 규모(어림)  ', options: { bold: true, color: C.text2 } },
-    { text: '재적학생 307만 명 → 알바 경험 67~89% → 지금 알바 중 · 주 15시간 이상: 미상 (경험 기준 상한 약 210~270만 명)', options: { breakLine: true } },
+    { text: '재적학생 307만 명 → 알바 경험 67~89% → 상한 약 210~270만 명', options: { breakLine: true } },
     { text: '타이밍  ', options: { bold: true, color: C.text2 } },
-    { text: '2025.9 임금체불 근절 대책 · 2025.10.23 개정 근로기준법 시행. 체불 제재가 세졌고, 근거를 남긴 사람이 받아 내기 쉬워졌다', options: {} },
+    { text: '2025.9 근절 대책 · 2025.10.23 개정 근로기준법 시행', options: {} },
   ], { x: 0.5, y: 4.62, w: 9, h: 0.58, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 1 })
-  s.addNotes('손유호. 임금체불은 2년 연속 2조 원이고 30인 미만 사업장에 몰려 있습니다. 타깃 규모는 어림이라 "약"을 붙여 말하고, 없는 숫자(지금 알바 중, 주 15시간 이상)는 미상으로 둡니다. 재적학생은 교육부 2026 교육기본통계(대학원 포함), 알바 경험률은 알바몬 설문(1,193명, 여름방학 알바 88.9%, 2023)과 동대신문 설문(200명, 67.5%)이라 대푯값이 아닙니다. 근절 대책은 대지급금을 3개월분에서 6개월분으로 늘렸고, 개정법은 상습 체불 사업주에게 신용 제재를 겁니다. 체불 통계는 문제의 크기이지 알바 시장의 크기가 아닙니다. 알바생 몫은 이 통계에서 알 수 없어 미상으로 둡니다. "주 15시간 이상이 다수인지의 첫 조각은 지금 답하고 계신 설문에서 나오지만, 규모 추정이 아니라 메시지를 정하는 참고값입니다. 다음 순서에서 박명진이 말씀드립니다." 출처: 고용노동부 노동포털 임금체불 통계현황, 알바천국 설문, 교육부 교육기본통계.')
+  s.addNotes('손유호. 타깃 규모에서 지금 알바 중인 사람과 주 15시간 이상인 사람은 공식 통계가 없어 미상입니다. 상한 210~270만 명은 알바 경험 기준입니다. 타이밍: 2025년 9월 임금체불 근절 대책과 10월 23일 개정 근로기준법 시행으로 체불 제재가 세졌고, 근거를 남긴 사람이 받아 내기 쉬워졌습니다. 임금체불은 2년 연속 2조 원이고 30인 미만 사업장에 몰려 있습니다. 타깃 규모는 어림이라 "약"을 붙여 말하고, 없는 숫자(지금 알바 중, 주 15시간 이상)는 미상으로 둡니다. 재적학생은 교육부 2026 교육기본통계(대학원 포함), 알바 경험률은 알바몬 설문(1,193명, 여름방학 알바 88.9%, 2023)과 동대신문 설문(200명, 67.5%)이라 대푯값이 아닙니다. 근절 대책은 대지급금을 3개월분에서 6개월분으로 늘렸고, 개정법은 상습 체불 사업주에게 신용 제재를 겁니다. 체불 통계는 문제의 크기이지 알바 시장의 크기가 아닙니다. 알바생 몫은 이 통계에서 알 수 없어 미상으로 둡니다. "주 15시간 이상이 다수인지의 첫 조각은 지금 답하고 계신 설문에서 나오지만, 규모 추정이 아니라 메시지를 정하는 참고값입니다. 다음 순서에서 박명진이 말씀드립니다." 출처: 고용노동부 노동포털 임금체불 통계현황, 알바천국 설문, 교육부 교육기본통계.')
 }
 
 // 경쟁 포지션
