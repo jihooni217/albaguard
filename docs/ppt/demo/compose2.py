@@ -150,7 +150,7 @@ WHITE, SOFT = (255, 255, 255), (200, 204, 240)
 card(os.path.join(TMP, 'intro.png'), [
     ('알바가드', 120, True, WHITE, 160),
     ('못 받은 알바비, 기록으로 찾는 앱', 48, False, WHITE, 110),
-    ('시연 · 배포된 앱을 실제로 눌러 녹화 · 2026.10.26', 32, False, SOFT, 0),
+    ('시연 · 배포된 앱을 실제로 눌러 녹화', 32, False, SOFT, 0),
 ])
 card(os.path.join(TMP, 'outro.png'), [
     ('직접 확인해 보세요', 84, True, WHITE, 130),
