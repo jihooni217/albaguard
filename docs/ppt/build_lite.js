@@ -602,7 +602,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
     s.addText(jobs.map((j, k) => ({ text: j, options: { bullet: { indent: 12 }, breakLine: k < jobs.length - 1 } })), { x, y: 2.05, w: 2.6, h: 1.7, fontSize: 11.5, color: C.background1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 4 })
   })
   s.addText('각자 맡은 일은 오늘 발표한 장과 같음', { x: 0.6, y: 4.3, w: 8.8, h: 0.4, fontSize: 12, color: C.background2, margin: 0, isTextBox: true })
-  s.addNotes('다음은 팀원별 역할입니다. 앞으로 각자 맡을 일은 오늘 발표한 부분과 같습니다. 개발은 팀장 이지훈, 시장과 설문, 인터뷰 3명은 손유호, 그리고 인터뷰 2명과 갤럭시 테스트, 일정 관리, 보고서 편집은 제가 맡았습니다. 마무리는 이지훈 팀장이 하겠습니다.')
+  s.addNotes('다음은 팀원별 역할입니다. 보시는 것처럼 앞으로 맡을 일은 오늘 각자 발표한 부분과 같습니다. 이지훈 팀장은 개발, 손유호 팀원은 시장과 수익, 저는 검증과 일정을 맡습니다. 그럼 마무리는 이지훈 팀장이 하겠습니다.')
 }
 
 // 18장: 질의응답 대기 화면
