@@ -191,12 +191,12 @@ pres.addSection({ title: '② 문제 정의' })
   const mark = (v, note) => {
     const m = { O: ['O', HEX.accent2], X: ['X', HEX.accent3], D: ['△', HEX.accent5], '-': ['해당 없음', HEX.accent5] }[v]
     const runs = [{ text: m[0], options: { bold: true, color: m[1], fontSize: v === '-' ? 8.5 : 12 } }]
-    if (note) runs.push({ text: ' ' + note, options: { fontSize: 8, color: HEX.accent5 } })
+    if (note) runs.push({ text: ' ' + note, options: { fontSize: 9, color: HEX.accent5 } })
     return { text: runs, options: { align: 'center' } }
   }
   const ours = (v, note) => { const c = mark(v, note); c.options.fill = { color: HEX.lt2 }; return c }
   const tbl = [
-    [hdr('', { align: 'left' }), hdr('메모 · 카톡'), hdr('하우머치'), hdr('기그'), hdr('알바천국 · 알바몬 계산기'), hdr('진정24 · 노동포털'), hdr('알바가드', { color: HEX.dk2 })],
+    [hdr('', { align: 'left' }), hdr('메모 · 카톡'), hdr('하우머치'), hdr('기그'), hdr('알바천국 ·\n알바몬 계산기'), hdr('진정24 ·\n노동포털'), hdr('알바가드', { color: HEX.dk2 })],
     [name('사장 없이 혼자 기록'), mark('O'), mark('O'), mark('X', '사장 가입'), mark('X'), mark('-'), ours('O')],
     [name('예상 급여 계산'), mark('X'), mark('O'), mark('O'), mark('O', '일회성'), mark('X'), ours('O', '주휴 · 야간')],
     [name('실제 입금액과 비교 · 차액'), mark('X'), mark('X'), mark('X'), mark('X'), mark('X'), ours('O')],
@@ -317,7 +317,7 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
   ], { x: 5.68, y: 1.5, w: 1.9, h: 2.25, fontSize: 12.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 2 })
   // 확인 페이지
   arrow(s, 6.62, 4.0, 6.62, 3.82, HEX.accent1, 1.25)
-  s.addText('등록 시각 조회', { x: 6.72, y: 3.75, w: 1.0, h: 0.3, fontSize: 8.5, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
+  s.addText('등록 시각 조회', { x: 6.72, y: 3.75, w: 1.1, h: 0.3, fontSize: 9, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
   s.addShape(S.roundRect, { x: 5.55, y: 4.0, w: 2.15, h: 0.85, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, rectRadius: 0.1, objectName: '확인 페이지 상자' })
   s.addText([
     { text: '확인 페이지 (verify.html)', options: { bold: true, color: C.text2, breakLine: true } },
