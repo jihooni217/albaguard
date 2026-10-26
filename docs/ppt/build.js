@@ -460,31 +460,45 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
 // 경쟁 포지션
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑥ 시장 분석·비즈니스 모델' })
-  head(s, '⑥ 시장 분석 · 경쟁사', '경쟁 서비스 위치')
-  const ox = 0.9, oy = 1.45, W = 5.2, H = 3.3
+  head(s, '⑥ 시장 분석 · 경쟁사', '혼자 쓰면서 대응까지 가는 서비스는 알바가드뿐')
+  const ox = 1.0, oy = 1.42, W = 5.3, H = 3.35
   s.addShape(S.rect, { x: ox, y: oy, w: W, h: H, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, objectName: '포지션 바탕' })
+  s.addShape(S.rect, { x: ox, y: oy, w: W / 2, h: H / 2, fill: { color: C.accent1, transparency: 88 }, line: { color: C.accent1, width: 0 }, objectName: '알바가드 칸' })
   s.addShape(S.line, { x: ox + W / 2, y: oy, w: 0, h: H, line: { color: HEX.accent6, width: 1 } })
   s.addShape(S.line, { x: ox, y: oy + H / 2, w: W, h: 0, line: { color: HEX.accent6, width: 1 } })
-  s.addText('혼자 씀', { x: ox + 0.1, y: oy + H / 2 - 0.3, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
-  s.addText('사장 가입 · 증거가 먼저', { x: ox + W - 2.0, y: oy + H / 2 - 0.3, w: 1.9, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'right' })
-  s.addText('대응까지', { x: ox + W / 2 + 0.08, y: oy + 0.05, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
-  s.addText('계산까지', { x: ox + W / 2 + 0.08, y: oy + H - 0.35, w: 1.2, h: 0.3, fontSize: 9, bold: true, color: C.accent5, margin: 0, isTextBox: true })
-  const chip = (x, y, t, sub, main, w = 1.75) => {
-    const h = sub ? 0.62 : 0.42
+  // 축 이름은 바깥에
+  s.addText('← 혼자 씀', { x: ox, y: oy + H + 0.06, w: 2.4, h: 0.28, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true })
+  s.addText('사장 가입 · 증거가 먼저 →', { x: ox + W - 2.6, y: oy + H + 0.06, w: 2.6, h: 0.28, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'right' })
+  s.addText('대응까지', { x: ox - 0.95, y: oy + 0.62, w: 1.6, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true, rotate: 270, align: 'center' })
+  s.addText('계산까지', { x: ox - 0.95, y: oy + H - 0.92, w: 1.6, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true, rotate: 270, align: 'center' })
+  const chip = (x, y, t, sub, main, w = 1.9) => {
+    const h = 0.64
     s.addShape(S.roundRect, { x, y, w, h, fill: { color: main ? C.accent1 : C.background1 }, line: { color: main ? C.accent1 : HEX.accent6, width: 1 }, rectRadius: 0.08, objectName: `${t} 칩` })
-    const runs = [{ text: t, options: { bold: true, breakLine: !!sub } }]
-    if (sub) runs.push({ text: sub, options: { fontSize: 8.5, color: main ? C.background2 : C.accent5 } })
-    s.addText(runs, { x: x + 0.08, y, w: w - 0.16, h, fontSize: 10.5, color: main ? C.background1 : C.text1, margin: 0, isTextBox: true, valign: 'middle', align: 'center' })
+    s.addText([{ text: t, options: { bold: true, breakLine: true } }, { text: sub, options: { fontSize: 9, color: main ? C.background2 : C.accent5 } }],
+      { x: x + 0.08, y, w: w - 0.16, h, fontSize: main ? 12 : 10.5, color: main ? C.background1 : C.text1, margin: 0, isTextBox: true, valign: 'middle', align: 'center' })
   }
-  chip(ox + 0.25, oy + 2.45, '알바천국 · 알바몬 계산기', '일회성 계산, 기록 없음', false, 2.05)
-  chip(ox + 0.6, oy + 1.8, '하우머치', '혼자 기록, 예상 급여까지')
-  chip(ox + 3.1, oy + 1.95, '기그', '사장 연동 필요, 기록 · 계약서')
-  chip(ox + 3.1, oy + 0.3, '진정24 · 노동포털', '증거가 있어야 시작')
-  chip(ox + 0.55, oy + 0.45, '알바가드', '기록 → 비교 → 요청 → 증빙', true)
-  s.addText('혼자 대응까지 가는 건 알바가드뿐', { x: 6.5, y: 1.5, w: 3, h: 0.6, fontSize: 13, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'top' })
+  chip(ox + 0.35, oy + 0.42, '알바가드', '기록 → 비교 → 요청 → 증빙', true, 1.95)
+  chip(ox + 3.05, oy + 0.42, '진정24 · 노동포털', '증거가 있어야 시작')
+  chip(ox + 0.35, oy + 1.85, '하우머치', '혼자 기록, 예상 급여까지', false, 1.95)
+  chip(ox + 3.05, oy + 2.2, '기그', '사장 연동 필요')
+  chip(ox + 0.3, oy + 2.58, '알바천국 · 알바몬 계산기', '일회성 계산, 기록 없음', false, 2.05)
+  // 하우머치 → 알바가드: 따라올 수 있는 길
+  s.addShape(S.line, { x: ox + 1.32, y: oy + 1.1, w: 0, h: 0.72, flipV: true, line: { color: HEX.accent2, width: 1.5, dashType: 'dash', endArrowType: 'triangle' }, objectName: '따라올 길' })
+  s.addText('비교 기능을 넣으면?', { x: ox + 1.42, y: oy + 1.28, w: 1.3, h: 0.3, fontSize: 9, bold: true, color: C.accent2, margin: 0, isTextBox: true })
+  // 오른쪽: 가장 가까운 경쟁자
+  const rx = 6.85
+  s.addText('가장 가까운 경쟁자', { x: rx, y: 1.45, w: 2.8, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true })
+  s.addText('하우머치', { x: rx, y: 1.75, w: 2.8, h: 0.5, fontSize: 20, bold: true, color: C.text1, margin: 0, isTextBox: true })
+  s.addShape(S.line, { x: rx, y: 2.35, w: 2.7, h: 0, line: { color: HEX.accent6, width: 1 } })
   s.addText([
-    { text: '계산기는 계산에서 멈추고,\n기그는 사장이 가입해야,\n진정24는 증거가 있어야 시작함', options: {} },
-  ], { x: 6.5, y: 2.15, w: 3, h: 1.4, fontSize: 12, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
+    { text: '혼자 기록하고 예상 급여까지 보여 줌', options: { breakLine: true } },
+    { text: '실제 받은 돈 비교 칸만 넣으면'+'\n'+'따라올 수 있음', options: { breakLine: true } },
+  ], { x: rx, y: 2.45, w: 2.75, h: 1.0, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'top', paraSpaceAfter: 6 })
+  s.addShape(S.rect, { x: rx, y: 3.55, w: 0.06, h: 0.8, fill: { color: C.accent1 }, line: { color: C.accent1, width: 0 } })
+  s.addText([
+    { text: '그래서 키우는 것', options: { bold: true, color: C.accent1, breakLine: true } },
+    { text: '따라 하기 어려운 기록 등록'+'\n'+'(확인 번호 · 등록 시각)', options: {} },
+  ], { x: rx + 0.18, y: 3.55, w: 2.6, h: 0.9, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addNotes('다음은 경쟁 서비스들의 위치입니다. 가로는 사장님 없이 혼자 쓸 수 있는지, 세로는 계산에서 멈추는지 대응까지 가는지입니다. 앞에서 본 서비스들을 이 위에 놓아 보면, 혼자 쓰면서 대응까지 가는 왼쪽 위 칸에는 알바가드만 있습니다. 가장 가까운 건 혼자 기록할 수 있는 하우머치인데, 하우머치가 비교 기능을 넣으면 따라올 수 있습니다. 그래서 저희는 따라 하기 어려운 기록 등록 쪽을 더 키우려고 합니다.')
 }
 
