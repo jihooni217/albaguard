@@ -222,7 +222,7 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
   head(s, '③ 솔루션 · 서비스 개요   ·   문제 1 · 2는 비교로, 문제 3은 요청으로. 기록이 그 바탕', '기록 → 비교 → 요청, 신고 이전 단계를 채움')
   const steps = [
     { n: 1, t: '기록', d: '출근 · 퇴근 버튼 하나. 고치면 수정 전후와 사유가 남고, 삭제도 흔적이 남음', img: '1-home.jpg' },
-    { n: 2, t: '비교', d: '기본급 + 주휴 + 야간수당으로 "받았어야 할 돈"을 계산하고, 실제 받은 돈과의 차액 표시', img: '3-pay.jpg' },
+    { n: 2, t: '비교', d: '"받았어야 할 돈"(기본급 · 주휴 · 야간)과 실제 받은 돈의 차액 표시', img: '3-pay.jpg' },
     { n: 3, t: '요청', d: '정중한 메시지 → 내용증명 초안 → 진정 절차 안내(1350 · 노동포털). 대화로 먼저 해결', img: '4-request.jpg' },
   ]
   const ph = 2.55, pw = ph * 750 / 1624
@@ -288,7 +288,7 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
 // 시스템 구성도
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '④ SW 기술 아키텍처' })
-  head(s, '④ SW 기술 아키텍처 · 시스템 구성도와 데이터 흐름', '근무 내용은 폰 안에, 서버에는 확인 번호와 등록 시각만')
+  head(s, '④ SW 기술 아키텍처 · 시스템 구성도와 데이터 흐름', '근무 내용은 폰 안에, 서버에는 번호와 등록 시각만')
   // 폰
   s.addShape(S.roundRect, { x: 0.5, y: 1.4, w: 3.4, h: 3.45, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, rectRadius: 0.12, objectName: '폰 영역' })
   s.addText('폰 (PWA, 홈 화면에 추가)', { x: 0.7, y: 1.5, w: 3.0, h: 0.3, fontSize: 11, bold: true, color: C.text2, margin: 0, isTextBox: true })
@@ -325,7 +325,7 @@ pres.addSection({ title: '④ SW 기술 아키텍처' })
   ], { x: 5.68, y: 4.05, w: 1.9, h: 0.78, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   // 데이터 흐름
   s.addText('기록 하나가 남을 때', { x: 7.9, y: 1.4, w: 1.7, h: 0.3, fontSize: 10.5, bold: true, color: C.text2, margin: 0, isTextBox: true })
-  const flow = ['출근 · 퇴근마다 등록', '고치면 다시 등록', '인터넷이 없으면 나중에 전송']
+  const flow = ['출근 · 퇴근마다 등록', '고치면 다시 등록', '끊기면 나중에 전송']
   flow.forEach((f, i) => {
     circleNum(s, 7.9, 1.82 + i * 0.95, i + 1, { size: 0.26, fontSize: 9 })
     s.addText(f, { x: 8.22, y: 1.76 + i * 0.95, w: 1.35, h: 0.85, fontSize: 10, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
@@ -344,8 +344,8 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
   const shots = [
     ['2-calendar.jpg', '캘린더', '예정과 다른 날만 글자로 (연장 · 대타 · 단축)'],
     ['10-settings.jpg', '설정', '기록 등록 건수 · 무엇이 서버로 가는지 · 백업'],
-    ['8-evidence.jpg', '증빙 묶음 PDF', '근무 기록 · 수정 이력 · 계산 · 입금 · 사진 · 등록 확인'],
-    ['9-verify.jpg', '확인 페이지', '확인 번호를 넣으면 서버 등록 시각이 나옴'],
+    ['8-evidence.jpg', '증빙 묶음 PDF', '기록 · 수정 이력 · 계산\n입금 · 사진 · 등록 확인'],
+    ['9-verify.jpg', '확인 페이지', '확인 번호 → 서버 등록 시각'],
   ]
   const ph = 3.0, pw = ph * 750 / 1624, gap = (9 - 4 * pw) / 3
   shots.forEach(([img, t, d], i) => {
