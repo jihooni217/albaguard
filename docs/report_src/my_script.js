@@ -36,7 +36,8 @@ for (const p of parts) {
   children.push(new Paragraph({ children: [new TextRun({ text: p.h.replace(' · 이지훈', ''), font: FONT, size: 28, bold: true, color: NAVY })],
     spacing: { before: 320, after: 140 }, keepNext: true,
     border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: 'D6D4CC', space: 4 } } }))
-  p.lines.forEach((l) => children.push(new Paragraph({ children: runs(l), spacing: { after: 100, line: 400 } })))
+  // 한 쪽 대본이 쪽 중간에 잘리지 않게 묶는다 (아이패드로 보면서 발표)
+  p.lines.forEach((l, k) => children.push(new Paragraph({ children: runs(l), spacing: { after: 100, line: 400 }, keepLines: true, keepNext: k < p.lines.length - 1 })))
 }
 
 const doc = new Document({
