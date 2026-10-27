@@ -71,13 +71,13 @@ function rows(slide, x, y, w, items, { rowH = 0.5, labelSize = 12.5, valueSize =
     line(slide, x, yy + rowH, w)
   })
 }
-// 폰 화면: 영상과 같은 진짜 폰 모양 그림(3배 해상도, docs/screenshots/phone). h는 앱 화면 높이 기준
-const PHONE_R = 1441 / 2893   // 그림자 포함 그림 비율
+// 폰 화면: 영상과 같은 진짜 폰 모양 그림(3배 해상도, docs/screenshots/phone, 여백 없이 자른 것). h는 폰 그림 높이
+const PHONE_R = 1240 / 2673
 function phone(slide, img, x, y, h, name) {
-  const ow = h * (750 / 1624), H = h * 1.1, w = H * PHONE_R
+  const w = h * PHONE_R
   const file = path.join(PROJ, 'docs/screenshots/phone', path.basename(img).replace('.jpg', '.png'))
-  slide.addImage({ path: file, x: x + ow / 2 - w / 2, y: y - (H - h) / 2, w, h: H, objectName: name })
-  return ow
+  slide.addImage({ path: file, x, y, w, h, objectName: name })
+  return w
 }
 function card(slide, x, y, w, h, name) {
   slide.addShape(S.roundRect, { x, y, w, h, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, rectRadius: 0.1, objectName: name })
@@ -227,13 +227,13 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
     { n: 2, t: '비교', d: '"받았어야 할 돈"(기본급 · 주휴 · 야간)과\n실제 받은 돈의 차액 표시', img: '3-pay.jpg' },
     { n: 3, t: '요청', d: '정중한 메시지 → 내용증명 → 진정 안내\n1350 · 노동포털 연결. 대화로 먼저 해결', img: '4-request.jpg' },
   ]
-  const ph = 2.4, pw = ph * 750 / 1624
+  const ph = 2.78, pw = ph * 1240 / 2673
   steps.forEach((st, i) => {
     const x = 0.5 + i * 3.05, w = 2.9
     circleNum(s, x, 1.38, st.n)
     s.addText(st.t, { x: x + 0.45, y: 1.33, w: 1.5, h: 0.45, fontSize: 18, bold: true, color: C.text2, margin: 0, isTextBox: true, valign: 'middle' })
-    body(s, st.d, x, 1.85, w, 0.75, { fontSize: 10.5 })
-    phone(s, SHOT(st.img), x + (w - pw) / 2, 2.62, ph, `${st.t} 화면`)
+    body(s, st.d, x, 1.82, w, 0.62, { fontSize: 10.5 })
+    phone(s, SHOT(st.img), x + (w - pw) / 2, 2.45, ph, `${st.t} 화면`)
     if (i < 2) arrow(s, x + w + 0.02, 1.55, x + w + 0.13, 1.55, HEX.accent6, 2)
   })
   s.addNotes('그래서 저희는 기록, 비교, 요청 세 단계를 앱 하나로 연결했습니다. 출근과 퇴근은 버튼 하나로 기록하고, 나중에 그 시각을 고치면 원래 시각과 고친 이유가 함께 남습니다. 그다음 받았어야 할 돈과 실제로 받은 돈의 차이를 보여 주고, 덜 받았다면 정중한 메시지부터 내용증명 초안, 진정 절차 안내까지 단계별로 도와줍니다. 사장님 연동이나 로그인은 필요 없고, 근무 내용은 사용자 폰 안에만 저장됩니다.')
@@ -349,12 +349,12 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
     ['8-evidence.jpg', '증빙 묶음 PDF', '기록 · 수정 이력 · 계산\n입금 · 사진 · 등록 확인'],
     ['9-verify.jpg', '확인 페이지', '확인 번호 → 서버 등록 시각'],
   ]
-  const ph = 3.0, pw = ph * 750 / 1624, gap = (9 - 4 * pw) / 3
+  const ph = 3.3, pw = ph * 1240 / 2673, gap = (9 - 4 * pw) / 3
   shots.forEach(([img, t, d], i) => {
     const x = 0.5 + i * (pw + gap)
-    phone(s, SHOT(img), x, 1.4, ph, t)
-    s.addText(t, { x: x - 0.2, y: 4.5, w: pw + 0.4, h: 0.3, fontSize: 11.5, bold: true, color: C.text2, margin: 0, isTextBox: true, align: 'center' })
-    s.addText(d, { x: x - 0.25, y: 4.78, w: pw + 0.5, h: 0.42, fontSize: 9, color: C.accent5, margin: 0, isTextBox: true, align: 'center', valign: 'top' })
+    phone(s, SHOT(img), x, 1.28, ph, t)
+    s.addText(t, { x: x - 0.2, y: 4.6, w: pw + 0.4, h: 0.3, fontSize: 11.5, bold: true, color: C.text2, margin: 0, isTextBox: true, align: 'center' })
+    s.addText(d, { x: x - 0.25, y: 4.88, w: pw + 0.5, h: 0.4, fontSize: 9, color: C.accent5, margin: 0, isTextBox: true, align: 'center', valign: 'top' })
   })
   s.addNotes('실제 앱 화면입니다. 이 중 캘린더는 영상에 나오지 않아서 먼저 말씀드리면, 예정과 다르게 일한 날, 예를 들어 연장이나 대타를 글자로 따로 표시합니다. 나머지 설정, 증빙 묶음 PDF, 확인 페이지는 잠시 뒤 영상에서 실제로 쓰는 모습으로 보여 드리겠습니다.')
 }
