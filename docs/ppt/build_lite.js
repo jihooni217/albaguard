@@ -39,6 +39,16 @@ pres.defineSlideMaster({
   ],
   slideNumber: { x: 9.0, y: 5.22, w: 0.5, h: 0.28, fontSize: 9, color: C.accent5, align: 'right' },
 })
+// 빈 제목 상자가 남지 않게, 제목을 쓰지 않는 장(표지·시연 영상)은 자리 없는 레이아웃으로
+pres.defineSlideMaster({
+  title: 'LIGHT_PLAIN',
+  background: { color: HEX.lt1 },
+  objects: [
+    { text: { text: '알바가드 · SW기술창업 중간발표 · 4조', options: { x: 0.5, y: 5.22, w: 5, h: 0.28, fontSize: 9, color: C.accent5, margin: 0 } } },
+  ],
+  slideNumber: { x: 9.0, y: 5.22, w: 0.5, h: 0.28, fontSize: 9, color: C.accent5, align: 'right' },
+})
+pres.defineSlideMaster({ title: 'DARK_PLAIN', background: { color: HEX.dk2 }, objects: [] })
 pres.defineSlideMaster({
   title: 'DARK',
   background: { color: HEX.dk2 },
@@ -102,7 +112,7 @@ function arrow(slide, x1, y1, x2, y2, color = HEX.accent1, width = 1.5) {
 // ======================================================
 pres.addSection({ title: '① 표지·팀 소개' })
 {
-  const s = pres.addSlide({ masterName: 'DARK', sectionTitle: '① 표지·팀 소개' })
+  const s = pres.addSlide({ masterName: 'DARK_PLAIN', sectionTitle: '① 표지·팀 소개' })
   s.addImage({ path: path.join(PROJ, 'public/icon-512.png'), x: 0.6, y: 0.6, w: 0.8, h: 0.8, objectName: '앱 아이콘' })
   s.addText('알바가드', { x: 0.6, y: 1.5, w: 6, h: 1.0, fontSize: 54, bold: true, color: C.background1, margin: 0, isTextBox: true })
   s.addText('못 받은 알바비, 기록으로 찾는 앱', { x: 0.6, y: 2.55, w: 6, h: 0.45, fontSize: 20, color: C.background2, margin: 0, isTextBox: true })
@@ -376,7 +386,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 
 // 시연 영상 (한 장 전체)
 {
-  const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
+  const s = pres.addSlide({ masterName: 'LIGHT_PLAIN', sectionTitle: '⑤ 개발 현황·MVP 시연' })
   s.addMedia({ type: 'video', path: path.join(PROJ, 'docs/08_시연_영상.mp4'), cover: 'image/png;base64,' + fs.readFileSync(path.join(PROJ, 'docs/report_src/demo_cover.png')).toString('base64'), x: 0, y: 0, w: 10, h: 5.625, objectName: '시연 영상' })
   s.addNotes('(재생 전) 마지막 장면에 나오는 등록 시각을 잘 봐 주세요. 지금도 서버에 그대로 남아 있는 값입니다.\n(영상은 멈추지 않고 끝까지 틉니다)\n(영상이 끝나면) 이렇게 출근 기록부터 사장님께 보낼 메시지, 확인 페이지까지 앱 하나로 모두 할 수 있습니다.')
 }
