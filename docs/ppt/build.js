@@ -507,7 +507,7 @@ pres.addSection({ title: '⑥ 시장 분석·비즈니스 모델' })
 // 비즈니스 모델
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑥ 시장 분석·비즈니스 모델' })
-  head(s, '⑥ 비즈니스 모델 · 유저 확보 전략', '핵심 화면은 무료, 수익은 게임 화면에서')
+  head(s, '⑥ 비즈니스 모델 · 유저 확보 전략', '핵심 화면은 무료, 수익은 게임 화면 광고(가설)')
   s.addText('출퇴근은 일하는 날마다, 돈 확인은 급여일에 한 번. 그 사이 열 이유로 게임 = 광고 자리', { x: 0.5, y: 1.28, w: 9, h: 0.32, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
   rows(s, 0.5, 1.65, 9, [
     { label: '핵심 화면: 기록 · 비교 · 요청 · 증빙', value: '무료 · 광고 없음', color: C.accent2, bold: true },
@@ -555,7 +555,7 @@ pres.addSection({ title: '⑦ 초기 시장 검증' })
 pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑧ 향후 계획·팀 역량' })
-  head(s, '⑧ 향후 계획 · 간트 차트', '기말(12/15)까지 일정')
+  head(s, '⑧ 향후 계획 · 간트 차트', '기말(12/15)까지 세 단계: 검증 → 반영 · 폰 확인 → 마무리')
   const weeks = ['10/27', '11/3', '11/10', '11/17', '11/24', '12/1', '12/8']
   const tasks = [
     ['설문 30명 수집 · 집계', '손유호', 0, 2],
