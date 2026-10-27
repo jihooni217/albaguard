@@ -580,8 +580,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
   ms.forEach(([col, t], i) => {
     const x = gx + col * cw
     s.addShape(S.diamond, { x: x - 0.07, y: my, w: 0.14, h: 0.14, fill: { color: C.accent3 }, line: { color: C.accent3, width: 0 }, objectName: `마일스톤 ${i + 1}` })
-    const edge = col === weeks.length  // 오른쪽 끝(기말)은 글자가 판 밖으로 나가지 않게 오른쪽 맞춤
-    s.addText(t, { x: edge ? x - 1.43 : x - 0.75, y: my + 0.14 + (i % 2) * 0.19, w: 1.5, h: 0.2, fontSize: 9, color: C.accent3, bold: true, margin: 0, isTextBox: true, align: edge ? 'right' : 'center', valign: 'top' })
+    s.addText(t, { x: x - 0.75, y: my + 0.14 + (i % 2) * 0.19, w: 1.5, h: 0.2, fontSize: 9, color: C.accent3, bold: true, margin: 0, isTextBox: true, align: 'center', valign: 'top' })
   })
   s.addText('마일스톤', { x: lx, y: my - 0.05, w: 1.5, h: 0.25, fontSize: 9.5, bold: true, color: C.accent3, margin: 0, isTextBox: true })
   weeks.forEach((w, i) => s.addText(w, { x: gx + i * cw, y: hy, w: cw, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'center' }))
