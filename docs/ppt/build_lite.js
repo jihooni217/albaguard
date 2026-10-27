@@ -585,6 +585,8 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
   })
   s.addText('마일스톤', { x: lx, y: my - 0.05, w: 1.5, h: 0.25, fontSize: 9.5, bold: true, color: C.accent3, margin: 0, isTextBox: true })
   weeks.forEach((w, i) => s.addText(w, { x: gx + i * cw, y: hy, w: cw, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'center' }))
+  // 끝 날짜(기말 12/8)도 맨 위 줄에. 오른쪽 끝 ◆ 위, 12/1과 겹치지 않게 조금 오른쪽 (사용자가 PowerPoint에서 잡은 자리)
+  s.addText('12/8', { x: 9.2019, y: hy, w: cw, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'center' })
   s.addText('담당', { x: ax, y: hy, w: aw, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true })
   line(s, lx, hy + 0.32, 9)
   tasks.forEach(([t, who, a, b], i) => {
