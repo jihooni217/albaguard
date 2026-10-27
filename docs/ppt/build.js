@@ -566,7 +566,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑧ 향후 계획·팀 역량' })
   head(s, '⑧ 향후 계획 · 간트 차트', '기말(12/8)까지 세 단계: 검증 → 반영 · 폰 확인 → 마무리')
-  const weeks = ['10/27', '11/3', '11/10', '11/17', '11/24', '12/1', '12/8']
+  const weeks = ['10/27', '11/3', '11/10', '11/17', '11/24', '12/1']  // 기말 12/8은 마지막 주가 끝나는 오른쪽 끝
   const tasks = [
     ['설문 30명 수집 · 집계', '손유호', 0, 2],
     ['직접 인터뷰 5명', '손유호 3 · 박명진 2', 1, 1],
@@ -574,17 +574,18 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
     ['실제 폰 검증 (아이폰 · 갤럭시)', '이지훈 · 박명진', 2, 4],
     ['기록 등록 보강', '이지훈', 3, 4],
     ['광고 실험 또는 새 게임 (11/23 결정)', '손유호 · 이지훈', 4, 4],
-    ['최종 보고서 · 발표 준비', '전원', 5, 6],
+    ['최종 보고서 · 발표 준비', '전원', 5, 5],
   ]
-  const lx = 0.5, lw = 2.95, ax = 3.5, aw = 1.2, gx = 4.75, cw = (9.5 - 4.75) / 7, hy = 1.35, rh = 0.38
+  const lx = 0.5, lw = 2.95, ax = 3.5, aw = 1.2, gx = 4.75, cw = (9.5 - 4.75) / weeks.length, hy = 1.35, rh = 0.38
   // 마일스톤
   const ms = [[2, '11/9 인터뷰 · 설문 1차'], [4, '11/23 반영 배포'], [5, '11/30 폰 검증 · 동결'], [6, '12/8 기말']]
   const my = hy + 0.42
-  s.addShape(S.line, { x: gx, y: my + 0.07, w: 7 * cw, h: 0, line: { color: HEX.accent6, width: 0.5, dashType: 'dash' } })
+  s.addShape(S.line, { x: gx, y: my + 0.07, w: weeks.length * cw, h: 0, line: { color: HEX.accent6, width: 0.5, dashType: 'dash' } })
   ms.forEach(([col, t], i) => {
     const x = gx + col * cw
     s.addShape(S.diamond, { x: x - 0.07, y: my, w: 0.14, h: 0.14, fill: { color: C.accent3 }, line: { color: C.accent3, width: 0 }, objectName: `마일스톤 ${i + 1}` })
-    s.addText(t, { x: x - 0.75, y: my + 0.14 + (i % 2) * 0.19, w: 1.5, h: 0.2, fontSize: 9, color: C.accent3, bold: true, margin: 0, isTextBox: true, align: 'center', valign: 'top' })
+    const edge = col === weeks.length  // 오른쪽 끝(기말)은 글자가 판 밖으로 나가지 않게 오른쪽 맞춤
+    s.addText(t, { x: edge ? x - 1.43 : x - 0.75, y: my + 0.14 + (i % 2) * 0.19, w: 1.5, h: 0.2, fontSize: 9, color: C.accent3, bold: true, margin: 0, isTextBox: true, align: edge ? 'right' : 'center', valign: 'top' })
   })
   s.addText('마일스톤', { x: lx, y: my - 0.05, w: 1.5, h: 0.25, fontSize: 9.5, bold: true, color: C.accent3, margin: 0, isTextBox: true })
   weeks.forEach((w, i) => s.addText(w, { x: gx + i * cw, y: hy, w: cw, h: 0.3, fontSize: 10, bold: true, color: C.accent5, margin: 0, isTextBox: true, align: 'center' }))
@@ -594,7 +595,7 @@ pres.addSection({ title: '⑧ 향후 계획·팀 역량' })
     const y = hy + 0.95 + i * rh
     s.addText(t, { x: lx, y, w: lw, h: rh, fontSize: 11, color: C.text1, margin: 0, isTextBox: true, valign: 'middle' })
     s.addText(who, { x: ax, y, w: aw, h: rh, fontSize: 9.5, color: C.accent5, margin: 0, isTextBox: true, valign: 'middle' })
-    for (let k = 0; k < 7; k++) s.addShape(S.line, { x: gx + k * cw, y, w: 0, h: rh, line: { color: HEX.accent6, width: 0.5 } })
+    for (let k = 0; k < weeks.length; k++) s.addShape(S.line, { x: gx + k * cw, y, w: 0, h: rh, line: { color: HEX.accent6, width: 0.5 } })
     s.addShape(S.roundRect, { x: gx + a * cw + 0.05, y: y + 0.12, w: (b - a + 1) * cw - 0.1, h: rh - 0.24, fill: { color: i === 6 ? C.accent2 : C.accent1 }, line: { color: i === 6 ? C.accent2 : C.accent1, width: 0 }, rectRadius: 0.06, objectName: `${t} 막대` })
     line(s, lx, y + rh, 9)
   })
