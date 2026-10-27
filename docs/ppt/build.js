@@ -260,7 +260,7 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
   s.addText('한계', { x: 6.65, y: 1.55, w: 2.6, h: 0.35, fontSize: 11, bold: true, color: C.accent3, margin: 0, isTextBox: true })
   s.addText('비교 기능은 하우머치가 칸 하나로 따라올 수 있음. 3번은 기록 구조 자체라 따라오기 어려움', { x: 6.65, y: 1.95, w: 2.6, h: 1.1, fontSize: 12, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addText([
-    { text: '통장 내역 · 메시지와 함께 내야 힘이 생김', options: { bold: true, color: C.text2 } },
+    { text: '통장 내역 · 메시지와 함께 내야 설득력이 생김', options: { bold: true, color: C.text2 } },
   ], { x: 6.4, y: 2.9, w: 3.1, h: 0.7, fontSize: 10.5, color: C.text1, margin: 0, isTextBox: true, valign: 'top' })
   s.addNotes('저희 차별점은 크게 세 가지입니다. 첫 번째로, 기그와 다르게 사장님 가입 없이 혼자 쓸 수 있습니다. 두 번째로, 실제로 받은 돈과 비교해서 요청 문구와 증빙까지 이어집니다. 세 번째로, 기록할 때마다 확인 번호와 서버 등록 시각이 남습니다. 사유 없이는 기록을 고칠 수 없고, 지워도 흔적이 남고, 고치면 다시 등록됩니다. 이 부분은 다른 앱이 쉽게 따라 하기 어렵다고 생각합니다. (멈춤) 한마디로, 다른 앱은 얼마를 받아야 하는지에서 멈추고, 알바가드는 덜 받았을 때 어떻게 받아내는지까지 갑니다. 물론 한계도 있습니다. 비교 기능 자체는 다른 앱도 충분히 따라올 수 있습니다. 그리고 이 기록이 법적 효력을 보장하지는 않습니다. 통장 내역이나 메시지와 같이 내야 설득력이 생기고, 최종적인 판단은 근로감독관과 법원이 합니다.')
 }
