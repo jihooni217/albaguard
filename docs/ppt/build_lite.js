@@ -338,7 +338,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 // UI 화면
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
-  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.27 기준. 모두 배포 주소에서 바로 열림', '네 화면: 캘린더, 설정, 증빙 묶음 PDF, 확인 페이지')
+  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.27 기준', '모두 실제로 동작하는 화면: 지금 배포 주소에서 바로 열림')
   const shots = [
     ['2-calendar.jpg', '캘린더', '예정과 다른 날만 글자로\n(연장 · 대타 · 단축)'],
     ['10-settings.jpg', '설정', '기록 등록 건수 · 백업\n무엇이 서버로 가는지'],
