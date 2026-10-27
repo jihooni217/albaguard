@@ -302,9 +302,9 @@ children.push(Bul([run('급여 비교: ', { bold: true }), run('"받았어야 �
 children.push(...Phones([[SHOT('4-request.jpg'), '정산 요청'], [SHOT('8-evidence.jpg'), '증빙 묶음 PDF'], [SHOT('9-verify.jpg'), '확인 페이지'], [SHOT('10-settings.jpg'), '설정']], 135))
 children.push(Bul([run('정산 요청: ', { bold: true }), run('덜 받은 돈과 근거, 1~3단계. 메시지를 복사하고 보낸 날짜를 남길 수 있음. 14일이 지나도 덜 받은 상태면 다음 단계를 권함')]))
 children.push(Bul([run('증빙 묶음 PDF: ', { bold: true }), run('근무 기록, 수정 이력, 계산 근거, 입금 내역, 첨부 사진, 정산 요청 이력, 기록 등록 확인. 맨 아래에 법적 효력을 보장하지 않는다는 안내가 인쇄됨')]))
-children.push(Bul([run('확인 페이지: ', { bold: true }), run('확인 번호를 넣으면 서버 등록 시각이 나옴. 앱 데이터 없이 동작하는 별도 페이지라 제3자도 열 수 있음. 캡처의 번호 0cc0cecf6cb2954c는 2026년 10월 25일에 실제로 등록된 것이고, https://jihooni217.github.io/albaguard/verify.html?h=0cc0cecf6cb2954c 에서 같은 결과 확인 가능')]))
+children.push(Bul([run('확인 페이지: ', { bold: true }), run('확인 번호를 넣으면 서버 등록 시각이 나옴. 앱 데이터 없이 동작하는 별도 페이지라 제3자도 열 수 있음. 캡처의 번호 289ad066f1632c51는 2026년 10월 27일에 실제로 등록된 것이고, https://jihooni217.github.io/albaguard/verify.html?h=289ad066f1632c51 에서 같은 결과 확인 가능')]))
 children.push(Bul([run('설정: ', { bold: true }), run('근무지, 화면 밝기, 쉬는 틈 게임 보이기, 기록 등록 건수와 켜기·끄기, 무엇이 서버로 가는지, 백업 파일 만들기·불러오기')]))
-children.push(Note('디자인은 타깃 사용자(급여 계산 앱을 쓰는 친구)가 시안 12장 중 고른 통장 구성을 적용. 잉크 남색은 "기록을 잉크로 남긴다"라는 뜻. 화면 캡처는 2026년 10월 25일 기준 예시 데이터이고, 모두 배포 주소에서 바로 열 수 있음'))
+children.push(Note('디자인은 타깃 사용자(급여 계산 앱을 쓰는 친구)가 시안 12장 중 고른 통장 구성을 적용. 잉크 남색은 "기록을 잉크로 남긴다"라는 뜻. 화면 캡처는 2026년 10월 27일 기준 예시 데이터이고, 모두 배포 주소에서 바로 열 수 있음'))
 
 // 4. 비즈니스 모델 및 시장성
 children.push(H1('4. 비즈니스 모델 및 시장성'))

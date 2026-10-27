@@ -71,11 +71,13 @@ function rows(slide, x, y, w, items, { rowH = 0.5, labelSize = 12.5, valueSize =
     line(slide, x, yy + rowH, w)
   })
 }
+// 폰 화면: 영상과 같은 진짜 폰 모양 그림(3배 해상도, docs/screenshots/phone). h는 앱 화면 높이 기준
+const PHONE_R = 1441 / 2893   // 그림자 포함 그림 비율
 function phone(slide, img, x, y, h, name) {
-  const w = h * (750 / 1624)
-  slide.addShape(S.roundRect, { x: x - 0.05, y: y - 0.05, w: w + 0.1, h: h + 0.1, fill: { color: HEX.dk1 }, line: { color: HEX.dk1, width: 0 }, rectRadius: 0.16, objectName: `${name} 틀` })
-  slide.addImage({ path: img, x, y, w, h, objectName: name })
-  return w
+  const ow = h * (750 / 1624), H = h * 1.1, w = H * PHONE_R
+  const file = path.join(PROJ, 'docs/screenshots/phone', path.basename(img).replace('.jpg', '.png'))
+  slide.addImage({ path: file, x: x + ow / 2 - w / 2, y: y - (H - h) / 2, w, h: H, objectName: name })
+  return ow
 }
 function card(slide, x, y, w, h, name) {
   slide.addShape(S.roundRect, { x, y, w, h, fill: { color: C.background2 }, line: { color: C.background2, width: 0 }, rectRadius: 0.1, objectName: name })
@@ -221,7 +223,7 @@ pres.addSection({ title: '③ 솔루션·핵심 가치' })
     { n: 2, t: '비교', d: '"받았어야 할 돈"(기본급 · 주휴 · 야간)과\n실제 받은 돈의 차액 표시', img: '3-pay.jpg' },
     { n: 3, t: '요청', d: '정중한 메시지 → 내용증명 → 진정 안내\n1350 · 노동포털 연결. 대화로 먼저 해결', img: '4-request.jpg' },
   ]
-  const ph = 2.55, pw = ph * 750 / 1624
+  const ph = 2.4, pw = ph * 750 / 1624
   steps.forEach((st, i) => {
     const x = 0.5 + i * 3.05, w = 2.9
     circleNum(s, x, 1.38, st.n)
@@ -336,7 +338,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 // UI 화면
 {
   const s = pres.addSlide({ masterName: 'LIGHT', sectionTitle: '⑤ 개발 현황·MVP 시연' })
-  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.25 기준. 모두 배포 주소에서 바로 열림', '네 화면: 캘린더, 설정, 증빙 묶음 PDF, 확인 페이지')
+  head(s, '⑤ 개발 현황 · MVP 화면   ·   예시 데이터, 2026.10.27 기준. 모두 배포 주소에서 바로 열림', '네 화면: 캘린더, 설정, 증빙 묶음 PDF, 확인 페이지')
   const shots = [
     ['2-calendar.jpg', '캘린더', '예정과 다른 날만 글자로\n(연장 · 대타 · 단축)'],
     ['10-settings.jpg', '설정', '기록 등록 건수 · 백업\n무엇이 서버로 가는지'],
