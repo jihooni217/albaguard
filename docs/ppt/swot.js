@@ -130,7 +130,7 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9 } = {}) {
     { text: 'O3  ', options: { bold: true, color: C.accent1 } }, { text: '신고 전 단계(확인 → 비교 → 요청)가 비어 있음: 미달을 겪어도 절반은 대응하지 않음', options: { breakLine: true } },
     { text: 'O4  ', options: { bold: true, color: C.accent1 } }, { text: '최저임금이 오를수록 빠뜨린 수당도 커짐: 주 15시간 주휴수당 한 주 2026년 30,960원 → 2027년 32,100원', options: { breakLine: true } },
     { text: 'O5  ', options: { bold: true, color: C.accent1 } }, { text: '무료 공공 창구(1350·노동포털·서울시 노동권리보호관)로 증빙을 들고 상담받을 수 있음' },
-  ], { x: 0.5, y: 3.45, w: 9, h: 1.12, fontSize: 11.5, paraSpaceAfter: 5 })
+  ], { x: 0.5, y: 3.45, w: 9, h: 1.12, fontSize: 12, paraSpaceAfter: 5 })
   txt(s, '74.9%는 2026년부터 바뀐 집계 기준(중복 제외). 체불 법정형 5년 이하 징역·5천만 원 이하 벌금(2026.10.8 시행)', { x: 0.5, y: 4.68, w: 9, h: 0.3, fontSize: 10, color: C.accent5 })
 }
 
