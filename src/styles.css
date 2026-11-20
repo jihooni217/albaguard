@@ -1872,6 +1872,23 @@ a.btn {
   font-weight: 700;
 }
 
+/* 정산 요청 1단계: 메시지 길이 고르기, 고칠 수 있다는 안내, 복사·보내기 두 버튼 */
+.rq-style {
+  margin: 4px 0 8px;
+}
+
+.rq-edit-hint {
+  margin: 8px 0 4px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.rq-send {
+  display: grid;
+
+  gap: 8px;
+}
+
 /* 보냈어요: 보낸 날짜를 남기는 줄 */
 .rq-sent-btn {
   display: block;

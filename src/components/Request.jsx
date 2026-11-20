@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FOLLOW_UP_DAYS, buildFacts, copyText, daysSince, makeMessage, shortfalls, targetKey } from '../lib/request'
+import { FOLLOW_UP_DAYS, buildFacts, copyText, daysSince, makeMessage, shareText, shortfalls, targetKey } from '../lib/request'
 import { dateKey, fmtDateTime, nowMinute } from '../lib/time'
 import Icon from './Icon.jsx'
 
@@ -89,12 +89,16 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         key={`${current.key}-1`}
         step={1}
         title="사장님께 메시지 보내기"
-        desc="먼저 대화로 확인을 부탁하는 정중한 메시지예요. 보내기 전에 숫자를 한 번 확인하고, 내 말투에 맞게 고쳐도 돼요."
+        desc="먼저 대화로 확인을 부탁하는 메시지예요. 길이를 고르고, 숫자를 한 번 확인한 뒤 내 말투로 고쳐서 보내세요."
         button="메시지 만들기"
         defaultOpen
+        styles={[
+          ['short', '짧게 묻기'],
+          ['full', '근거까지 자세히'],
+        ]}
         saved={saved[1]}
         onSave={(value) => actions.saveRequest(current.key, 1, value)}
-        generate={() => makeMessage(1, current)}
+        generate={(style) => makeMessage(1, current, style)}
       />
 
       <Stage
@@ -175,22 +179,40 @@ function Fold({ step, title, when, defaultOpen = false, children }) {
 }
 
 // 문구를 만들고, 고치고, 복사하는 한 단계
-function Stage({ step, title, when, desc, button, saved, onSave, generate, defaultOpen }) {
+function Stage({ step, title, when, desc, button, saved, onSave, generate, defaultOpen, styles }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [copied, setCopied] = useState(false)
+  const [shared, setShared] = useState('')
+  // 길이: 새로 만들 때는 짧게, 예전에 만들어 둔 문구(길이 표시 없음)는 자세히로 본다
+  const [picked, setPicked] = useState('short')
+  const style = styles ? (saved ? (saved.style ?? 'full') : picked) : undefined
 
-  async function run() {
+  async function run(nextStyle = style) {
     setLoading(true)
     setError('')
     setNotice('')
-    const result = await generate()
+    const result = await generate(nextStyle)
     setLoading(false)
     if (result.error) return setError(result.error)
     setNotice(result.notice ?? '')
     // 다시 만들어도 보낸 날짜는 남겨 둔다
-    onSave({ ...saved, text: result.text, source: result.source })
+    onSave({ ...saved, text: result.text, source: result.source, style: nextStyle, edited: false })
+  }
+
+  function pickStyle(next) {
+    if (next === style) return
+    setPicked(next)
+    if (!saved) return
+    if (saved.edited && !window.confirm('고친 내용이 지워지고 새 문구로 바뀌어요. 바꿀까요?')) return
+    run(next)
+  }
+
+  async function share() {
+    const result = await shareText(saved.text)
+    setShared(result === 'copied' ? '복사했어요. 메시지 앱에 붙여 넣으세요' : result === 'fail' ? '보내지 못했어요. 복사하기를 써 주세요' : '')
+    if (result === 'copied' || result === 'fail') setTimeout(() => setShared(''), 3000)
   }
 
   async function copy() {
@@ -202,18 +224,35 @@ function Stage({ step, title, when, desc, button, saved, onSave, generate, defau
     <Fold step={step} title={title} when={when} defaultOpen={defaultOpen || Boolean(saved)}>
       <p className="muted">{desc}</p>
 
+      {styles && (
+        <div className="set-seg rq-style" role="radiogroup" aria-label="메시지 길이">
+          {styles.map(([value, label]) => (
+            <button key={value} role="radio" aria-checked={style === value} className={style === value ? 'active' : ''} onClick={() => pickStyle(value)}>
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {saved && (
         <>
           {notice && <p className="notice stage-notice">{notice} 대신 기본 문구로 만들었어요.</p>}
+          <p className="rq-edit-hint">눌러서 바로 고칠 수 있어요</p>
           <textarea
             className="input message"
             value={saved.text}
-            onChange={(e) => onSave({ ...saved, text: e.target.value })}
-            rows={Math.min(18, saved.text.split('\n').length + 3)}
+            onChange={(e) => onSave({ ...saved, text: e.target.value, edited: true })}
+            rows={Math.min(18, saved.text.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / 22)), 0) + 1)}
           />
-          <button className="btn primary block" onClick={copy}>
-            {copied ? '복사했어요 ✓' : '복사하기'}
-          </button>
+          <div className="rq-send">
+            <button className="btn primary block" onClick={share}>
+              메시지 앱으로 보내기
+            </button>
+            <button className="btn block" onClick={copy}>
+              {copied ? '복사했어요 ✓' : '복사하기'}
+            </button>
+          </div>
+          {shared && <p className="rq-edit-hint">{shared}</p>}
           {saved.sentAt ? (
             <p className="rq-sent">
               <b>{fmtDateTime(saved.sentAt)}에 보냈어요</b> · {daysSince(saved.sentAt)}일 지남
@@ -232,9 +271,15 @@ function Stage({ step, title, when, desc, button, saved, onSave, generate, defau
 
       {error && <p className="error stage-notice">{error}</p>}
 
-      <button className={saved ? 'btn block' : 'btn primary block'} onClick={run} disabled={loading}>
-        {loading ? '만드는 중…' : saved ? '다시 만들기' : button}
-      </button>
+      {saved ? (
+        <button className="rq-sent-undo" onClick={() => run()} disabled={loading}>
+          {loading ? '만드는 중…' : '고친 내용 지우고 처음 문구로'}
+        </button>
+      ) : (
+        <button className="btn primary block" onClick={() => run()} disabled={loading}>
+          {loading ? '만드는 중…' : button}
+        </button>
+      )}
     </Fold>
   )
 }

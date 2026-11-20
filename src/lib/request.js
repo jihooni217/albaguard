@@ -252,8 +252,36 @@ export function buildTemplate(c) {
   ].join('\n')
 }
 
+// 짧게 묻는 문구 (1단계). 차액과 확인 부탁만 담고, 날짜별 기록은 물어보면 보낸다
+export function buildShortTemplate(c) {
+  const what = c.combined ? `${c.months.length}개월 동안 받은 금액과 합쳐서` : `${c.month}월에 받은 금액과`
+  return [
+    `사장님 안녕하세요. ${c.combined ? '그동안 받은' : `${c.month}월`} 급여 관련해서 여쭤볼 게 있어서 연락드려요.`,
+    '',
+    `제가 적어 둔 근무 시간으로 계산해 보니 ${what} ${won(c.diff)} 정도 차이가 나서요. 제가 계산을 잘 몰라서 틀렸을 수도 있어서, 한번 확인 부탁드려도 될까요?`,
+    '',
+    '필요하시면 날짜별 근무 시간도 정리해서 보내 드릴게요.',
+  ].join('\n')
+}
+
+// 폰의 공유 창(카톡·문자 등)으로 문구를 넘긴다. 공유 창이 없으면 복사한다
+// 결과: 'shared' | 'copied' | 'cancel' | 'fail'
+export async function shareText(text) {
+  if (navigator.share) {
+    try {
+      await navigator.share({ text })
+      return 'shared'
+    } catch (error) {
+      if (error.name === 'AbortError') return 'cancel'
+    }
+  }
+  return (await copyText(text)) ? 'copied' : 'fail'
+}
+
 // 문구를 만든다. API 키가 있으면 Claude가 쓰고, 없거나 실패하면 기본 문구를 쓴다
-export async function makeMessage(stage, c) {
+// style이 'short'면 항상 짧은 기본 문구
+export async function makeMessage(stage, c, style) {
+  if (stage === 1 && style === 'short') return { text: buildShortTemplate(c), source: 'template' }
   const result = await requestMessage(stage, buildFacts(c))
   if (result.text) return { text: result.text, source: 'ai' }
   const text = stage === 1 ? buildTemplate(c) : buildCertifiedTemplate(c)
