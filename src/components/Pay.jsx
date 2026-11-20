@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { baseText, calcMonth, paymentKey, tax33, wageOn, ymOf } from '../lib/pay'
 import { minWage } from '../lib/최저임금'
+import { onlyDigits, withCommas } from '../lib/money'
 import { dateKey, fmtDuration } from '../lib/time'
 import Attachments from './Attachments.jsx'
 import Icon from './Icon.jsx'
@@ -203,10 +204,10 @@ function PaymentCompare({ monthLabel, expected, saved, onSave, onRequest }) {
             <span className="pay-ask-title">실제로 얼마 받았나요?</span>
             <span className="pay-ask-input">
               <input
-                type="number"
+                type="text"
                 inputMode="numeric"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                value={withCommas(amount)}
+                onChange={(e) => setAmount(onlyDigits(e.target.value))}
                 placeholder="통장에 들어온 금액"
               />
               <b>원</b>

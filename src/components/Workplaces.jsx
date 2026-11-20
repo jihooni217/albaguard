@@ -3,6 +3,7 @@ import { nextWageHistory, wageText } from '../lib/pay'
 import { minWage } from '../lib/최저임금'
 import { getTheme, setTheme } from '../lib/theme'
 import { newId } from '../lib/id'
+import { onlyDigits, withCommas } from '../lib/money'
 import { dateKey } from '../lib/time'
 import { AddForm } from './Attachments.jsx'
 import Backup from './Backup.jsx'
@@ -270,10 +271,10 @@ function WorkplaceForm({ workplace, canDelete, actions, onClose, onCreated }) {
         시급 (원)
         <input
           className="input"
-          type="number"
+          type="text"
           inputMode="numeric"
-          value={wage}
-          onChange={(e) => setWage(e.target.value)}
+          value={withCommas(wage)}
+          onChange={(e) => setWage(onlyDigits(e.target.value))}
         />
       </label>
       {Number(wage) > 0 && Number(wage) < legal.wage && (
