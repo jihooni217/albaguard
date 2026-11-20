@@ -93,6 +93,7 @@ export default function Workplaces({ data, actions }) {
       <p className="muted pay-note">게임 기록은 증빙 묶음이나 정산 요청 문서에 들어가지 않아요.</p>
 
       <h2 className="rq-title">기록 등록</h2>
+      <p className="muted pay-note">"나중에 지어낸 기록 아니에요?"라는 말에 답하기 위한 기능이에요.</p>
       <div className="pay-rows">
         <div className="rq-row">
           <span>
@@ -104,6 +105,31 @@ export default function Workplaces({ data, actions }) {
           </span>
           <span className="set-value">{data.stampOff ? '꺼짐' : '켜짐'}</span>
         </div>
+        <div className="rq-row explain">
+          <span>
+            언제 남기나요
+            <small>출근, 퇴근, 기록을 고칠 때마다 자동으로 남겨요.</small>
+          </span>
+        </div>
+        <div className="rq-row explain">
+          <span>
+            확인 번호가 뭔가요
+            <small>기록 내용으로 만든 번호예요. 내용이 한 글자라도 바뀌면 번호가 달라져서, 그때 적은 그대로인지 알 수 있어요.</small>
+          </span>
+        </div>
+        <div className="rq-row explain">
+          <span>
+            서버로 가는 것
+            <small>확인 번호와 등록 시각뿐이에요. 근무지 이름, 출퇴근 시각, 금액은 폰 밖으로 나가지 않아요.</small>
+          </span>
+        </div>
+        <button className="rq-row link" onClick={() => window.open('./verify.html', '_blank', 'noopener')}>
+          <span>
+            내 기록 맞춰 보기
+            <small>확인 페이지에서 백업 파일로 확인</small>
+          </span>
+          <Icon name="chevronRight" size={18} />
+        </button>
         <button
           className="rq-row link"
           onClick={() => {
@@ -121,9 +147,7 @@ export default function Workplaces({ data, actions }) {
         </button>
       </div>
       <p className="muted pay-note">
-        기록을 남기거나 고칠 때마다 서버에 확인 번호와 등록 시각을 남겨요. 확인 번호는 기록 내용으로 만든 번호예요. 내용이
-        조금이라도 바뀌면 번호가 완전히 달라져서, 나중에 "그때 기록한 그대로다"를 보여 줄 수 있어요. 근무지 이름, 출퇴근 시각,
-        금액은 서버로 가지 않아요. 인터넷이 없을 때 남긴 기록은 연결되면 보내요.{' '}
+        인터넷이 없을 때 남긴 기록은 연결되면 보내요.{' '}
         <a href="./privacy.html" target="_blank" rel="noreferrer">개인정보 처리방침</a>
       </p>
 

@@ -1620,6 +1620,16 @@ a.btn {
   text-align: left;
 }
 
+/* 설명 글이 두 줄 넘게 들어가는 줄 */
+.rq-row.explain {
+  padding: 10px 4px;
+}
+
+.rq-row.explain small {
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
 .rq-row b {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
