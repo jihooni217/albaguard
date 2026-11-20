@@ -33,11 +33,27 @@ export function clockInPayload(active) {
   return { id: active.id, workplaceId: active.workplaceId, start: active.start, stage: 'clockIn' }
 }
 
-// 내용을 SHA-256 지문(16진수 64자)으로
-export async function fingerprint(payload) {
-  const text = JSON.stringify(payload, Object.keys(payload).sort())
+async function sha256(text) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+// 안쪽 항목까지 이름순으로 늘어놓는다(같은 내용이면 항상 같은 글이 되게)
+function canon(v) {
+  if (Array.isArray(v)) return v.map(canon)
+  if (v && typeof v === 'object') return Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])]))
+  return v
+}
+
+// 내용을 SHA-256 지문(16진수 64자)으로. 수정 이력의 사유·시점·전후 시각까지 모두 들어간다
+// public/verify.html에 같은 계산이 있다. 여기를 고치면 거기도 고친다
+export async function fingerprint(payload) {
+  return sha256(JSON.stringify(canon(payload)))
+}
+
+// 2026.11.20 전 방식. 수정 이력은 횟수만 반영됐다(사유·시점은 빠짐). 예전에 등록한 번호를 맞춰 볼 때만 쓴다
+export async function fingerprintV1(payload) {
+  return sha256(JSON.stringify(payload, Object.keys(payload).sort()))
 }
 
 // 서버에 지문을 등록한다. 결과: { id, at } (at은 서버가 찍은 시각)

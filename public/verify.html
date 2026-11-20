@@ -23,6 +23,11 @@
   dl { margin: 0; font-size: 14px; }
   dt { color: #5d636d; margin-top: 10px; }
   dd { margin: 2px 0 0; word-break: break-all; font-variant-numeric: tabular-nums; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 12px; }
+  td { padding: 9px 0; border-top: 1px solid #dcd9d0; vertical-align: top; }
+  td small { display: block; color: #5d636d; margin-top: 2px; }
+  .yes { color: #0f7a55; font-weight: 700; }
+  .none { color: #c2331c; font-weight: 700; }
   .note { font-size: 12.5px; color: #8b9099; line-height: 1.6; margin-top: 28px; }
 </style>
 </head>
@@ -34,6 +39,12 @@
   <input id="h" placeholder="예: 3f9a1c0b7e2d4a65" autocomplete="off" spellcheck="false">
   <button id="go">확인하기</button>
   <div id="out"></div>
+
+  <h1 style="margin-top:40px;font-size:18px">기록 내용과 맞춰 보기</h1>
+  <p class="sub">알바가드 설정에서 만든 <b>백업 파일</b>을 고르면, 파일 안의 기록 내용으로 확인 번호를 다시 만들어 서버에 등록된 번호와 같은지 봅니다. 파일은 이 화면 안에서만 읽고 서버로 보내지 않습니다.</p>
+  <label for="f">백업 파일 (알바가드_백업_날짜.json)</label>
+  <input id="f" type="file" accept=".json,application/json">
+  <div id="out2"></div>
   <p class="note">
     확인 번호는 기록 내용으로 만든 번호로, 내용이 조금이라도 바뀌면 완전히 달라집니다. 서버에는 확인 번호, 등록 시각, 기록 번호, 무작위로 만든 기기 번호만 저장되며, 근무지·시각·금액 같은 내용은 저장되지 않습니다.
     등록 시각은 서버가 찍은 것이고 등록된 줄은 앱에서 고치거나 지울 수 없습니다(서버 운영자 권한으로는 가능). 이 확인은 "그 내용이 그 시각에 존재했고 그 뒤 바뀌지 않았다"는 것을 보여 줄 뿐,
@@ -70,6 +81,68 @@
   }
   document.getElementById('go').onclick = check
   input.onkeydown = (e) => { if (e.key === 'Enter') check() }
+  // ---- 기록 내용과 맞춰 보기 (앱의 src/lib/stamp.js와 같은 계산) ----
+  const out2 = document.getElementById('out2')
+  const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  const sha = async (text) => {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
+  }
+  const canon = (v) => Array.isArray(v) ? v.map(canon)
+    : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])])) : v
+  const payloadOf = (r) => ({
+    id: r.id, workplaceId: r.workplaceId, start: r.start, end: r.end ?? null, source: r.source ?? null,
+    addReason: r.addReason ?? null, createdAt: r.createdAt ?? null, deleted: r.deleted ?? false, history: r.history ?? [],
+  })
+  const hm = (iso) => { const d = new Date(iso); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` }
+  const day = (iso) => { const d = new Date(iso); return `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}` }
+  async function compare(file) {
+    out2.innerHTML = '<div class="result"><h2>맞춰 보는 중…</h2></div>'
+    let data
+    try {
+      const p = JSON.parse(await file.text())
+      data = p && p.data
+      if (!p || p.app !== 'albaguard' || !data || !Array.isArray(data.records)) throw new Error('not')
+    } catch (e) {
+      out2.innerHTML = '<div class="result no"><h2>알바가드 백업 파일이 아니에요</h2></div>'
+      return
+    }
+    try {
+      const names = Object.fromEntries((data.workplaces || []).map((w) => [w.id, w.name]))
+      const rows = []
+      for (const r of data.records) {
+        const pl = payloadOf(r)
+        // 새 방식(수정 사유·시점까지 포함)과 2026.11.20 전 방식(수정은 횟수만) 둘 다 만들어 본다
+        rows.push({ r, h2: await sha(JSON.stringify(canon(pl))), h1: await sha(JSON.stringify(pl, Object.keys(pl).sort())) })
+      }
+      const all = [...new Set(rows.flatMap((x) => [x.h2, x.h1]))]
+      const found = {}
+      for (let i = 0; i < all.length; i += 40) {
+        const res = await fetch(`${URL_}/rest/v1/stamps?hash=in.(${all.slice(i, i + 40).join(',')})&select=hash,created_at`, { headers: { apikey: KEY, Authorization: `Bearer ${KEY}` } })
+        if (!res.ok) throw new Error('server')
+        for (const row of await res.json()) found[row.hash] = row.created_at
+      }
+      rows.sort((a, b) => new Date(b.r.start) - new Date(a.r.start))
+      let okCount = 0
+      const body = rows.map(({ r, h2, h1 }) => {
+        const hit = found[h2] ? h2 : found[h1] ? h1 : null
+        if (hit) okCount++
+        const old = hit && hit !== h2
+        const what = `${day(r.start)} ${hm(r.start)}~${r.end ? hm(r.end) : ''}${r.deleted ? ' (삭제됨)' : ''}<small>${esc(names[r.workplaceId] || '')}${(r.history || []).length ? ` · 수정 ${(r.history || []).length}번` : ''}</small>`
+        const res = hit
+          ? `<span class="yes">등록된 내용과 같음</span><small>등록 ${fmt(found[hit]).replace(/ \(.*/, '')} · 확인 번호 ${hit.slice(0, 16)}${old ? ' · 예전 방식 번호라 수정은 횟수만 확인됨' : ''}</small>`
+          : '<span class="none">같은 번호가 서버에 없음</span>'
+        return `<tr><td>${what}</td><td style="padding-left:12px">${res}</td></tr>`
+      }).join('')
+      out2.innerHTML = `<div class="result ${okCount ? 'ok' : 'no'}"><h2>기록 ${rows.length}건 중 ${okCount}건이 등록된 내용과 같습니다</h2>
+        <p class="sub" style="margin:0">"같음"은 파일 안의 지금 내용이 그 등록 시각 뒤로 바뀌지 않았다는 뜻입니다. "서버에 없음"은 등록 뒤 내용이 달라졌거나, 등록을 꺼 두었거나, 아직 보내지 못했거나, 예시 데이터인 경우입니다.</p>
+        <table>${body}</table></div>`
+    } catch (e) {
+      out2.innerHTML = '<div class="result no"><h2>맞춰 보지 못했어요</h2><p class="sub" style="margin:0">인터넷 연결을 확인하고 잠시 뒤 다시 시도해 주세요.</p></div>'
+    }
+  }
+  document.getElementById('f').onchange = (e) => { if (e.target.files[0]) compare(e.target.files[0]) }
+
   const fromUrl = new URLSearchParams(location.search).get('h')
   if (fromUrl) { input.value = fromUrl; check() }
 </script>
