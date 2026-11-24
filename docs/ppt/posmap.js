@@ -70,8 +70,8 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
   const s = pres.addSlide({ masterName: 'LIGHT' })
   head(s, '축을 고른 기준', '급여를 어디까지 다루는지, 혼자 시작할 수 있는지로 나눔')
   ledger(s, 1.3, [
-    { id: '가로', t: '급여를 어디까지 다루나: 기록·계산 → 받은 돈과 비교 → 요청 → 신고', d: 'STP에서 나눈 세그먼트(총액만 봄 → 기록·계산만 해 봄 → 알지만 말 못 함 → 신고까지 감)와 같은 순서' },
-    { id: '세로', t: '혼자 바로 시작할 수 있나, 사장님 가입이나 근거가 먼저 필요한가', d: '타깃은 근로계약서가 없거나 사장님 협조를 구하기 어려운 대학생 알바' },
+    { id: '가로', t: '급여를 어디까지 다루나: 기록·계산 → 받은 돈과 비교 → 요청 → 신고', d: 'STP 세그먼트(A 총액만 봄 → D 신고까지 감)와 같은 순서. 설문 쓸모 1위가 받은 돈과 비교(15명 중 8명)' },
+    { id: '세로', t: '혼자 바로 시작할 수 있나, 시작 전에 조건이 있나(사장님 가입, 근거 모으기)', d: '타깃은 근로계약서가 없거나 사장님 협조를 구하기 어려운 대학생 알바' },
     { id: '대상', t: '메모장·카톡, 알바천국·알바몬 계산기, 하우머치, 기그, 진정24·노동포털', d: 'STP와 SWOT에서 비교한 서비스 그대로' },
     { id: '근거', t: '각 앱 상세 페이지와 리뷰(2026.9, 11.24 다시 확인), 진정24 사이트(2026.10.27 확인)', d: '위치는 숫자로 잰 것이 아니라 기능이 있는지 없는지로 놓은 우리 판단' },
   ], { rowH: 0.82, idW: 1.15 })
@@ -83,13 +83,13 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
   head(s, '포지셔닝 맵', '혼자 쓰면서 받은 돈과 비교하고 요청까지 가는 자리가 비어 있음')
   const L = 1.35, R = 9.4, T = 1.38, B = 4.6, W = R - L, MID = (T + B) / 2, CW = W / 4
   // 세로축 이름
-  txt(s, '혼자\n바로 시작', { x: 0.4, y: T + 0.45, w: 0.9, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
-  txt(s, '사장님 가입 ·\n근거가 먼저', { x: 0.4, y: MID + 0.45, w: 0.95, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
+  txt(s, '조건 없이\n바로 시작', { x: 0.4, y: T + 0.45, w: 0.9, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
+  txt(s, '시작 전\n조건 있음', { x: 0.4, y: MID + 0.45, w: 0.95, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
   // 틀과 칸
   s.addShape(S.rect, { x: L, y: T, w: W, h: B - T, fill: { color: HEX.lt1 }, line: { color: HEX.accent6, width: 0.75 } })
   s.addShape(S.rect, { x: L + CW, y: T, w: CW * 2, h: MID - T, fill: { color: HEX.lt2 }, line: { color: HEX.accent6, width: 0.75 } })
   line(s, L, MID, W, HEX.dk2, 1.25)
-  for (let i = 1; i < 4; i++) s.addShape(S.line, { x: L + CW * i, y: T, w: 0, h: B - T, line: { color: HEX.accent6, width: 0.75, dashType: 'dash' } })
+  for (let i = 1; i < 4; i++) s.addShape(S.line, { x: L + CW * i, y: i === 2 ? MID : T, w: 0, h: i === 2 ? B - MID : B - T, line: { color: HEX.accent6, width: 0.75, dashType: 'dash' } })
   // 가로축 단계 이름
   ;['기록 · 계산', '받은 돈과 비교', '요청', '신고'].forEach((t, i) => {
     txt(s, t, { x: L + CW * i, y: B + 0.07, w: CW, h: 0.25, fontSize: 10.5, bold: true, color: i === 1 || i === 2 ? C.accent1 : C.accent5, align: 'center' })
@@ -103,11 +103,13 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
   dot(L + 0.2, T + 0.3, '하우머치', '기록 + 예상 급여')
   dot(L + 0.2, T + 0.82, '알바천국 · 알바몬', '일회성 계산기')
   dot(L + 0.2, T + 1.32, '메모장 · 카톡', '시간만 적음')
-  dot(L + 0.2, MID + 0.45, '기그', '사장님 가입 뒤 기록')
-  dot(L + CW * 3 + 0.2, MID + 0.45, '진정24 · 노동포털', '근거를 모은 뒤 감')
+  dot(L + 0.2, MID + 0.45, '기그', '사장님이 가입해야 기록')
+  dot(L + CW * 3 + 0.2, MID + 0.45, '진정24 · 노동포털', '근거를 모아야 신고')
   // 알바가드
-  s.addShape(S.roundRect, { x: L + CW + 0.15, y: T + 0.42, w: CW * 2 - 0.3, h: 0.72, rectRadius: 0.08, fill: { color: HEX.dk2 }, line: { color: HEX.dk2, width: 0 } })
-  txt(s, [{ text: '알바가드', options: { bold: true, fontSize: 15, color: C.background1, breakLine: true } }, { text: '받은 돈과 비교 → 요청 메시지 · 증빙 PDF', options: { fontSize: 10.5, color: C.background1 } }], { x: L + CW + 0.3, y: T + 0.5, w: CW * 2 - 0.6, h: 0.6 })
+  line(s, L + CW + 0.15, T + 0.42, CW * 2 - 0.3, HEX.dk2, 2)
+  line(s, L + CW + 0.15, T + 1.14, CW * 2 - 0.3, HEX.dk2, 2)
+  s.addShape(S.ellipse, { x: L + CW + 0.27, y: T + 0.56, w: 0.2, h: 0.2, fill: { color: HEX.dk2 }, line: { color: HEX.dk2, width: 0 } })
+  txt(s, [{ text: '알바가드', options: { bold: true, fontSize: 15, color: C.accent1, breakLine: true } }, { text: '받은 돈과 비교 → 요청 메시지 · 증빙 PDF', options: { fontSize: 10.5, color: C.text1 } }], { x: L + CW + 0.55, y: T + 0.48, w: CW * 2 - 0.8, h: 0.6 })
   txt(s, '이 칸에 있는 서비스는 확인한 것 중 알바가드뿐', { x: L + CW + 0.15, y: T + 1.22, w: CW * 2 - 0.3, h: 0.25, fontSize: 10, color: C.accent1, bold: true })
   txt(s, '신고는 하지 않고\n증빙 PDF로 연결만', { x: L + CW * 3 + 0.2, y: T + 0.55, w: CW - 0.3, h: 0.45, fontSize: 10, color: C.accent5 })
 }
