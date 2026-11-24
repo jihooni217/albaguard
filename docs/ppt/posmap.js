@@ -19,6 +19,7 @@ const pres = new pptxgen()
 pres.layout = 'LAYOUT_16x9'
 pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFace }
 pres.author = '4조'
+pres.company = '4조'
 pres.title = '포지셔닝 맵 - 알바가드'
 const C = pres.SchemeColor
 const S = pres.ShapeType
@@ -70,7 +71,7 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
   head(s, '축을 고른 기준', '급여를 어디까지 다루는지, 혼자 시작할 수 있는지로 나눔')
   ledger(s, 1.3, [
     { id: '가로', t: '급여를 어디까지 다루나: 기록·계산 → 받은 돈과 비교 → 요청 → 신고', d: 'STP에서 나눈 세그먼트(총액만 봄 → 기록·계산만 해 봄 → 알지만 말 못 함 → 신고까지 감)와 같은 순서' },
-    { id: '세로', t: '혼자 바로 시작할 수 있나, 사장님 가입이나 증거가 먼저 필요한가', d: '타깃은 근로계약서가 없거나 사장님 협조를 구하기 어려운 대학생 알바' },
+    { id: '세로', t: '혼자 바로 시작할 수 있나, 사장님 가입이나 근거가 먼저 필요한가', d: '타깃은 근로계약서가 없거나 사장님 협조를 구하기 어려운 대학생 알바' },
     { id: '대상', t: '메모장·카톡, 알바천국·알바몬 계산기, 하우머치, 기그, 진정24·노동포털', d: 'STP와 SWOT에서 비교한 서비스 그대로' },
     { id: '근거', t: '각 앱 상세 페이지와 리뷰(2026.9, 11.24 다시 확인), 진정24 사이트(2026.10.27 확인)', d: '위치는 숫자로 잰 것이 아니라 기능이 있는지 없는지로 놓은 우리 판단' },
   ], { rowH: 0.82, idW: 1.15 })
@@ -83,7 +84,7 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
   const L = 1.35, R = 9.4, T = 1.38, B = 4.6, W = R - L, MID = (T + B) / 2, CW = W / 4
   // 세로축 이름
   txt(s, '혼자\n바로 시작', { x: 0.4, y: T + 0.45, w: 0.9, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
-  txt(s, '사장님 가입 ·\n증거가 먼저', { x: 0.4, y: MID + 0.45, w: 0.95, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
+  txt(s, '사장님 가입 ·\n근거가 먼저', { x: 0.4, y: MID + 0.45, w: 0.95, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
   // 틀과 칸
   s.addShape(S.rect, { x: L, y: T, w: W, h: B - T, fill: { color: HEX.lt1 }, line: { color: HEX.accent6, width: 0.75 } })
   s.addShape(S.rect, { x: L + CW, y: T, w: CW * 2, h: MID - T, fill: { color: HEX.lt2 }, line: { color: HEX.accent6, width: 0.75 } })
