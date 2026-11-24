@@ -21,6 +21,7 @@ pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFac
 pres.author = '4조'
 pres.company = '4조'
 pres.title = '포지셔닝 맵 - 알바가드'
+pres.subject = '포지셔닝 맵'
 const C = pres.SchemeColor
 const S = pres.ShapeType
 const FOOT = '알바가드 · 포지셔닝 맵 · 4조'
