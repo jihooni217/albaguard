@@ -59,8 +59,20 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
 {
   const s = pres.addSlide({ masterName: 'DARK_PLAIN' })
   txt(s, '알바가드 · 4조', { x: 0.6, y: 0.55, w: 8, h: 0.35, fontSize: 13, bold: true, color: 'C9CCF2' })
-  txt(s, '포지셔닝 맵', { x: 0.6, y: 1.55, w: 8.8, h: 0.9, fontSize: 40, bold: true, color: C.background1 })
-  txt(s, '못 받은 알바비, 기록으로 찾는 앱', { x: 0.6, y: 2.5, w: 8.8, h: 0.45, fontSize: 18, color: C.background1 })
+  txt(s, '포지셔닝 맵', { x: 0.6, y: 1.55, w: 5.4, h: 0.9, fontSize: 40, bold: true, color: C.background1 })
+  txt(s, '못 받은 알바비, 기록으로 찾는 앱', { x: 0.6, y: 2.5, w: 5.4, h: 0.45, fontSize: 18, color: C.background1 })
+  // 작은 맵: 4칸 x 2줄, 알바가드 칸만 흰색
+  const mx = 6.55, my = 1.5, cw = 0.7, ch = 0.66
+  s.addShape(S.rect, { x: mx + cw, y: my, w: cw * 2, h: ch, fill: { color: 'FFFFFF' }, line: { color: 'FFFFFF', width: 0 } })
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) {
+    if (r === 0 && (c === 1 || c === 2)) continue
+    s.addShape(S.rect, { x: mx + cw * c, y: my + ch * r, w: cw, h: ch, fill: { color: HEX.dk2 }, line: { color: '5A63E6', width: 0.75 } })
+  }
+  const cd = (x, y, color, d = 0.13) => s.addShape(S.ellipse, { x: x - d / 2, y: y - d / 2, w: d, h: d, fill: { color }, line: { color, width: 0 } })
+  cd(mx + 0.22, my + 0.18, 'C9CCF2'); cd(mx + 0.22, my + 0.36, 'C9CCF2'); cd(mx + 0.22, my + 0.54, 'C9CCF2')
+  cd(mx + 0.22, my + ch + 0.25, 'C9CCF2'); cd(mx + cw * 3 + 0.22, my + ch + 0.25, 'C9CCF2')
+  cd(mx + cw + 0.3, my + ch / 2, HEX.dk2, 0.2)
+  txt(s, '알바가드', { x: mx + cw + 0.47, y: my + ch / 2 - 0.13, w: 1.0, h: 0.26, fontSize: 11, bold: true, color: C.accent1 })
   s.addShape(S.line, { x: 0.6, y: 3.45, w: 8.8, h: 0, line: { color: '5A63E6', width: 1 } })
   txt(s, '2026.11.24\n이지훈 · 손유호', { x: 0.6, y: 3.65, w: 8.8, h: 0.8, fontSize: 13, color: 'C9CCF2' })
 }
@@ -87,13 +99,19 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
   txt(s, '시작 전\n조건 있음', { x: 0.4, y: MID + 0.45, w: 0.95, h: 0.5, fontSize: 10, bold: true, color: C.accent5 })
   // 틀과 칸
   s.addShape(S.rect, { x: L, y: T, w: W, h: B - T, fill: { color: HEX.lt1 }, line: { color: HEX.accent6, width: 0.75 } })
-  s.addShape(S.rect, { x: L + CW, y: T, w: CW * 2, h: MID - T, fill: { color: HEX.lt2 }, line: { color: HEX.accent6, width: 0.75 } })
+  s.addShape(S.rect, { x: L + CW, y: T, w: CW * 2, h: MID - T, fill: { color: 'EAEBF7' }, line: { color: HEX.accent6, width: 0.75 } })
   line(s, L, MID, W, HEX.dk2, 1.25)
   for (let i = 1; i < 4; i++) s.addShape(S.line, { x: L + CW * i, y: i === 2 ? MID : T, w: 0, h: i === 2 ? B - MID : B - T, line: { color: HEX.accent6, width: 0.75, dashType: 'dash' } })
   // 가로축 단계 이름
   ;['기록 · 계산', '받은 돈과 비교', '요청', '신고'].forEach((t, i) => {
     txt(s, t, { x: L + CW * i, y: B + 0.07, w: CW, h: 0.25, fontSize: 10.5, bold: true, color: i === 1 || i === 2 ? C.accent1 : C.accent5, align: 'center' })
   })
+  ;[0, 1, 2, 3].forEach(i => {
+    const on = i === 1 || i === 2, cx = L + CW * i + CW / 2
+    s.addShape(S.ellipse, { x: cx - 0.13, y: T - 0.13, w: 0.26, h: 0.26, fill: { color: on ? HEX.dk2 : HEX.lt1 }, line: { color: on ? HEX.dk2 : HEX.accent5, width: 0.75 } })
+    txt(s, String(i + 1), { x: cx - 0.13, y: T - 0.13, w: 0.26, h: 0.26, fontSize: 10, bold: true, align: 'center', valign: 'middle', color: on ? C.background1 : C.accent5 })
+  })
+  txt(s, '확인한 서비스 없음', { x: L + CW, y: MID + (B - MID) / 2 - 0.12, w: CW * 2, h: 0.25, fontSize: 10, color: C.accent5, align: 'center' })
   txt(s, '급여를 어디까지 다루나 →', { x: L, y: B + 0.33, w: W, h: 0.22, fontSize: 10, color: C.accent5, align: 'center' })
   // 점과 이름
   const dot = (x, y, name, desc, w = 1.7) => {
@@ -114,7 +132,21 @@ function ledger(s, y, items, { rowH = 0.74, x = 0.5, w = 9, idW = 0.5 } = {}) {
   txt(s, '신고는 하지 않고\n증빙 PDF로 연결만', { x: L + CW * 3 + 0.2, y: T + 0.55, w: CW - 0.3, h: 0.45, fontSize: 10, color: C.accent5 })
 }
 
-// 4 읽는 법
+// 4 위치마다 근거
+{
+  const s = pres.addSlide({ masterName: 'LIGHT' })
+  head(s, '위치마다 근거', '고객 인식 조사가 아니라 공개된 기능 설명으로 놓은 위치')
+  ledger(s, 1.3, [
+    { id: '하우머치', t: '조건 없이 · 기록·계산', d: '앱스토어 설명: 주휴·야간·연장수당 자동 계산, 가불·상여 입력. 실제 입금액과 맞춰 보는 기능은 없음 (11.24)' },
+    { id: '알바천국 · 알바몬', t: '조건 없이 · 기록·계산', d: '알바생 쪽은 급여 계산기. 알바몬의 근무·급여 관리는 사장님용 보스몬(기업회원만) (11.24)' },
+    { id: '메모장 · 카톡', t: '조건 없이 · 기록·계산', d: '근무 시간을 적을 뿐 계산·비교 기능 없음' },
+    { id: '기그', t: '시작 전 조건 있음 · 기록', d: '앱스토어 설명: 근태 기록이 사장님과 자동 공유, 출퇴근은 사장님이 정한 사업장 기준 (11.24)' },
+    { id: '진정24 · 노동포털', t: '시작 전 조건 있음 · 신고', d: '진정서 작성(진정24, 베타 무료)과 진정 접수(노동포털) 단계의 서비스 (10.27)' },
+    { id: '알바가드', t: '조건 없이 · 비교·요청', d: '배포된 앱: 받은 금액 입력 → 덜 받은 금액 → 요청 메시지 · 증빙 PDF. 로그인·사장님 가입 없음' },
+  ], { rowH: 0.6, idW: 1.6 })
+}
+
+// 5 읽는 법
 {
   const s = pres.addSlide({ masterName: 'LIGHT' })
   head(s, '맵에서 읽은 것', '빈자리에 서되, 따라오기 쉬운 부분은 기록으로 지킴')
