@@ -30,6 +30,8 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
   // 고르는 칸에 들어갈 짧은 이름. 합계는 "7월~8월 합계"처럼 줄여 쓴다
   const shortLabel = (c) => (c.combined ? `${c.months[0].month}월~${c.months.at(-1).month}월 합계` : c.label)
   const paid = current.combined ? current.paid : current.payment.amount
+  // 문구를 만들 때의 금액·기간. 받은 금액을 고치거나 합계 달이 늘면 달라진다
+  const basis = `${Math.round(current.diff)}|${shortLabel(current)}`
   // 앞 단계를 보낸 지 오래됐으면 접힌 다음 단계에 "이제 볼 때"라고 적는다
   const waited = (stage) => (saved[stage]?.sentAt ? daysSince(saved[stage].sentAt) : null)
   const nudge = (stage, base) =>
@@ -97,6 +99,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
           ['full', '근거까지 자세히'],
         ]}
         saved={saved[1]}
+        basis={basis}
         onSave={(value) => actions.saveRequest(current.key, 1, value)}
         generate={(style) => makeMessage(1, current, style)}
       />
@@ -109,6 +112,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         desc="메시지를 보냈는데도 해결되지 않을 때 쓰는 문서 초안이에요. [대괄호] 부분은 직접 채워야 하고, 우체국에서 내용증명으로 보낼 수 있어요. 법률 자문은 아니에요."
         button="초안 만들기"
         saved={saved[2]}
+        basis={basis}
         onSave={(value) => actions.saveRequest(current.key, 2, value)}
         generate={() => makeMessage(2, current)}
       />
@@ -179,7 +183,7 @@ function Fold({ step, title, when, defaultOpen = false, children }) {
 }
 
 // 문구를 만들고, 고치고, 복사하는 한 단계
-function Stage({ step, title, when, desc, button, saved, onSave, generate, defaultOpen, styles }) {
+function Stage({ step, title, when, desc, button, saved, basis, onSave, generate, defaultOpen, styles }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -198,7 +202,14 @@ function Stage({ step, title, when, desc, button, saved, onSave, generate, defau
     if (result.error) return setError(result.error)
     setNotice(result.notice ?? '')
     // 다시 만들어도 보낸 날짜는 남겨 둔다
-    onSave({ ...saved, text: result.text, source: result.source, style: nextStyle, edited: false })
+    onSave({ ...saved, text: result.text, source: result.source, style: nextStyle, edited: false, basis })
+  }
+
+  // 만든 뒤 금액이나 기간이 바뀌었는지. 예전에 만든 문구(basis 없음)는 알 수 없어 묻지 않는다
+  const stale = saved?.basis && saved.basis !== basis
+  function remake() {
+    if (saved.edited && !window.confirm('고친 내용이 지워지고 바뀐 금액으로 새 문구를 만들어요. 만들까요?')) return
+    run()
   }
 
   function pickStyle(next) {
@@ -237,6 +248,14 @@ function Stage({ step, title, when, desc, button, saved, onSave, generate, defau
       {saved && (
         <>
           {notice && <p className="notice stage-notice">{notice} 대신 기본 문구로 만들었어요.</p>}
+          {stale && (
+            <p className="error stage-notice">
+              문구를 만든 뒤 금액이나 기간이 바뀌었어요. 아래 문구에는 예전 숫자가 들어 있어요.{' '}
+              <button className="rq-sent-undo" onClick={remake} disabled={loading}>
+                바뀐 금액으로 다시 만들기
+              </button>
+            </p>
+          )}
           <p className="rq-edit-hint">눌러서 바로 고칠 수 있어요</p>
           <textarea
             className="input message"

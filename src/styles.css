@@ -12,7 +12,7 @@
   --field: #f4f3ef;
   --text: #15171a;
   --muted: #5d636d;
-  --faint: #8b9099;
+  --faint: #696e77;
   --line: #dcd9d0;
   --brand: #2a3193; /* 알바가드의 색: 잉크 남색. 첫 화면 위쪽 면 */
   /* 블록 채우기의 블록 색 (모양마다 남색 계열) */
@@ -56,7 +56,7 @@
     --field: #0e1116;
     --text: #e9edf2;
     --muted: #9aa4b2;
-    --faint: #6f7987;
+    --faint: #848e9b;
     --line: #232a34;
     --brand: #262c80;
   --blk1: #8f98ee;
@@ -98,7 +98,7 @@
   --field: #0e1116;
   --text: #e9edf2;
   --muted: #9aa4b2;
-  --faint: #6f7987;
+  --faint: #848e9b;
   --line: #232a34;
   --brand: #262c80;
   --brand-deep: #151a52;

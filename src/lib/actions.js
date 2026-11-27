@@ -199,8 +199,15 @@ export function makeActions(setData) {
     },
 
     addSchedules(list) {
-      const items = list.map((s) => ({ ...s, id: newId() }))
-      setData((d) => ({ ...d, schedules: [...d.schedules, ...items] }))
+      // 같은 근무지·날짜·시각이 이미 있으면 빼고 넣는다(두 번 누르면 예정 시간이 두 배가 되어 주휴수당이 부풀려짐)
+      const same = (a, b) => a.workplaceId === b.workplaceId && a.date === b.date && a.start === b.start && a.end === b.end
+      setData((d) => {
+        const items = []
+        for (const s of list) {
+          if (![...d.schedules, ...items].some((x) => same(x, s))) items.push({ ...s, id: newId() })
+        }
+        return { ...d, schedules: [...d.schedules, ...items] }
+      })
     },
 
     setSudoku(game) {

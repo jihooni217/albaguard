@@ -121,7 +121,7 @@ export default function Workplaces({ data, actions }) {
         <div className="rq-row explain">
           <span>
             서버로 가는 것
-            <small>확인 번호와 등록 시각뿐이에요. 근무지 이름, 출퇴근 시각, 금액은 폰 밖으로 나가지 않아요.</small>
+            <small>확인 번호 · 등록 시각 · 기록 번호 · 무작위 기기 번호뿐이에요. 근무지 이름, 출퇴근 시각, 금액은 폰 밖으로 나가지 않아요.</small>
           </span>
         </div>
         <button className="rq-row link" onClick={() => window.open('./verify.html', '_blank', 'noopener')}>

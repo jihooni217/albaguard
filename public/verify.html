@@ -28,7 +28,7 @@
   td small { display: block; color: #5d636d; margin-top: 2px; }
   .yes { color: #0f7a55; font-weight: 700; }
   .none { color: #c2331c; font-weight: 700; }
-  .note { font-size: 12.5px; color: #8b9099; line-height: 1.6; margin-top: 28px; }
+  .note { font-size: 12.5px; color: #696e77; line-height: 1.6; margin-top: 28px; }
 </style>
 </head>
 <body>
@@ -68,6 +68,8 @@
     try {
       const q = h.length >= 64 ? `hash=eq.${h}` : `hash=like.${h}*`
       const res = await fetch(`${URL_}/rest/v1/stamps?${q}&select=hash,created_at&limit=2`, { headers: { apikey: KEY, Authorization: `Bearer ${KEY}` } })
+      // 서버가 깨어나는 중(521)이거나 오류면 "없음"이 아니라 "확인하지 못했어요"로 보낸다
+      if (!res.ok) throw new Error(String(res.status))
       const rows = await res.json()
       if (!Array.isArray(rows) || rows.length === 0) {
         out.innerHTML = '<div class="result no"><h2>등록된 확인 번호가 없습니다</h2><p class="sub" style="margin:0">번호를 다시 확인해 주세요. 앱에서 등록을 꺼 두었거나, 인터넷이 없을 때 남긴 기록은 등록되지 않았을 수 있습니다.</p></div>'
