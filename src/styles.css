@@ -66,8 +66,8 @@
     --blk5: #4a53c6;
     --brand-deep: #151a52;
     --on-brand: #ffffff;
-    --primary: #aab2ff;
-    --on-primary: #10143a;
+    --primary: #3a42b0; /* 어두운 화면의 꽉 찬 버튼: 연보라 대신 남색 + 흰 글자 (2026.11.27 시안 B) */
+    --on-primary: #ffffff;
     --accent: #aab2ff;
     --on-accent: #10143a;
     --accent-soft: rgba(170, 178, 255, 0.14);
@@ -103,8 +103,8 @@
   --blk5: #4a53c6;
   --brand-deep: #151a52;
   --on-brand: #ffffff;
-  --primary: #aab2ff;
-  --on-primary: #10143a;
+  --primary: #3a42b0;
+  --on-primary: #ffffff;
   --accent: #aab2ff;
   --on-accent: #10143a;
   --accent-soft: rgba(170, 178, 255, 0.14);
@@ -2079,9 +2079,9 @@ a.btn {
 }
 
 .rq-step[open] .rq-num {
-  border-color: var(--brand);
-  background: var(--brand);
-  color: var(--on-brand);
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .rq-step-title {
@@ -2704,8 +2704,8 @@ a.btn {
 
 .game-actions .btn.on,
 .game-actions .btn.primary {
-  background: var(--brand);
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .game-actions .btn:disabled {
@@ -2817,7 +2817,7 @@ a.btn {
 }
 
 .blk-piece.picked {
-  border-color: var(--brand);
+  border-color: var(--accent);
 }
 
 .blk-piece.used {
@@ -2902,7 +2902,7 @@ a.btn {
 
 .spot-hint b {
   margin-right: 6px;
-  color: var(--brand);
+  color: var(--accent);
 }
 
 .spot-hint-btn {
