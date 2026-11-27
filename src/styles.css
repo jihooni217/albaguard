@@ -675,8 +675,8 @@ a.btn {
   border: none;
   background: transparent;
   color: var(--faint);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px; /* 금액보다 조용하게 (2026.11.27 시안 A) */
+  font-weight: 400;
   cursor: pointer;
 }
 
@@ -2991,7 +2991,8 @@ a.btn {
   white-space: nowrap;
   border: none;
   background: transparent;
-  font-size: 13px;
+  position: relative;
+  font-size: 14px;
   font-weight: 400;
   color: var(--muted);
   cursor: pointer;
@@ -3000,6 +3001,19 @@ a.btn {
 .tab.active {
   color: var(--accent);
   font-weight: 600;
+}
+
+/* 고른 탭 위 짧은 남색 막대: 색을 구분하기 어려워도 알아보게 (2026.11.27 시안 B) */
+.tab.active::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 22px;
+  height: 3px;
+  margin-left: -11px;
+  border-radius: 0 0 3px 3px;
+  background: var(--accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
