@@ -6,7 +6,7 @@ const { applyTheme } = require('C:/Users/user/AppData/Local/Claude-Data/claude_p
 
 const PROJ = 'C:/Users/user/Desktop/albaguard기술창업'
 const SHOT = (n) => path.join(PROJ, 'docs/screenshots', n)
-const OUT = process.argv[2] || path.join(PROJ, 'docs/06_중간발표_PPT.pptx')
+const OUT = process.argv[2] || path.join(PROJ, 'docs/2_중간발표/06_중간발표_PPT.pptx')
 
 const THEME = {
   name: 'Albaguard',
@@ -391,7 +391,7 @@ pres.addSection({ title: '⑤ 개발 현황·MVP 시연' })
 // 시연 영상 (한 장 전체)
 {
   const s = pres.addSlide({ masterName: 'LIGHT_PLAIN', sectionTitle: '⑤ 개발 현황·MVP 시연' })
-  s.addMedia({ type: 'video', path: path.join(PROJ, 'docs/08_시연_영상.mp4'), cover: 'image/png;base64,' + fs.readFileSync(path.join(PROJ, 'docs/report_src/demo_cover.png')).toString('base64'), x: 0, y: 0, w: 10, h: 5.625, objectName: '시연 영상' })
+  s.addMedia({ type: 'video', path: path.join(PROJ, 'docs/2_중간발표/08_시연_영상.mp4'), cover: 'image/png;base64,' + fs.readFileSync(path.join(PROJ, 'docs/report_src/demo_cover.png')).toString('base64'), x: 0, y: 0, w: 10, h: 5.625, objectName: '시연 영상' })
   s.addNotes('(재생 전) 마지막 장면에 나오는 등록 시각을 잘 봐 주세요. 지금도 서버에 그대로 남아 있는 값입니다.\n(영상은 멈추지 않고 끝까지 틉니다)\n(영상이 끝나면) 이렇게 출근 기록부터 사장님께 보낼 메시지, 확인 페이지까지 앱 하나로 모두 할 수 있습니다.')
 }
 

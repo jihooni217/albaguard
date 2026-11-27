@@ -9,7 +9,7 @@ const {
 const PROJ = 'C:/Users/user/Desktop/albaguard기술창업'
 const SHOT = (n) => path.join(PROJ, 'docs/screenshots', n)
 const FIG = (n) => path.join(PROJ, 'docs/report_src', n)
-const OUT = process.argv[2] || path.join(PROJ, 'docs/07_중간평가_보고서.docx')
+const OUT = process.argv[2] || path.join(PROJ, 'docs/2_중간발표/07_중간평가_보고서.docx')
 
 const FONT = { ascii: 'Malgun Gothic', hAnsi: 'Malgun Gothic', eastAsia: 'Malgun Gothic', cs: 'Malgun Gothic' }
 const NAVY = '2A3193', GRAY = '5D636D', LINE = 'DCD9D0', PAPER = 'F4F3EF', RED = 'C2331C'
