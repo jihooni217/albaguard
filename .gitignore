@@ -13,3 +13,6 @@ build/
 Thumbs.db
 __pycache__/
 ~$*
+
+# 팀원이 보낸 판은 내 컴퓨터에만 둔다
+docs/팀원_판/
