@@ -59,11 +59,6 @@
     --faint: #848e9b;
     --line: #232a34;
     --brand: #262c80;
-  --blk1: #8f98ee;
-  --blk2: #6a74e0;
-  --blk3: #3b43b0;
-  --blk4: #7c66d6;
-  --blk5: #4a53c6;
     --blk1: #8f98ee;
     --blk2: #6a74e0;
     --blk3: #3b43b0;
@@ -101,6 +96,11 @@
   --faint: #848e9b;
   --line: #232a34;
   --brand: #262c80;
+  --blk1: #8f98ee;
+  --blk2: #6a74e0;
+  --blk3: #3b43b0;
+  --blk4: #7c66d6;
+  --blk5: #4a53c6;
   --brand-deep: #151a52;
   --on-brand: #ffffff;
   --primary: #aab2ff;
@@ -602,8 +602,11 @@ a.btn {
 }
 
 .record-edit {
-  min-height: 34px;
-  padding: 0 2px;
+  /* 누르는 범위는 44px로 넓히고, 음수 여백으로 보이는 자리는 그대로 둔다 */
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  margin: -5px -12px -5px 0;
   border: none;
   background: transparent;
   color: var(--faint);

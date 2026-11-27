@@ -269,6 +269,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
       {form && (
         <RecordForm
           record={form.record}
+          records={data.records}
           workplaces={workplaces}
           defaultWorkplaceId={selectedWorkplaceId}
           actions={actions}

@@ -44,9 +44,12 @@ export async function allPhotos() {
   return Object.fromEntries(keys.map((key, i) => [key, values[i]]))
 }
 
-export async function replacePhotos(photos) {
-  await clearPhotos()
-  for (const [id, dataUrl] of Object.entries(photos)) await putPhoto(id, dataUrl)
+// 지우기와 넣기를 한 번에 한다. 중간에 실패하면(저장 공간 부족 등) 원래 사진이 그대로 남는다
+export function replacePhotos(photos) {
+  return run('readwrite', (store) => {
+    store.clear()
+    for (const [id, dataUrl] of Object.entries(photos)) store.put(dataUrl, id)
+  })
 }
 
 // 고른 사진 파일을 줄여서 저장용 글자(data URL)로 바꾼다
@@ -76,6 +79,6 @@ export function usePhoto(id) {
 // 그 근무지의 해당 달 사진. 시급 근거는 달과 상관없이 항상 포함
 export function attachmentsFor(data, workplaceId, yms) {
   return data.attachments
-    .filter((a) => a.workplaceId === workplaceId && (a.kind === 'wage' || yms.includes(monthKey(`${a.date}T00:00`))))
+    .filter((a) => a.workplaceId === workplaceId && (a.kind === 'wage' || yms.includes(a.ym ?? monthKey(`${a.date}T00:00`))))
     .sort((a, b) => a.date.localeCompare(b.date))
 }

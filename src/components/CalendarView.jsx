@@ -242,6 +242,7 @@ export default function CalendarView({ data, actions, goTo }) {
       {recordForm && (
         <RecordForm
           record={recordForm.record}
+          records={records}
           workplaces={workplaces}
           defaultWorkplaceId={selectedWorkplaceId}
           defaultDate={selected}

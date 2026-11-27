@@ -91,7 +91,8 @@ export function AddForm({ workplace, ym, actions, onClose, initialKind = 'schedu
     } catch {
       return setError('사진을 저장하지 못했어요. 저장 공간을 확인해 주세요.')
     }
-    actions.addAttachment({ id, workplaceId: workplace.id, kind, date, note: note.trim() })
+    // 어느 달 화면에서 붙였는지(ym)도 남긴다. 9월 급여의 입금 문자를 10/10 날짜로 넣어도 9월 증빙에 들어가게
+    actions.addAttachment({ id, workplaceId: workplace.id, kind, date, ym, note: note.trim() })
     onClose()
   }
 

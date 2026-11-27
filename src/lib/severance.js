@@ -32,12 +32,15 @@ export function severanceInfo(workplace, records, schedules, todayKey) {
   const avgWeekMin = Math.round(weekTotal / 4)
 
   // 최근 3개월(이번 달 제외)의 급여로 평균임금을 낸다
+  // 기록이 없는 달(앱을 쓰기 전)은 0원으로 나누면 금액이 크게 낮아지므로 빼고 계산한다
   const today = new Date(`${todayKey}T00:00`)
   let paySum = 0
   let daySum = 0
   for (let k = 1; k <= 3; k++) {
     const d = new Date(today.getFullYear(), today.getMonth() - k, 1)
-    paySum += calcMonth(workplace, records, schedules, monthKey(d), todayKey).total
+    const month = calcMonth(workplace, records, schedules, monthKey(d), todayKey)
+    if (month.baseMin === 0) continue
+    paySum += month.total
     daySum += new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
   }
   const dailyAvg = daySum > 0 ? paySum / daySum : 0

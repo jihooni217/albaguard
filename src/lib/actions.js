@@ -21,7 +21,8 @@ export function makeActions(setData) {
     // 지금 있는 데이터를 모두 지우고 시연용 예시로 바꾼다
     loadDemo() {
       clearPhotos()
-      setData(buildDemoData())
+      // 기록 등록 끄기 · 게임 숨기기 · 기기 번호는 사용자가 정한 것이라 그대로 둔다
+      setData((d) => ({ ...buildDemoData(), stampOff: d.stampOff, gamesHidden: d.gamesHidden, deviceId: d.deviceId }))
     },
 
     resetAll() {

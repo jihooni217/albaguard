@@ -3,7 +3,7 @@ import { fromInputValue, toInputValue } from '../lib/time'
 import Modal from './Modal.jsx'
 
 // record가 있으면 수정, 없으면 직접 추가
-export default function RecordForm({ record, workplaces, defaultWorkplaceId, defaultDate, actions, onClose }) {
+export default function RecordForm({ record, records = [], workplaces, defaultWorkplaceId, defaultDate, actions, onClose }) {
   const isEdit = Boolean(record)
   const baseDate = defaultDate ?? toInputValue(new Date()).slice(0, 10)
   const [workplaceId, setWorkplaceId] = useState(record?.workplaceId ?? defaultWorkplaceId ?? workplaces[0]?.id)
@@ -17,6 +17,14 @@ export default function RecordForm({ record, workplaces, defaultWorkplaceId, def
     if (new Date(end) <= new Date(start)) return '퇴근 시각은 출근 시각보다 늦어야 해요.'
     if (new Date(end) > new Date()) return '아직 지나지 않은 시각은 기록할 수 없어요.'
     if (!reason.trim()) return isEdit ? '수정 사유를 적어 주세요.' : '직접 입력하는 사유를 적어 주세요.'
+    // 같은 근무지에서 시간이 겹치는 기록이 있으면 두 번 계산되므로 막는다
+    const s = new Date(start)
+    const e = new Date(end)
+    const wp = isEdit ? record.workplaceId : workplaceId
+    const clash = records.find(
+      (r) => !r.deleted && r.id !== record?.id && r.workplaceId === wp && s < new Date(r.end) && e > new Date(r.start),
+    )
+    if (clash) return '이 시간에 이미 기록이 있어요. 그 기록을 고쳐 주세요.'
     return ''
   }
 

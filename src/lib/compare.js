@@ -4,7 +4,29 @@ import { dateKey, fmtDuration, minutesBetween, scheduleMinutes } from './time'
 // 이 정도 차이는 '예정대로'로 본다
 const TOLERANCE_MIN = 10
 
+// 근무지가 여러 곳이면 근무지마다 따로 비교한다(A 매장 예정이 있는 날 B 매장에서 일해도 '완료'가 되지 않게)
+// 한 날에 결과가 여럿이면 예정과 달랐던 쪽을 먼저 보여 준다
+const PRIORITY = ['under', 'missed', 'over', 'extra', 'planned', 'match', 'off']
+
 export function dayStatus(key, schedules, records, todayKey) {
+  const ids = new Set([
+    ...schedules.filter((s) => s.date === key).map((s) => s.workplaceId),
+    ...records.filter((r) => !r.deleted && dateKey(r.start) === key).map((r) => r.workplaceId),
+  ])
+  if (ids.size <= 1) return oneDay(key, schedules, records, todayKey)
+  const list = [...ids].map((id) =>
+    oneDay(key, schedules.filter((s) => s.workplaceId === id), records.filter((r) => r.workplaceId === id), todayKey),
+  )
+  const top = list.sort((a, b) => PRIORITY.indexOf(a.type) - PRIORITY.indexOf(b.type))[0]
+  return {
+    ...top,
+    planned: list.reduce((n, x) => n + x.planned, 0),
+    actual: list.reduce((n, x) => n + x.actual, 0),
+  }
+}
+
+// 한 근무지(또는 근무지 구분 없이) 하루 비교
+function oneDay(key, schedules, records, todayKey) {
   const daySchedules = schedules.filter((s) => s.date === key)
   // 사장님과 합의해서 쉰 날(off)은 예정에서 빼고 비교한다
   const sched = daySchedules.filter((s) => !s.off)
