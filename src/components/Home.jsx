@@ -3,6 +3,7 @@ import { calcMonth, mondayOf, recordPay, weekSummary } from '../lib/pay'
 import { shortfallTotal, staleRequests, unpaidMonths } from '../lib/request'
 import { severanceAlerts } from '../lib/severance'
 import { dateKey, fmtDate, fmtDuration, fmtTime, fromInputValue, minutesBetween, monthKey, toInputValue } from '../lib/time'
+import Icon from './Icon.jsx'
 import Modal from './Modal.jsx'
 import RecordItem from './RecordItem.jsx'
 import RecordForm from './RecordForm.jsx'
@@ -100,18 +101,22 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
           {active ? (
             <span className="top-place">{activeWorkplace?.name ?? '근무지'}</span>
           ) : (
-            <select
-              className="top-place"
-              value={selectedWorkplaceId ?? ''}
-              onChange={(e) => actions.selectWorkplace(e.target.value)}
-              aria-label="근무지 선택"
-            >
-              {workplaces.map((w) => (
-                <option key={w.id} value={w.id}>
-                  {w.name}
-                </option>
-              ))}
-            </select>
+            // 보이는 이름은 글자로, 고르는 칸은 투명하게 위에 덮는다(16px라 아이폰이 화면을 키우지 않음)
+            <label className="top-place pick">
+              <span>{workplaces.find((w) => w.id === selectedWorkplaceId)?.name ?? workplaces[0]?.name ?? '근무지'}</span>
+              <Icon name="chevronDown" size={14} />
+              <select
+                value={selectedWorkplaceId ?? ''}
+                onChange={(e) => actions.selectWorkplace(e.target.value)}
+                aria-label="근무지 선택"
+              >
+                {workplaces.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name}
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
         </div>
 
@@ -153,16 +158,6 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
 
       {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0 || severance.length > 0) && (
         <section className="card alerts">
-          {severance.map(({ workplace, info }) => (
-            <button key={workplace.id} className="alert-row ask" onClick={() => setSeveranceOpen({ workplace, info })}>
-              <span>
-                {info.eligible
-                  ? `퇴직금 대상이에요 · ${workplace.name}`
-                  : `${info.daysLeft}일 뒤 퇴직금 대상 · ${workplace.name}`}
-              </span>
-              <b>약 {info.estimate.toLocaleString()}원</b>
-            </button>
-          ))}
           {stale.length > 0 && (
             <button className="alert-row ask" onClick={() => goTo('request')}>
               <span>
@@ -183,6 +178,17 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
               <b>{owed.amount.toLocaleString()}원</b>
             </button>
           )}
+          {/* 퇴직금은 받은 금액 확인 · 덜 받은 급여 다음에 (돈 알림 순서 유지) */}
+          {severance.map(({ workplace, info }) => (
+            <button key={workplace.id} className="alert-row ask" onClick={() => setSeveranceOpen({ workplace, info })}>
+              <span>
+                {info.eligible
+                  ? `퇴직금 대상이에요 · ${workplace.name}`
+                  : `${info.daysLeft}일 뒤 퇴직금 대상 · ${workplace.name}`}
+              </span>
+              <b>약 {info.estimate.toLocaleString()}원</b>
+            </button>
+          ))}
           {thisWeek?.eligible && (
             <button className="alert-row" onClick={() => goTo('pay')}>
               <span>이번 주 주휴수당 대상</span>
@@ -325,7 +331,7 @@ function LateOutForm({ active, schedules, now, onSave, onClose }) {
         사유
         <input className="input" value={reason} onChange={(e) => setReason(e.target.value)} />
       </label>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error" role="alert">{error}</p>}
       <button className="btn primary block" onClick={save}>
         이 시각으로 퇴근 기록
       </button>

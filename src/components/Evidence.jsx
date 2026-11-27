@@ -85,7 +85,11 @@ export default function Evidence({ data, target, onClose }) {
         </button>
       </div>
       <p className="evidence-hint">
-        인쇄 창이 뜨면 프린터 대신 "PDF로 저장"을 골라 주세요. 이 자료는 내 기록을 정리한 참고용이라, 통장 내역이나 사장님과
+        {/* 아이폰 인쇄 창에는 "PDF로 저장"이 없고, 위쪽 공유 버튼에서 "파일에 저장"을 고른다 */}
+        {/iPhone|iPad/.test(navigator.userAgent)
+          ? '인쇄 창이 뜨면 위쪽 공유 버튼을 누르고 "파일에 저장"을 골라 주세요.'
+          : '인쇄 창이 뜨면 프린터 대신 "PDF로 저장"을 골라 주세요.'}{' '}
+        이 자료는 내 기록을 정리한 참고용이라, 통장 내역이나 사장님과
         나눈 메시지를 함께 내야 힘이 생겨요.
       </p>
 

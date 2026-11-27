@@ -42,6 +42,10 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
       <section className="rq-top">
         {candidates.length > 1 ? (
           <label className="rq-pick">
+            {/* 보이는 이름은 글자로, 고르는 칸은 투명하게 위에 덮는다(16px라 아이폰이 화면을 키우지 않음) */}
+            <span>
+              {current.workplace.name} · {shortLabel(current)}
+            </span>
             <select value={current.key} onChange={(e) => setSelectedKey(e.target.value)} aria-label="요청할 달 선택">
               {candidates.map((c) => (
                 <option key={c.key} value={c.key}>
@@ -121,7 +125,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
         <p className="muted">그래도 받지 못했다면 고용노동부에 임금체불 진정을 낼 수 있어요.</p>
         <ol className="guide">
           <li>
-            <b>상담</b> — 고용노동부 고객상담센터 ☎ 1350 에서 먼저 물어볼 수 있어요.
+            <b>상담</b> — 고용노동부 고객상담센터(1350)에서 먼저 물어볼 수 있어요.
           </li>
           <li>
             <b>진정 접수</b> — 고용노동부 노동포털에서 온라인으로 내거나, 사업장 관할 지방고용노동관서를 방문해요.
@@ -158,7 +162,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
 
       <p className="muted note">
         알바가드는 내 기록을 정리하고 문구 초안을 만들어 주는 도구예요. 법률 자문이나 신고 대행이 아니고, 만든 문서의 법적
-        효력을 보장하지 않아요. 정확한 판단은 고용노동부 상담(☎ 1350)이나 노무사에게 확인해 주세요.
+        효력을 보장하지 않아요. 정확한 판단은 고용노동부 상담(1350)이나 노무사에게 확인해 주세요.
       </p>
     </>
   )
@@ -276,7 +280,10 @@ function Stage({ step, title, when, desc, button, saved, basis, onSave, generate
             <p className="rq-sent">
               <b>{fmtDateTime(saved.sentAt)}에 보냈어요</b> · {daysSince(saved.sentAt)}일 지남
               {daysSince(saved.sentAt) >= FOLLOW_UP_DAYS && ' · 답이 없다면 다음 단계를 볼 때예요'}
-              <button className="rq-sent-undo" onClick={() => onSave({ ...saved, sentAt: undefined })}>
+              <button
+                className="rq-sent-undo"
+                onClick={() => window.confirm('보낸 날짜를 지울까요? 증빙 묶음의 요청 이력에서도 빠져요.') && onSave({ ...saved, sentAt: undefined })}
+              >
                 보낸 기록 지우기
               </button>
             </p>
@@ -288,10 +295,14 @@ function Stage({ step, title, when, desc, button, saved, basis, onSave, generate
         </>
       )}
 
-      {error && <p className="error stage-notice">{error}</p>}
+      {error && <p className="error stage-notice" role="alert">{error}</p>}
 
       {saved ? (
-        <button className="rq-sent-undo" onClick={() => run()} disabled={loading}>
+        <button
+          className="rq-sent-undo"
+          onClick={() => (!saved.edited || window.confirm('고친 내용이 지워져요. 처음 문구로 바꿀까요?')) && run()}
+          disabled={loading}
+        >
           {loading ? '만드는 중…' : '고친 내용 지우고 처음 문구로'}
         </button>
       ) : (

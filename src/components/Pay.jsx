@@ -64,6 +64,7 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence, ta
       <div className="rq-top">
         {workplaces.length > 1 ? (
           <label className="rq-pick">
+            <span>{workplace.name}</span>
             <select value={workplace.id} onChange={(e) => setWorkplaceId(e.target.value)} aria-label="근무지 선택">
               {workplaces.map((w) => (
                 <option key={w.id} value={w.id}>
@@ -88,6 +89,7 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence, ta
       <PaymentCompare
         key={key}
         monthLabel={`${month.m + 1}월`}
+        ongoing={todayKey.startsWith(ym)}
         expected={result.total}
         saved={payments[key]}
         onSave={(value) => actions.savePayment(key, value)}
@@ -173,7 +175,7 @@ export default function Pay({ data, actions, goTo, openRequest, openEvidence, ta
 }
 
 // 실제 받은 금액을 넣고 예상 급여와 비교한다. 넣기 전에는 묻고, 넣은 뒤에는 차액을 맨 위에 크게 보여준다
-function PaymentCompare({ monthLabel, expected, saved, onSave, onRequest }) {
+function PaymentCompare({ monthLabel, ongoing, expected, saved, onSave, onRequest }) {
   const [amount, setAmount] = useState(saved?.amount ?? '')
   const [taxed, setTaxed] = useState(saved?.taxed ?? false)
   const [editing, setEditing] = useState(false)
@@ -196,7 +198,8 @@ function PaymentCompare({ monthLabel, expected, saved, onSave, onRequest }) {
   if (!saved || editing) {
     return (
       <section className="rq-top">
-        <p className="rq-label">{monthLabel}에 받았어야 할 돈</p>
+        {/* 아직 끝나지 않은 달은 첫 화면과 같게 "받을 돈" */}
+        <p className="rq-label">{monthLabel}에 {ongoing ? '받을 돈 · 지금까지' : '받았어야 할 돈'}</p>
         <p className="rq-owed plain">{big(expected)}</p>
 
         <div className="pay-ask">
@@ -219,7 +222,7 @@ function PaymentCompare({ monthLabel, expected, saved, onSave, onRequest }) {
               3.3% 세금을 떼고 받아요 <small className="muted">(모르면 비워 두세요)</small>
             </span>
           </label>
-          {error && <p className="error">{error}</p>}
+          {error && <p className="error" role="alert">{error}</p>}
           <button className="btn primary block" onClick={save}>
             비교하기
           </button>

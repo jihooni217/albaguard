@@ -141,6 +141,20 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none; /* 앱처럼: 끝에서 화면이 통째로 당겨지지 않게 */
+  word-break: keep-all; /* 한글이 낱말 중간에서 줄이 바뀌지 않게 */
+  overflow-wrap: break-word;
+}
+
+/* 앱 안의 글자 링크는 브라우저 기본 파랑 대신 남색 */
+a:not(.btn) {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+/* 키보드·화면 읽기 도구로 움직일 때 지금 위치가 보이게 */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 p,
@@ -284,10 +298,18 @@ a.btn {
 }
 
 .btn.small {
+  position: relative;
   min-height: 38px;
   padding: 0 14px;
   border-radius: 999px;
   font-size: 14px;
+}
+
+/* 보이는 크기는 38px 그대로, 누르는 범위만 44px */
+.btn.small::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
 }
 
 .btn.ghost {
@@ -370,6 +392,33 @@ a.btn {
   font-size: 13px;
   text-align: right;
   opacity: 0.85;
+}
+
+/* 근무지 고르기: 보이는 이름 위에 투명한 고르는 칸(16px)을 덮는다. 누르는 범위 44px */
+.top-place.pick {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+  margin: -4px 0;
+  min-width: 0;
+}
+
+.top-place.pick span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-place.pick select,
+.rq-pick select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .top-place option {
@@ -1564,18 +1613,18 @@ a.btn {
   font-size: 14px;
 }
 
-.rq-pick select {
+.rq-pick > span {
   min-width: 0;
-  max-width: 100%;
   padding: 4px 0;
-  border: none;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  appearance: none;
-  -webkit-appearance: none;
+  overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 보이는 줄은 그대로, 누르는 범위만 위아래로 넓힌다 */
+.rq-pick select {
+  inset: -7px 0;
+  height: auto;
 }
 
 .rq-label {
@@ -1857,7 +1906,8 @@ a.btn {
 }
 
 .set-seg button {
-  min-height: 40px;
+  min-height: 44px;
+  margin: -2px 0;
   padding: 0;
   border: none;
   border-bottom: 2px solid transparent;
@@ -1924,7 +1974,8 @@ a.btn {
 
 .rq-sent-undo {
   display: block;
-  min-height: 36px;
+  min-height: 44px;
+  margin: -4px 0;
   padding: 0;
   border: none;
   background: transparent;
@@ -2134,7 +2185,7 @@ a.btn {
   height: auto;
   margin-top: 14px;
   padding: 14px;
-  font-size: 15px;
+  font-size: 16px; /* 16px보다 작으면 아이폰이 누를 때 화면을 키운다 */
   line-height: 1.65;
   resize: vertical;
 }

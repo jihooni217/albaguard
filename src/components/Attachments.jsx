@@ -70,16 +70,20 @@ export function AddForm({ workplace, ym, actions, onClose, initialKind = 'schedu
   const [date, setDate] = useState(today.startsWith(ym) ? today : `${ym}-01`)
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
+  const [reading, setReading] = useState(false)
 
+  // 큰 사진은 줄이는 데 잠깐 걸려서, 그동안 "불러오는 중"을 보여 준다(사진 칸을 또 누르지 않게)
   async function pick(event) {
     const file = event.target.files[0]
     if (!file) return
+    setReading(true)
     try {
       setPreview(await fileToDataUrl(file))
       setError('')
     } catch {
       setError('이 파일은 사진으로 읽을 수 없어요.')
     }
+    setReading(false)
   }
 
   async function save() {
@@ -98,8 +102,10 @@ export function AddForm({ workplace, ym, actions, onClose, initialKind = 'schedu
 
   return (
     <Modal title="증빙 사진 추가" onClose={onClose}>
-      <button className="photo-pick" onClick={() => fileInput.current.click()}>
-        {preview ? (
+      <button className="photo-pick" onClick={() => fileInput.current.click()} disabled={reading}>
+        {reading ? (
+          '사진 불러오는 중…'
+        ) : preview ? (
           <img src={preview} alt="고른 사진" />
         ) : (
           <>
@@ -134,7 +140,7 @@ export function AddForm({ workplace, ym, actions, onClose, initialKind = 'schedu
         />
       </label>
 
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error" role="alert">{error}</p>}
 
       <button className="btn primary block" onClick={save}>
         저장

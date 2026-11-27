@@ -16,7 +16,8 @@
 <style>
   :root { color-scheme: light; --bg:#f4f3ef; --surface:#fff; --text:#15171a; --muted:#5d636d; --faint:#696e77; --line:#dcd9d0; --brand:#2a3193; --green:#0f7a55; --red:#c2331c; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; -webkit-tap-highlight-color: transparent; word-break: keep-all; overflow-wrap: break-word; }
+  a { color: var(--brand); text-underline-offset: 3px; }
   main { max-width: 480px; margin: 0 auto; padding: 20px 20px calc(40px + env(safe-area-inset-bottom)); min-height: 100dvh; }
   .top { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--muted); }
   .top b { color: var(--brand); font-weight: 700; }

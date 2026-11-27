@@ -43,6 +43,8 @@ export default function RecordForm({ record, records = [], workplaces, defaultWo
 
   function remove() {
     if (!reason.trim()) return setError('삭제 사유를 적어 주세요.')
+    // 사유 칸을 수정과 같이 쓰므로, 바로 위 "수정 저장"을 누르려다 잘못 누를 수 있다
+    if (!window.confirm('이 기록을 삭제됨으로 표시할까요? 되돌릴 수 없어요.')) return
     actions.deleteRecord(record.id, reason.trim())
     onClose()
   }
@@ -85,7 +87,7 @@ export default function RecordForm({ record, records = [], workplaces, defaultWo
         />
       </label>
 
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error" role="alert">{error}</p>}
 
       <button className="btn primary block" onClick={save}>
         {isEdit ? '수정 저장' : '기록 추가'}
