@@ -148,7 +148,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
       </section>
 
       {overdue && (
-        <section className="card alerts">
+        <section className="alerts">
           <button className="alert-row warn" onClick={() => setLateOut(true)}>
             <span>퇴근을 안 눌렀나요? · {fmtDate(active.start)} 출근</span>
             <b>퇴근 시각 넣기</b>
@@ -157,7 +157,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
       )}
 
       {(pending.length > 0 || owed.count > 0 || thisWeek?.eligible || stale.length > 0 || severance.length > 0) && (
-        <section className="card alerts">
+        <section className="alerts">
           {stale.length > 0 && (
             <button className="alert-row ask" onClick={() => goTo('request')}>
               <span>
@@ -199,19 +199,33 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
       )}
 
       {!(data.gamesHidden ?? false) && (
-        <section className="card alerts">
-          <button className="alert-row ask" onClick={() => openGame('sudoku')}>
-            <span>쉬는 틈에 · 스도쿠</span>
-            <b>{data.sudoku && !data.sudoku.done ? '이어 하기' : '한 판 하기'}</b>
-          </button>
-          <button className="alert-row ask" onClick={() => openGame('spot')}>
-            <span>쉬는 틈에 · 틀린 그림 찾기</span>
-            <b>한 판 하기</b>
-          </button>
-          <button className="alert-row ask" onClick={() => openGame('block')}>
-            <span>쉬는 틈에 · 블록 채우기</span>
-            <b>{data.block && !data.block.over ? '이어 하기' : '한 판 하기'}</b>
-          </button>
+        // 게임은 작은 제목 아래 조용한 줄로. 남색 밑줄은 돈 알림에만 쓴다
+        <section>
+          <div className="section-head">
+            <h2>쉬는 틈에</h2>
+          </div>
+          <div className="alerts games">
+            <button className="alert-row game" onClick={() => openGame('sudoku')}>
+              <span>스도쿠</span>
+              <b>
+                {data.sudoku && !data.sudoku.done && '이어 하기'}
+                <Icon name="chevronRight" size={18} />
+              </b>
+            </button>
+            <button className="alert-row game" onClick={() => openGame('spot')}>
+              <span>틀린 그림 찾기</span>
+              <b>
+                <Icon name="chevronRight" size={18} />
+              </b>
+            </button>
+            <button className="alert-row game" onClick={() => openGame('block')}>
+              <span>블록 채우기</span>
+              <b>
+                {data.block && !data.block.over && '이어 하기'}
+                <Icon name="chevronRight" size={18} />
+              </b>
+            </button>
+          </div>
         </section>
       )}
 

@@ -512,7 +512,23 @@ a.btn {
 
 /* 알림 묶음: 받은 금액 확인, 덜 받은 급여, 주휴수당 대상 */
 .alerts {
-  padding: 2px 18px;
+  /* 카드 없이 줄 + 구분선 (다른 탭과 같은 모양, 2026.11.27 시안 B) */
+  padding: 0 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* 쉬는 틈 게임: 작은 제목 아래 조용한 줄. 오른쪽은 회색 화살표(하던 판이 있으면 "이어 하기") */
+.alerts.games {
+  border-top: 1px solid var(--line);
+}
+
+.alert-row.game b {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 400;
 }
 
 .alert-row {
