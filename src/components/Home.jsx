@@ -120,16 +120,17 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
           )}
         </div>
 
-        <p className="top-label">{now.getMonth() + 1}월에 받을 돈 · 지금까지 {fmtDuration(totalMin)}</p>
+        <p className="top-label">{now.getMonth() + 1}월에 받을 돈</p>
         <p className="top-amount">
           {earned.total.toLocaleString()}
           <span> 원</span>
         </p>
+        <p className="top-hours">지금까지 {fmtDuration(totalMin)}</p>
 
         {active ? (
           <>
             <p className="top-status">
-              <span className="dot" /> {fmtTime(active.start)} 출근 · {fmtDuration(minutesBetween(active.start, now))} 지났어요
+              <span className="dot" /> {fmtTime(active.start)} 출근, {fmtDuration(minutesBetween(active.start, now))} 지났어요
             </p>
             <button className="clock-btn out" onClick={() => (overdue ? setLateOut(true) : actions.clockOut())}>
               <LiveClock /> 퇴근
@@ -150,7 +151,9 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
       {overdue && (
         <section className="alerts">
           <button className="alert-row warn" onClick={() => setLateOut(true)}>
-            <span>퇴근을 안 눌렀나요? · {fmtDate(active.start)} 출근</span>
+            <span>
+              퇴근을 안 눌렀나요?<small>{fmtDate(active.start)} 출근</small>
+            </span>
             <b>퇴근 시각 넣기</b>
           </button>
         </section>
@@ -161,7 +164,7 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
           {stale.length > 0 && (
             <button className="alert-row ask" onClick={() => goTo('request')}>
               <span>
-                {stale[0].stage === 1 ? '메시지' : '내용증명'} 보낸 지 {stale[0].days}일 · 답이 없나요?
+                답이 없나요?<small>{stale[0].stage === 1 ? '메시지' : '내용증명'} 보낸 지 {stale[0].days}일</small>
               </span>
               <b>다음 단계 보기</b>
             </button>
@@ -174,7 +177,9 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
           )}
           {owed.count > 0 && (
             <button className="alert-row owed" onClick={() => goTo('request')}>
-              <span>덜 받은 급여 · {owed.count}개월</span>
+              <span>
+                덜 받은 급여<small>{owed.count}개월</small>
+              </span>
               <b>{owed.amount.toLocaleString()}원</b>
             </button>
           )}
@@ -182,9 +187,8 @@ export default function Home({ data, actions, goTo, openPay, openGame }) {
           {severance.map(({ workplace, info }) => (
             <button key={workplace.id} className="alert-row ask" onClick={() => setSeveranceOpen({ workplace, info })}>
               <span>
-                {info.eligible
-                  ? `퇴직금 대상이에요 · ${workplace.name}`
-                  : `${info.daysLeft}일 뒤 퇴직금 대상 · ${workplace.name}`}
+                {info.eligible ? '퇴직금 대상이에요' : `${info.daysLeft}일 뒤 퇴직금 대상`}
+                <small>{workplace.name}</small>
               </span>
               <b>약 {info.estimate.toLocaleString()}원</b>
             </button>

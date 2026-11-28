@@ -35,7 +35,7 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
   // 앞 단계를 보낸 지 오래됐으면 접힌 다음 단계에 "이제 볼 때"라고 적는다
   const waited = (stage) => (saved[stage]?.sentAt ? daysSince(saved[stage].sentAt) : null)
   const nudge = (stage, base) =>
-    waited(stage) >= FOLLOW_UP_DAYS ? `${stage === 1 ? '메시지' : '내용증명'}를 보낸 지 ${waited(stage)}일 · 이제 볼 때예요` : base
+    waited(stage) >= FOLLOW_UP_DAYS ? `${stage === 1 ? '메시지' : '내용증명'}를 보낸 지 ${waited(stage)}일, 이제 볼 때예요` : base
 
   return (
     <>
@@ -77,7 +77,9 @@ export default function Request({ data, actions, target, goTo, openEvidence }) {
           </div>
           <details className="rq-facts">
             <summary className="rq-row link">
-              <span>근거 보기 · 근무 기록과 계산 내역</span>
+              <span>
+                근거 보기<small>근무 기록과 계산 내역</small>
+              </span>
               <Icon name="chevronRight" size={18} />
             </summary>
             <pre>{facts}</pre>
@@ -278,8 +280,14 @@ function Stage({ step, title, when, desc, button, saved, basis, onSave, generate
           {shared && <p className="rq-edit-hint">{shared}</p>}
           {saved.sentAt ? (
             <p className="rq-sent">
-              <b>{fmtDateTime(saved.sentAt)}에 보냈어요</b> · {daysSince(saved.sentAt)}일 지남
-              {daysSince(saved.sentAt) >= FOLLOW_UP_DAYS && ' · 답이 없다면 다음 단계를 볼 때예요'}
+              <b>{fmtDateTime(saved.sentAt)}에 보냈어요</b>
+              {daysSince(saved.sentAt) > 0 && (
+                <>
+                  <br />
+                  {daysSince(saved.sentAt)}일 지났어요.
+                  {daysSince(saved.sentAt) >= FOLLOW_UP_DAYS && ' 답이 없다면 다음 단계를 볼 때예요'}
+                </>
+              )}
               <button
                 className="rq-sent-undo"
                 onClick={() => window.confirm('보낸 날짜를 지울까요? 증빙 묶음의 요청 이력에서도 빠져요.') && onSave({ ...saved, sentAt: undefined })}
@@ -289,7 +297,7 @@ function Stage({ step, title, when, desc, button, saved, basis, onSave, generate
             </p>
           ) : (
             <button className="rq-sent-btn" onClick={() => onSave({ ...saved, sentAt: nowMinute() })}>
-              보냈어요 · 보낸 날짜 남기기
+              보냈어요<small>보낸 날짜를 남겨요</small>
             </button>
           )}
         </>

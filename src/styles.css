@@ -445,6 +445,13 @@ a.btn {
   letter-spacing: 0;
 }
 
+/* 받을 돈 아래 일한 시간 (가운뎃점 대신 두 줄) */
+.top-hours {
+  margin-top: -2px;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
 .top-actions {
   display: flex;
   gap: 10px;
@@ -546,6 +553,18 @@ a.btn {
   font-size: 15px;
   text-align: left;
   cursor: pointer;
+}
+
+/* 덧붙이는 말은 아래 작은 회색 줄로 */
+.alert-row small {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.alert-row:has(small) {
+  padding: 8px 0;
 }
 
 .alert-row + .alert-row {
@@ -1974,6 +1993,16 @@ a.btn {
   text-decoration: underline;
   text-underline-offset: 4px;
   cursor: pointer;
+}
+
+.rq-sent-btn small {
+  /* inline-block이어야 버튼의 밑줄이 이 줄까지 내려오지 않는다 */
+  display: inline-block;
+  width: 100%;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
 }
 
 .rq-sent {
