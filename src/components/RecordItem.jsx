@@ -26,9 +26,9 @@ export default function RecordItem({ record, workplaces, onEdit, amount }) {
           </p>
           {(record.deleted || hasTrail) && (
             <div className="badges">
-              {record.deleted && <span className="badge red">삭제됨</span>}
+              {record.deleted && <span className="badge gray">삭제됨</span>}
               {record.source === 'manual' && <span className="badge gray">나중에 입력</span>}
-              {edits > 0 && <span className="badge orange">수정 {edits}회</span>}
+              {edits > 0 && <span className="badge gray">수정 {edits}회</span>}
               {hasTrail && (
                 <button className="badge link" onClick={() => setOpen(!open)}>
                   {open ? '이력 닫기' : '이력 보기'}

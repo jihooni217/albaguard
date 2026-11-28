@@ -725,7 +725,7 @@ a.btn {
 .badge.link {
   border: none;
   background: transparent;
-  color: var(--text);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
